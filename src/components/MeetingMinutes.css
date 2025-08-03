@@ -406,3 +406,96 @@
   text-align: right;
   list-style-position: inside;
 }
+
+/* custom header style */
+.custom-header {
+  color: #fff !important;
+  margin: 20px 0 15px 0 !important;
+  font-weight: bold !important;
+  display: block !important;
+  line-height: 1.4 !important;
+  font-family: 'Arial', sans-serif !important;
+}
+
+/* H1 - 1st level title: 32px font, the most prominent, used for main title */
+h1.custom-header,
+.custom-header.h1 {
+  font-size: 32px !important;
+  border-bottom: 4px solid rgba(138, 43, 226, 0.8) !important;
+  padding-bottom: 15px !important;
+  margin-bottom: 6px !important;
+  margin-top: 30px !important;
+  color: #e8dcf5 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
+  font-weight: 900 !important;
+}
+
+/* H2 - 2nd level title: 26px font, sub-level small title, used for sectioning */
+h2.custom-header,
+.custom-header.h2 {
+  font-size: 26px !important;
+  border-bottom: 3px solid rgba(138, 43, 226, 0.6) !important;
+  padding-bottom: 12px !important;
+  margin-bottom: 5px !important;
+  margin-top: 25px !important;
+  color: #ddc8e9 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+  font-weight: 800 !important;
+}
+
+/* H3 - 3rd level title: 20px font, sub-level small title, used for sectioning */
+h3.custom-header,
+.custom-header.h3 {
+  font-size: 20px !important;
+  border-bottom: 2px solid rgba(138, 43, 226, 0.4) !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 4px !important;
+  margin-top: 20px !important;
+  color: #d2b4dd !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  font-weight: 700 !important;
+}
+
+/* title style in editable content */
+.minutes-content [contenteditable="true"] .custom-header,
+.markdown-content [contenteditable="true"] .custom-header {
+  cursor: text;
+}
+
+.minutes-content [contenteditable="true"] .custom-header:hover,
+.markdown-content [contenteditable="true"] .custom-header:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.minutes-content [contenteditable="true"] .custom-header:focus,
+.markdown-content [contenteditable="true"] .custom-header:focus {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+}
+
+/* style when text is selected */
+.minutes-content ::selection,
+.markdown-content ::selection {
+  background-color: rgba(138, 43, 226, 0.4);
+  color: #fff;
+}
+
+/* style for editable content */
+.minutes-content [contenteditable="true"] {
+  cursor: text;
+}
+
+.minutes-content [contenteditable="true"]:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+  border-radius: 3px;
+}
+
+.minutes-content [contenteditable="true"]:focus {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+  outline: none;
+}
