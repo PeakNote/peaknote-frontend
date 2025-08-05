@@ -24,7 +24,7 @@
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #7bebd6b9, #ACB6E5, #885f93, #ACB6E5);
+  background: linear-gradient(to right, #ff00cc, #ACB6E5);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -32,7 +32,9 @@
   text-fill-color: transparent;
   display: inline-block;
   filter: drop-shadow(0 0 15px rgba(116, 235, 213, 0.5));
-  animation: shine 3s linear infinite;
+  animation: breathe 2s ease-in-out infinite, colorShift 4s ease-in-out infinite;
+  font-family: 'Lastica', sans-serif;
+  font-size: 45px;
 }
 
 .typing-container {
@@ -158,4 +160,55 @@ h1 {
   z-index: 0;
   pointer-events: none;
   opacity: 0.5; 
+}
+
+/* 导入本地 Lastica 字体 */
+@font-face {
+  font-family: 'Lastica';
+  src: url('../public/fonts/fonnts.com-Lastica.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(116, 235, 213, 0.5));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 25px rgba(116, 235, 213, 0.8));
+  }
+}
+
+@keyframes colorShift {
+  0% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 128, 0.8));
+  }
+  16.66% {
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 128, 0.8));
+  }
+  33.33% {
+    background-position: 100% 100%;
+    filter: drop-shadow(0 0 25px rgba(0, 128, 255, 0.8));
+  }
+  50% {
+    background-position: 0% 100%;
+    filter: drop-shadow(0 0 20px rgba(128, 0, 255, 0.8));
+  }
+  66.66% {
+    background-position: 0% 0%;
+    filter: drop-shadow(0 0 25px rgba(255, 128, 0, 0.8));
+  }
+  83.33% {
+    background-position: 100% 0%;
+    filter: drop-shadow(0 0 20px rgba(255, 0, 128, 0.8));
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 128, 0.8));
+  }
 }

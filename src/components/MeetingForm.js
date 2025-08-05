@@ -54,8 +54,7 @@ const MeetingForm = ({ onSubmit }) => {
   return (
     <div className="card shadow p-4 meeting-form-container">
       <form onSubmit={handleSubmit}>
-        <div className="mb-3 row">
-          <div className="col-md-8">
+        <div className="mb-3 row">  
             <input
               type="url"
               className="form-control"
@@ -64,17 +63,7 @@ const MeetingForm = ({ onSubmit }) => {
               value={meetingUrl}
               onChange={handleUrlChange}
               required
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              id="template-select"
-              value="    Smart Mode(AI Driven)"
-              readOnly
-            />
-          </div>
+            /> 
         </div>
         <button
           type="submit"
