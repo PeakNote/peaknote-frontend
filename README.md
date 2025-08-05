@@ -1,6 +1,7 @@
 # PeakNote Frontend
 
 A modern React-based meeting notes application with glassmorphism design and particle effects.
+<img width="1440" height="788" alt="Screenshot 2025-08-05 at 12 34 34 PM" src="https://github.com/user-attachments/assets/488d2f55-4d10-4907-8ee6-89659117b444" />
 
 ## Architecture
 
