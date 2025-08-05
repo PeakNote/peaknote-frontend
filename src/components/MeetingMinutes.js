@@ -8,7 +8,6 @@ import MinutesToolbar from './MinutesToolbar';
 
 const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   const minutesRef = useRef(null);
-  const [selectedText, setSelectedText] = useState('');
   const [contentRef, setContentRef] = useState(null);
 
   useEffect(() => {
@@ -204,7 +203,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     const selection = window.getSelection();
     if (selection.rangeCount === 0) return;
     
-    const range = selection.getRangeAt(0);
     const selectedText = selection.toString();
     
     if (!selectedText) {
@@ -241,9 +239,7 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
 
   // Handle text selection
   const handleTextSelection = () => {
-    const selection = window.getSelection();
-    const selectedText = selection.toString();
-    setSelectedText(selectedText);
+    // 文本选择处理，目前不需要额外操作
   };
 
   // Get formatted content
