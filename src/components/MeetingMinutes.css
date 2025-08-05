@@ -456,6 +456,27 @@ h3.custom-header,
   font-weight: 700 !important;
 }
 
+/* Custom Bullet List Styles */
+.custom-bullet-list {
+  margin: 15px 0 !important;
+  padding-left: 20px !important;
+  list-style-type: disc !important;
+  color: #fff !important;
+}
+
+.custom-bullet-list li {
+  margin: 8px 0 !important;
+  line-height: 1.5 !important;
+  color: #e8dcf5 !important;
+  font-size: 16px !important;
+  padding-left: 8px !important;
+}
+
+.custom-bullet-list li::marker {
+  color: #8a2be2 !important;
+  font-size: 18px !important;
+}
+
 /* title style in editable content */
 .minutes-content [contenteditable="true"] .custom-header,
 .markdown-content [contenteditable="true"] .custom-header {

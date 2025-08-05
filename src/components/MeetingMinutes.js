@@ -176,9 +176,12 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     };
   }, [historyIndex, operationHistory]);
 
-  // Left Align & Center Align & Header Levels
+  // Left Align & Center Align & Header Levels & Bullet List
   const handleLeftIconClick = (idx) => {
-    if (idx === 7) { // the 6th button - H1 title (index 7)
+    if (idx === 5) { // the 5th button - Bullet List (index 5)
+      saveStateBeforeOperation(); // save state before operation
+      applyBulletList();
+    } else if (idx === 7) { // the 6th button - H1 title (index 7)
       saveStateBeforeOperation(); // save state before operation
       applyHeaderLevel('h1');
     } else if (idx === 8) { // the 7th button - H2 title (index 8)
@@ -191,6 +194,75 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       setTextAlign('left');
     } else if (idx === 12) { // Icon 10 Center Align (index 12)
       setTextAlign('center');
+    }
+  };
+
+  // apply bullet list
+  const applyBulletList = () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0 && !selection.isCollapsed) {
+      const range = selection.getRangeAt(0);
+      
+      try {
+        // check if the selected content is already in a list
+        let existingList = null;
+        let textContent = '';
+        
+        // check if the starting node is in a list element
+        let node = range.startContainer;
+        while (node && node !== document) {
+          if (node.nodeType === Node.ELEMENT_NODE && 
+              (node.tagName === 'UL' || node.tagName === 'OL')) {
+            existingList = node;
+            break;
+          }
+          node = node.parentNode;
+        }
+        
+        // get the selected text
+        textContent = range.toString().trim();
+        
+        if (textContent) {
+          // split text by lines to create multiple list items
+          const lines = textContent.split('\n').filter(line => line.trim());
+          
+          if (lines.length > 0) {
+            // create new unordered list
+            const ulElement = document.createElement('ul');
+            ulElement.className = 'custom-bullet-list';
+            
+            // create list items for each line
+            lines.forEach(line => {
+              if (line.trim()) {
+                const liElement = document.createElement('li');
+                liElement.textContent = line.trim();
+                ulElement.appendChild(liElement);
+              }
+            });
+            
+            if (existingList) {
+              // if already in a list, replace the list
+              existingList.parentNode.replaceChild(ulElement, existingList);
+            } else {
+              // replace selected content with new list
+              range.deleteContents();
+              range.insertNode(ulElement);
+            }
+            
+            // clear selection
+            selection.removeAllRanges();
+          } else {
+            alert('Please select valid text content first');
+          }
+        } else {
+          alert('Please select valid text content first');
+        }
+      } catch (e) {
+        console.error('Error applying bullet list:', e);
+        alert('Cannot apply bullet list format, please try again');
+      }
+    } else {
+      alert('Please select the text to be converted to bullet list first');
     }
   };
 
