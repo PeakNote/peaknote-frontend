@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import './MeetingMinutes.css';
 
@@ -6,9 +6,10 @@ import MinutesToolbar from './MinutesToolbar';
 
 const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   const minutesRef = useRef(null);
+  const [textAlign, setTextAlign] = useState('left'); // Defualt Left Align
 
   useEffect(() => {
-    if (minutesRef.current) {
+    if (minutesRef.current) { 
       minutesRef.current.classList.add('show');
       minutesRef.current.scrollIntoView({ behavior: 'smooth' });
 
@@ -104,14 +105,23 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     return <p>No meeting content available.</p>;
   };
 
+  // Left Align & Center Align
+  const handleLeftIconClick = (idx) => {
+    if (idx === 11) { //  Icon 9  Left Align
+      setTextAlign('left');
+    } else if (idx === 12) { // Icon 10 Center Align
+      setTextAlign('center');
+    }
+  };
+
   return (
     <div className="minutes-section" ref={minutesRef}>
       <MinutesToolbar
-      onLeftIconClick={idx => { /* 这里可以写左侧图标点击逻辑 */ }}
+      onLeftIconClick={handleLeftIconClick}
       onRightIconClick={idx => { /* 这里可以写右侧图标点击逻辑 */ }}
       />
       <div className="chat-bubble" style={{ animationDelay: '0.1s' }}>
-        <div className="a4-paper"> 
+        <div className={`a4-paper text-align-${textAlign}`}> 
           <div className="minutes-content">
             {generateContent()}
           </div>

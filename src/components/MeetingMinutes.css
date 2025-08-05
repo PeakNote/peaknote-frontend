@@ -280,3 +280,129 @@
   color: #fff;
   font-style: italic;
 }
+
+/* Text Alignment Styles */
+.text-align-left {
+  text-align: left;
+}
+
+.text-align-left .minutes-content,
+.text-align-left .markdown-content {
+  text-align: left;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-center .minutes-content,
+.text-align-center .markdown-content {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.text-align-right .minutes-content,
+.text-align-right .markdown-content {
+  text-align: right;
+}
+
+.text-align-center .minutes-content h1,
+.text-align-center .minutes-content h2,
+.text-align-center .minutes-content h3,
+.text-align-center .minutes-content h4,
+.text-align-center .minutes-content h5,
+.text-align-center .minutes-content h6,
+.text-align-center .minutes-content p,
+.text-align-center .markdown-content h1,
+.text-align-center .markdown-content h2,
+.text-align-center .markdown-content h3,
+.text-align-center .markdown-content h4,
+.text-align-center .markdown-content h5,
+.text-align-center .markdown-content h6,
+.text-align-center .markdown-content p {
+  text-align: center;
+}
+
+.text-align-left .minutes-content h1,
+.text-align-left .minutes-content h2,
+.text-align-left .minutes-content h3,
+.text-align-left .minutes-content h4,
+.text-align-left .minutes-content h5,
+.text-align-left .minutes-content h6,
+.text-align-left .minutes-content p,
+.text-align-left .markdown-content h1,
+.text-align-left .markdown-content h2,
+.text-align-left .markdown-content h3,
+.text-align-left .markdown-content h4,
+.text-align-left .markdown-content h5,
+.text-align-left .markdown-content h6,
+.text-align-left .markdown-content p {
+  text-align: left;
+}
+
+.text-align-right .minutes-content h1,
+.text-align-right .minutes-content h2,
+.text-align-right .minutes-content h3,
+.text-align-right .minutes-content h4,
+.text-align-right .minutes-content h5,
+.text-align-right .minutes-content h6,
+.text-align-right .minutes-content p,
+.text-align-right .markdown-content h1,
+.text-align-right .markdown-content h2,
+.text-align-right .markdown-content h3,
+.text-align-right .markdown-content h4,
+.text-align-right .markdown-content h5,
+.text-align-right .markdown-content h6,
+.text-align-right .markdown-content p {
+  text-align: right;
+}
+
+/* Number Alignment */
+.text-align-center .minutes-content ul,
+.text-align-center .minutes-content ol,
+.text-align-center .markdown-content ul,
+.text-align-center .markdown-content ol {
+  text-align: center;
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+.text-align-center .minutes-content li,
+.text-align-center .markdown-content li {
+  text-align: center;
+  list-style-position: inside;
+}
+
+.text-align-left .minutes-content ul,
+.text-align-left .minutes-content ol,
+.text-align-left .markdown-content ul,
+.text-align-left .markdown-content ol {
+  text-align: left;
+  list-style-position: inside;
+  padding-left: 20px;
+}
+
+.text-align-left .minutes-content li,
+.text-align-left .markdown-content li {
+  text-align: left;
+  list-style-position: inside;
+}
+
+.text-align-right .minutes-content ul,
+.text-align-right .minutes-content ol,
+.text-align-right .markdown-content ul,
+.text-align-right .markdown-content ol {
+  text-align: right;
+  list-style-position: inside;
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+.text-align-right .minutes-content li,
+.text-align-right .markdown-content li {
+  text-align: right;
+  list-style-position: inside;
+}
