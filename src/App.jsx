@@ -31,6 +31,7 @@ function App() {
 
   // const handleDownload = () => {
   //   console.log('Download meeting minutes');
+  //   // Download functionality is now implemented in MeetingMinutes component
   // };
 
   // const handleShare = () => {

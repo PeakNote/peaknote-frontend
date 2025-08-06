@@ -56,6 +56,22 @@
 
 .minutes-content {
   min-height: 200mm;
+  outline: none;
+  cursor: text;
+  transition: all 0.3s ease;
+}
+
+.minutes-content:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  padding: 5px;
+  margin: -5px;
+}
+
+.minutes-content[contenteditable="true"]:empty:before {
+  content: "点击这里开始编辑会议纪要...";
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
 }
 
 .minutes-content h3 {
