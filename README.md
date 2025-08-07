@@ -27,12 +27,28 @@ A modern React-based meeting notes application with glassmorphism design and par
 │       └── useTypingAnimation.js # Typing effect animations
 ```
 
+## Configuration
+
+### Environment Variables
+The application uses environment variables for configuration:
+
+- `REACT_APP_BACKEND_URL`: Backend API URL for transcript generation
+
+### Setup
+1. Copy `.env.example` to `.env` for local development
+2. Update `REACT_APP_BACKEND_URL` with your backend API URL
+3. For production deployment, set `REACT_APP_BACKEND_URL` as a GitHub secret
+
 ## Development
 
 ### Local Development
 ```bash
 # Install dependencies
 npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your backend URL
 
 # Start development server
 npm start
@@ -68,9 +84,23 @@ python3 -m http.server 8000
 - **Interactive Animations**: Success feedback and typing effects
 - **Accessibility**: Semantic HTML and ARIA support
 
+## Deployment
+
+### Azure Static Web Apps
+The application is configured for deployment to Azure Static Web Apps via GitHub Actions.
+
+#### Required GitHub Secrets:
+- `AZURE_STATIC_WEB_APPS_API_TOKEN`: Azure deployment token
+- `REACT_APP_BACKEND_URL`: Backend API URL for production
+
+#### Deployment Process:
+1. Push to `main` branch triggers automatic deployment
+2. Environment variables are injected during build
+3. Static files are deployed to Azure
+
 ## Technical Notes
 
-- Currently features demo/placeholder functionality
-- No backend API integration yet
-- All data processing happens client-side
+- Integrates with backend API for meeting transcript generation
 - Modern React architecture with hooks and components
+- Environment-based configuration for different deployment stages
+- Glassmorphism UI with particle effects
