@@ -17,10 +17,7 @@ const MeetingForm = ({ onSubmit }) => {
 
       // Call transcript API
       const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        method: 'GET'
       });
 
       if (!response.ok) {
