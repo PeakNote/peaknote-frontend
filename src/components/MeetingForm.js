@@ -19,7 +19,7 @@ const MeetingForm = ({ onSubmit }) => {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Accept': 'application/json'
         }
       });
 
