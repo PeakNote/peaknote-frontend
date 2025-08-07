@@ -61,10 +61,9 @@ const MeetingForm = ({ onSubmit }) => {
               type="url"
               className="form-control"
               id="teams-url"
-              placeholder="Enter Teams meeting URL"
+              placeholder="Enter Teams meeting URL (optional for demo)"
               value={meetingUrl}
               onChange={handleUrlChange}
-              required
             />
           </div>
           <div className="col-md-4">
