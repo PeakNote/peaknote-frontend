@@ -23,19 +23,6 @@
   animation: bounce-in 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000);
 }
 
-/* .text-gradient {
-  background: linear-gradient(to right, #ff00cc, #ACB6E5);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  display: inline-block;
-  filter: drop-shadow(0 0 15px rgba(116, 235, 213, 0.5));
-  animation: breathe 2s ease-in-out infinite, colorShift 4s ease-in-out infinite;
-  font-family: 'Lastica', sans-serif;
-  font-size: 45px;
-} */
 
 .text-gradient {
   color: white;
