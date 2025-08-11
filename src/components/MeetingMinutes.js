@@ -4,7 +4,7 @@ import './MeetingMinutes.css';
 
 import MinutesToolbar from './MinutesToolbar';
 
-const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
+const MeetingMinutes = ({ meetingData, onShare }) => {
   const minutesRef = useRef(null);
 
   useEffect(() => {
@@ -29,11 +29,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     }
   }, [meetingData]);
 
-  // const handleDownload = () => {
-  //   onDownload();
-  //   alert('Downloading meeting minutes as PDF...');
-  // };
-
   const handleShare = () => {
     console.log('handleShare called'); // 添加调试信息
     console.log('onShare:', onShare); // 检查 onShare 的值
@@ -46,19 +41,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       alert('Share function not available. onShare:', onShare);
     }
   };
-
-  // const getNameFromUrl = (url) => {
-  //   try {
-  //     const urlObj = new URL(url);
-  //     if (urlObj.pathname.includes('/')) {
-  //       const parts = urlObj.pathname.split('/').filter(p => p);
-  //       return parts[parts.length - 1].replace(/-/g, ' ');
-  //     }
-  //     return 'Teams Meeting';
-  //   } catch(e) {
-  //     return 'Teams Meeting';
-  //   }
-  // };
 
   const generateContent = () => {
     const notes = meetingData.notes;
@@ -134,19 +116,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
           </div>
         </div>
       </div>
-      
-      {/*
-      <div className="action-buttons chat-bubble" style={{ animationDelay: '0.3s' }}>
-        <div className="tab-buttons">
-          <button className="tab-button" onClick={handleDownload}>
-            <span><i className="fas fa-download"></i> Download</span>
-          </button>
-          <button className="tab-button" onClick={handleShare}>
-            <span><i className="fas fa-share-alt"></i> Share</span>
-          </button>
-        </div>
-      </div>
-      */}
     </div>
   );
 };

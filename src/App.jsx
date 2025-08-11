@@ -113,10 +113,6 @@ function App() {
     setMeetingData(data);
   };
 
-  // const handleDownload = () => {
-  //   console.log('Download meeting minutes');
-  // };
-
   const handleShare = () => {
     console.log('App.jsx: handleShare called'); // 添加调试信息
     setShowShareModal(true);
@@ -172,12 +168,7 @@ function App() {
         {meetingData && (
           <MeetingMinutes 
             meetingData={meetingData}
-            // onDownload={handleDownload}
-            // 
-            onShare={(shareFunc) => {
-              console.log('App.jsx: onShare prop passed:', shareFunc); // 添加调试信息
-              return handleShare;
-            }}
+            onShare={handleShare} 
           />
         )}
       </div>
