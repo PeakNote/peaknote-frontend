@@ -34,9 +34,18 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   //   alert('Downloading meeting minutes as PDF...');
   // };
 
-  // const handleShare = () => {
-  //   onShare();
-  // };
+  const handleShare = () => {
+    console.log('handleShare called'); // 添加调试信息
+    console.log('onShare:', onShare); // 检查 onShare 的值
+  
+    if (onShare && typeof onShare === 'function') {
+      console.log('Calling onShare function'); // 添加调试信息
+      onShare();
+    } else {
+      console.error('onShare is not available:', onShare);
+      alert('Share function not available. onShare:', onShare);
+    }
+  };
 
   // const getNameFromUrl = (url) => {
   //   try {
@@ -108,7 +117,15 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     <div className="minutes-section" ref={minutesRef}>
       <MinutesToolbar
       onLeftIconClick={idx => { /* 这里可以写左侧图标点击逻辑 */ }}
-      onRightIconClick={idx => { /* 这里可以写右侧图标点击逻辑 */ }}
+      onRightIconClick={idx => { 
+        console.log('Right icon clicked, index:', idx); // 添加调试信息
+        if (idx === 0) { // 分享图标（第一个右侧图标）
+          console.log('Share icon clicked, calling handleShare'); // 添加调试信息
+          handleShare();
+          // onShare();
+       }
+       // 可以添加其他右侧图标的处理
+      }}
       />
       <div className="chat-bubble" style={{ animationDelay: '0.1s' }}>
         <div className="a4-paper"> 

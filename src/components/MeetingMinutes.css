@@ -219,6 +219,7 @@
 /* Markdown content styling for white fonts */
 .markdown-content {
   color: #fff;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content h1,
@@ -230,22 +231,26 @@
   color: #fff;
   margin-top: 20px;
   margin-bottom: 10px;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content p {
   color: #fff;
   margin-bottom: 10px;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content ul,
 .markdown-content ol {
   color: #fff;
   padding-left: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content li {
   color: #fff;
   margin-bottom: 5px;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content blockquote {
@@ -253,6 +258,7 @@
   border-left: 3px solid rgba(255, 255, 255, 0.3);
   padding-left: 15px;
   margin: 15px 0;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content code {
@@ -274,9 +280,11 @@
 .markdown-content strong {
   color: #fff;
   font-weight: bold;
+  font-family: 'Arial', sans-serif;
 }
 
 .markdown-content em {
   color: #fff;
   font-style: italic;
+  font-family: 'Arial', sans-serif;
 }

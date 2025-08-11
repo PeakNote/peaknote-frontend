@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ShareModal.css';
 
 const ShareModal = ({ isOpen, onClose, onSend }) => {
@@ -13,6 +13,29 @@ const ShareModal = ({ isOpen, onClose, onSend }) => {
     { name: 'Jessica Miller', email: 'jessica.m@company.com', dept: 'Sales' },
     { name: 'David Taylor', email: 'david.t@company.com', dept: 'Operations' }
   ];
+
+  // 控制背景滚动
+  useEffect(() => {
+    if (isOpen) {
+      // 模态框打开时，阻止背景滚动
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+      console.log('Modal opened, background scroll disabled'); // 调试信息
+    } else {
+      // 模态框关闭时，恢复背景滚动
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+      console.log('Modal closed, background scroll enabled'); // 调试信息
+    }
+
+    // 清理函数
+    return () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+      console.log('Cleanup: background scroll restored'); // 调试信息
+    };
+  }, [isOpen]);
+
 
   const toggleUserSelection = (index) => {
     setSelectedUsers(prev => 
