@@ -23,7 +23,7 @@
   animation: bounce-in 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000);
 }
 
-.text-gradient {
+/* .text-gradient {
   background: linear-gradient(to right, #ff00cc, #ACB6E5);
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -35,6 +35,13 @@
   animation: breathe 2s ease-in-out infinite, colorShift 4s ease-in-out infinite;
   font-family: 'Lastica', sans-serif;
   font-size: 45px;
+} */
+
+.text-gradient {
+  color: white;
+  font-weight: 900;
+  font-family: 'Lastica', sans-serif;
+  display: inline-block;
 }
 
 .typing-container {
@@ -67,6 +74,7 @@ h1 {
 
 .lead {
   color: rgba(255, 255, 255, 0.9);
+  font-weight: 350; 
 }
 
 /* Copyright footer styles */
@@ -171,6 +179,7 @@ h1 {
   font-display: swap;
 }
 
+/* PEAKNOTE 字体 呼吸变化*/
 @keyframes breathe {
   0%, 100% {
     transform: scale(1);
@@ -182,6 +191,7 @@ h1 {
   }
 }
 
+/* PEAKNOTE 字体 颜色变化*/
 @keyframes colorShift {
   0% {
     background-position: 0% 50%;

@@ -5,7 +5,7 @@ import MeetingMinutes from './components/MeetingMinutes';
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import useParticles from './hooks/useParticles';
-import useTypingAnimation from './hooks/useTypingAnimation';
+
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
@@ -16,14 +16,7 @@ function App() {
   useParticles();
 
   // Typing animation messages
-  const typingMessages = [
-    'Your intelligent meeting assistant',
-    'Capture every important detail',
-    'Never miss a key discussion point',
-    'Make your meetings more productive'
-  ];
-
-  const currentTypingMessage = useTypingAnimation(typingMessages, 5000);
+  const staticMessage = 'Your intelligent meeting assistant';
 
   // 用于测试
   const generateTestData = () => {
@@ -155,8 +148,8 @@ function App() {
             <span className="text-gradient">PEAKNOTE</span>
           </h1>
           <div className="typing-container">
-            <p className="lead typing-animation" key={currentTypingMessage}>
-              {currentTypingMessage}
+            <p className="lead">
+              {staticMessage}
             </p>
           </div>
         </div>
