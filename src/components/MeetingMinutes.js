@@ -10,6 +10,7 @@ import MinutesToolbar from './MinutesToolbar';
 const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   const minutesRef = useRef(null);
   const [contentRef, setContentRef] = useState(null);
+  const [textAlign, setTextAlign] = useState('left'); // Defualt Left Align
   // Apply font to selected text
   const applyFontToSelection = useCallback((font) => {
     if (!contentRef) return;
@@ -275,6 +276,44 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     console.log(`Format command: ${command}, Result: ${result}`);
   };
 
+  // Bullet point functionality
+  const handleBulletPoint = () => {
+    if (!contentRef) return;
+    
+    // Ensure content area has focus
+    contentRef.focus();
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+    
+    const selectedText = selection.toString();
+    
+    if (!selectedText) {
+      alert('Please select text to create bullet points first');
+      return;
+    }
+    
+    // Split selected text into lines
+    const lines = selectedText.split('\n').filter(line => line.trim() !== '');
+    
+    if (lines.length === 0) {
+      alert('Please select text to create bullet points first');
+      return;
+    }
+    
+    // Create bullet point list
+    const bulletList = lines.map(line => `• ${line}`).join('\n');
+    
+    // Replace selected text with bullet points
+    const result = document.execCommand('insertText', false, bulletList);
+    
+    // Clear selection
+    selection.removeAllRanges();
+    
+    // Debug info
+    console.log(`Bullet point command result: ${result}`);
+  };
+
   // Handle text selection
   const handleTextSelection = () => {
     // 文本选择处理，目前不需要额外操作
@@ -368,6 +407,59 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     return <p>No meeting content available.</p>;
   };
 
+   // Text Alignment Functions
+  const handleTextAlignment = (alignment) => {
+    if (!contentRef) return;
+    
+    // Ensure content area has focus
+    contentRef.focus();
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+    
+    const selectedText = selection.toString();
+    
+    if (!selectedText) {
+      // If no text is selected, apply alignment to the entire content
+      setTextAlign(alignment);
+      return;
+    }
+    
+    // Apply alignment to selected text using execCommand
+    let command = '';
+    switch (alignment) {
+      case 'left':
+        command = 'justifyLeft';
+        break;
+      case 'center':
+        command = 'justifyCenter';
+        break;
+      case 'right':
+        command = 'justifyRight';
+        break;
+      default:
+        return;
+    }
+    
+    // Execute alignment command
+    const result = document.execCommand(command, false, null);
+    
+    // Clear selection
+    selection.removeAllRanges();
+    
+    // Debug info
+    console.log(`Alignment command: ${command}, Result: ${result}`);
+  };
+
+  const handleLeftIconClick = (idx) => {
+    if (idx === 11) { // Left Align
+      handleTextAlignment('left');
+    } else if (idx === 12) { // Center Align
+      handleTextAlignment('center');
+    }
+  };
+
+
   const generateContentForPDF = () => {
     const notes = meetingData.notes;
     if (!notes) return '<p>No meeting notes available.</p>';
@@ -439,6 +531,16 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
           case 2: // 下划线
             formatText('underline');
             break;
+          case 5: // 项目符号
+            handleBulletPoint();
+            break;
+          case 11: // 居左对齐
+            handleTextAlignment('left');
+            break;
+          case 12: // 居中对齐
+            handleTextAlignment('center');
+            break;
+
           case 15: // 字体选择
             // This case is no longer needed as the selector is removed
             break;
@@ -468,7 +570,7 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
             <p>Template: <span>{meetingData.template?.charAt(0).toUpperCase() + meetingData.template?.slice(1)}</span></p>
           </div>
           <div 
-            className="minutes-content" 
+            className={`minutes-content text-align-${textAlign}`}
             ref={setContentRef}
             contentEditable={true}
             onSelect={handleTextSelection}
@@ -477,7 +579,8 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
             onFocus={() => console.log('Content area focused')}
             suppressContentEditableWarning={true}
             style={{ 
-              outline: 'none'
+              outline: 'none',
+              textAlign: textAlign
             }}
           >
             {generateContent()}

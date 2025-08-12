@@ -30,12 +30,18 @@
     padding: 0;
     display: flex;
     align-items: center;
-    transition: filter 0.2s;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 4px;
   }
   
   .toolbar-icon-btn:hover {
     filter: brightness(1.3);
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-1px);
   }
+  
+
   
   .toolbar-icon-btn-large svg {
     width: 38px;
