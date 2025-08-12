@@ -196,6 +196,7 @@ function App() {
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
         onSend={handleShareSend}
+        meetingData={meetingData}
       />
 
       {/* Success Animation */}

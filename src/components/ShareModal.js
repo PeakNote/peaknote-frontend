@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './ShareModal.css';
 
-const ShareModal = ({ isOpen, onClose, onSend }) => {
+const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const teamMembers = [
+    { name: 'RZ Gao', email: 'gaorz866999@gmail.com', dept: 'Engineering' },
     { name: 'John Smith', email: 'john.smith@company.com', dept: 'Engineering' },
     { name: 'Sarah Johnson', email: 'sarah.j@company.com', dept: 'Product Management' },
     { name: 'Michael Chen', email: 'michael.c@company.com', dept: 'Design' },
@@ -51,9 +52,38 @@ const ShareModal = ({ isOpen, onClose, onSend }) => {
       return;
     }
 
-    const recipients = selectedUsers.map(index => teamMembers[index]);
-    onSend(recipients);
-    setSelectedUsers([]);
+     // 获取选中的收件人邮箱
+  const selectedEmails = selectedUsers
+  .map(index => teamMembers[index].email)
+  .join(',');
+
+  // 构建邮件内容
+  const subject = encodeURIComponent('PeakNote Meeting Summary');
+  const body = encodeURIComponent(`
+  Dear Team,
+
+  Please find attached the meeting summary from our recent discussion.
+
+  Meeting Details:
+  - Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
+  - Generated: ${new Date().toLocaleString()}
+
+  Note: The PDF file has been downloaded to your device. Please attach it to this email.
+
+  Best regards,
+  PeakNote Team
+  `.trim());
+
+  // 构建 mailto 链接并打开邮件客户端
+  const mailtoLink = `mailto:${selectedEmails}?subject=${subject}&body=${body}`;
+  window.open(mailtoLink, '_blank');
+
+  // 显示成功消息
+  alert('Email client opened! Please attach the PDF file manually.');
+
+  // 关闭模态框
+  onClose();
+  setSelectedUsers([]);
   };
 
   const getInitials = (name) => {
