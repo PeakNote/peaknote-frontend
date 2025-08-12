@@ -11,6 +11,13 @@
   opacity: 1;
 }
 
+/* Font selector for meeting content */
+.meeting-font-selector {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
 .a4-paper {
   background: rgba(84, 54, 137, 0.386);
   border: 1px solid rgba(138, 43, 226, 0.1);
@@ -296,3 +303,5 @@
   color: #fff;
   font-style: italic;
 }
+
+/* Font selector styles - now using dropdown */

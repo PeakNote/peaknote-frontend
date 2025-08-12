@@ -1,14 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import './MeetingMinutes.css';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import config from '../config.js';
 
 import MinutesToolbar from './MinutesToolbar';
 
 const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   const minutesRef = useRef(null);
   const [contentRef, setContentRef] = useState(null);
+  const [localSelectedFont, setLocalSelectedFont] = useState('Arial');
+
+  // Apply font to selected text
+  const applyFontToSelection = useCallback((font) => {
+    if (!contentRef) return;
+    
+    // Ensure content area has focus
+    contentRef.focus();
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+    
+    const selectedText = selection.toString();
+    
+    if (!selectedText) {
+      alert('Please select text to change font first');
+      return;
+    }
+    
+    // Apply font to selected text using execCommand
+    const result = document.execCommand('fontName', false, config.FONTS[font]);
+    
+    // Clear selection
+    selection.removeAllRanges();
+    
+    // Debug info
+    console.log(`Font change command: ${font}, Result: ${result}`);
+  }, [contentRef]);
+
+  const handleFontChange = useCallback((font) => {
+    setLocalSelectedFont(font);
+    applyFontToSelection(font);
+  }, [applyFontToSelection]);
 
   useEffect(() => {
     if (minutesRef.current) {
@@ -30,7 +64,15 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
         });
       }, 700);
     }
-  }, [meetingData]);
+
+    // Set up global font change handler
+    window.onFontChange = handleFontChange;
+
+    // Cleanup
+    return () => {
+      window.onFontChange = null;
+    };
+  }, [meetingData, handleFontChange]);
 
   const handleDownload = async () => {
     try {
@@ -49,7 +91,7 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       pdfContainer.style.backgroundColor = '#ffffff';
       pdfContainer.style.color = '#000000';
       pdfContainer.style.padding = '40px';
-      pdfContainer.style.fontFamily = 'Arial, sans-serif';
+      pdfContainer.style.fontFamily = config.FONTS[localSelectedFont] || config.FONTS['Arial'];
       pdfContainer.style.fontSize = '14px';
       pdfContainer.style.lineHeight = '1.6';
       
@@ -251,11 +293,11 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     // Get current edited HTML content
     let content = contentRef.innerHTML;
     
-    // Clean some unwanted style attributes, preserve formatting tags
+    // Clean some unwanted attributes, preserve formatting tags and font styles
     content = content
-      .replace(/style="[^"]*"/g, '') // Remove inline styles
       .replace(/class="[^"]*"/g, '') // Remove class attributes
       .replace(/data-[^=]*="[^"]*"/g, ''); // Remove data attributes
+    // Note: We keep inline styles to preserve font formatting
     
     return content;
   };
@@ -401,6 +443,9 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
           case 2: // 下划线
             formatText('underline');
             break;
+          case 15: // 字体选择
+            // This case is no longer needed as the selector is removed
+            break;
           default:
             break;
         }
@@ -435,7 +480,9 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
             onKeyUp={handleTextSelection}
             onFocus={() => console.log('Content area focused')}
             suppressContentEditableWarning={true}
-            style={{ outline: 'none' }}
+            style={{ 
+              outline: 'none'
+            }}
           >
             {generateContent()}
           </div>
@@ -454,6 +501,10 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
         </div>
       </div>
       */}
+      
+      {/* Font Selector Modal */}
+      {/* This section is no longer needed as the selector is removed */}
+      
     </div>
   );
 };

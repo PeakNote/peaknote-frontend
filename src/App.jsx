@@ -11,7 +11,6 @@ function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
-
   // Initialize particles
   useParticles();
 
