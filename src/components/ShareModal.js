@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './ShareModal.css';
 
 const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false); 
 
   const teamMembers = [
     { name: 'RZ Gao', email: 'gaorz866999@gmail.com', dept: 'Engineering' },
@@ -46,44 +49,147 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
     );
   };
 
-  const handleSend = () => {
+  // 生成PDF函数
+  const generatePDF = async () => {
+    try {
+      // 获取 .a4-paper 元素
+      const element = document.querySelector('.a4-paper');
+      
+      if (!element) {
+        throw new Error('Meeting content not found. Please generate meeting data first.');
+      }
+
+      // 临时隐藏不需要的元素
+      const originalDisplay = element.style.display;
+      element.style.display = 'block';
+      element.style.position = 'absolute';
+      element.style.left = '-9999px';
+      element.style.top = '0';
+      element.style.zIndex = '-1';
+
+      // 使用改进的 html2canvas 配置
+      const canvas = await html2canvas(element, {
+        scale: 3, // 更高的清晰度
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        foreignObjectRendering: false,
+        removeContainer: true,
+        logging: false
+      });
+
+      // 恢复元素样式
+      element.style.display = originalDisplay;
+      element.style.position = '';
+      element.style.left = '';
+      element.style.top = '';
+      element.style.zIndex = '';
+
+      // 创建高质量PDF
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210; // A4 宽度 (mm)
+      const pageHeight = 297; // A4 高度 (mm)
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // 添加第一页
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // 如果内容超过一页，添加后续页面
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      return pdf;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throw error;
+    }
+  };
+
+  // 下载PDF函数
+  const downloadPDF = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      const pdf = await generatePDF();
+      
+      // 生成文件名
+      const fileName = `PeakNote-Meeting-Summary-${new Date().toISOString().split('T')[0]}.pdf`;
+      
+      // 下载PDF
+      pdf.save(fileName);
+      
+      return fileName;
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Error generating PDF: ' + error.message);
+      throw error;
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
+  const handleSend = async () => {
     if (selectedUsers.length === 0) {
       alert('Please select at least one recipient');
       return;
     }
 
-     // 获取选中的收件人邮箱
-  const selectedEmails = selectedUsers
-  .map(index => teamMembers[index].email)
-  .join(',');
+    try {
+      // 1. 先生成并下载PDF
+      const fileName = await downloadPDF();
+      
+      // 2. 获取选中的收件人邮箱
+      const selectedEmails = selectedUsers
+        .map(index => teamMembers[index].email)
+        .join(',');
 
-  // 构建邮件内容
-  const subject = encodeURIComponent('PeakNote Meeting Summary');
-  const body = encodeURIComponent(`
-  Dear Team,
+      // 3. 构建邮件内容
+      const subject = encodeURIComponent('PeakNote Meeting Summary');
+      const body = encodeURIComponent(`
+Dear Team,
 
-  Please find attached the meeting summary from our recent discussion.
+Please find attached the meeting summary from our recent discussion.
 
-  Meeting Details:
-  - Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
-  - Generated: ${new Date().toLocaleString()}
+Meeting Details:
+- Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
+- Generated: ${new Date().toLocaleString()}
 
-  Note: The PDF file has been downloaded to your device. Please attach it to this email.
+Note: The PDF file "${fileName}" has been downloaded to your device. Please attach it to this email.
 
-  Best regards,
-  PeakNote Team
-  `.trim());
+Best regards,
+PeakNote Team
+      `.trim());
 
-  // 构建 mailto 链接并打开邮件客户端
-  const mailtoLink = `mailto:${selectedEmails}?subject=${subject}&body=${body}`;
-  window.open(mailtoLink, '_blank');
-
-  // 显示成功消息
-  alert('Email client opened! Please attach the PDF file manually.');
-
-  // 关闭模态框
-  onClose();
-  setSelectedUsers([]);
+      // 4. 构建 mailto 链接并打开邮件客户端
+      const mailtoLink = `mailto:${selectedEmails}?subject=${subject}&body=${body}`;
+      window.open(mailtoLink, '_blank');
+      
+      // 5. 显示成功消息
+      alert(`PDF "${fileName}" downloaded! Email client opened. Please attach the PDF file.`);
+      
+      // 6. 关闭模态框
+      onClose();
+      setSelectedUsers([]);
+      
+    } catch (error) {
+      console.error('Error in handleSend:', error);
+      alert('Error: ' + error.message);
+    }
   };
 
   const getInitials = (name) => {
