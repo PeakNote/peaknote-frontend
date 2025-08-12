@@ -14,6 +14,7 @@ const MeetingForm = ({ onSubmit }) => {
       // Use the meeting URL directly as it should already be properly encoded
       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
 
+      console.log('Calling API:', apiUrl); // 调试信息
       // Call transcript API
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -22,11 +23,15 @@ const MeetingForm = ({ onSubmit }) => {
         }
       });
 
+      console.log('MeetingForm response status:', response.status);
+      console.log('MeetingForm response headers:', response.headers);
+
       if (!response.ok) {
         throw new Error('Failed to generate meeting transcript');
       }
 
       const transcriptData = await response.json();
+      console.log('MeetingForm API response:', transcriptData);
 
       // Structure the data to match what the app expects
       const formattedData = {
