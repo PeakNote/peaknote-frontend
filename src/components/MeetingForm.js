@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './MeetingForm.css';
+import config from '../config';
 
 const MeetingForm = ({ onSubmit }) => {
   const [meetingUrl, setMeetingUrl] = useState('');
@@ -12,13 +13,13 @@ const MeetingForm = ({ onSubmit }) => {
 
     try {
       // Use the meeting URL directly as it should already be properly encoded
-      const apiUrl = `https://8fca4ce341a6.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
+      const apiUrl = `${config.BACKEND_URL}${config.ENDPOINTS.TRANSCRIPT_BY_URL}?url=${meetingUrl}`;
 
       // Call transcript API
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+          'Content-Type': 'application/json'
         }
       });
 
@@ -60,10 +61,9 @@ const MeetingForm = ({ onSubmit }) => {
               type="url"
               className="form-control"
               id="teams-url"
-              placeholder="Enter Teams meeting URL"
+              placeholder="Enter Teams meeting URL (optional for demo)"
               value={meetingUrl}
               onChange={handleUrlChange}
-              required
             />
           </div>
           <div className="col-md-4">

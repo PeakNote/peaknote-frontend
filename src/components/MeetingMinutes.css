@@ -477,6 +477,26 @@ h3.custom-header,
   font-size: 18px !important;
 }
 
+/* Custom Code Block Styles */
+.custom-code-block {
+  margin: 15px 0 !important;
+  padding: 15px !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(138, 43, 226, 0.4) !important;
+  border-radius: 8px !important;
+  overflow-x: auto !important;
+  font-family: 'Courier New', 'Monaco', 'Consolas', monospace !important;
+}
+
+.custom-code-block code {
+  color: #e8dcf5 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  display: block !important;
+}
+
 /* title style in editable content */
 .minutes-content [contenteditable="true"] .custom-header,
 .markdown-content [contenteditable="true"] .custom-header {
@@ -519,4 +539,139 @@ h3.custom-header,
   background-color: rgba(255, 255, 255, 0.03);
   border-radius: 3px;
   outline: none;
+}
+
+/* Drawing Mode Styles */
+.drawing-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px auto;
+  padding: 15px;
+  background: rgba(138, 43, 226, 0.1);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  border-radius: 10px;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+}
+
+.drawing-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawing-control-group label {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.color-picker {
+  width: 40px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: none;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 5px;
+}
+
+.brush-size-slider {
+  width: 80px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  cursor: pointer;
+}
+
+.brush-size-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8a2be2;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.brush-size-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8a2be2;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.clear-canvas-btn {
+  background: rgba(255, 59, 48, 0.8);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.clear-canvas-btn:hover {
+  background: rgba(255, 59, 48, 1);
+  transform: translateY(-1px);
+}
+
+
+
+.drawing-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.drawing-canvas.drawing-active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+.drawing-canvas.drawing-inactive {
+  pointer-events: none;
+  cursor: default;
+  /* 保持画布可见，只是禁用交互 */
+}
+
+/* Active drawing mode indicator */
+.minutes-toolbar .toolbar-icon-btn:nth-child(11) {
+  position: relative;
+}
+
+.minutes-toolbar .toolbar-icon-btn:nth-child(11).active {
+  filter: brightness(1.5) hue-rotate(180deg);
+}
+
+.minutes-toolbar .toolbar-icon-btn:nth-child(11).active::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #00ff88;
+  border-radius: 50%;
+  border: 1px solid #fff;
 }

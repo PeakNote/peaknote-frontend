@@ -53,11 +53,17 @@ const rightIcons = [
   <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" key="print"><path d="M9.00065 14V2.33334H29.0007V14M9.00065 29H5.66732C4.78326 29 3.93542 28.6488 3.31029 28.0237C2.68517 27.3986 2.33398 26.5507 2.33398 25.6667V17.3333C2.33398 16.4493 2.68517 15.6014 3.31029 14.9763C3.93542 14.3512 4.78326 14 5.66732 14H32.334C33.218 14 34.0659 14.3512 34.691 14.9763C35.3161 15.6014 35.6673 16.4493 35.6673 17.3333V25.6667C35.6673 26.5507 35.3161 27.3986 34.691 28.0237C34.0659 28.6488 33.218 29 32.334 29H29.0007M9.00065 22.3333H29.0007V35.6667H9.00065V22.3333Z" stroke="#C2BBD4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
 ];
 
-const MinutesToolbar = ({ onLeftIconClick, onRightIconClick }) => (
+const MinutesToolbar = ({ onLeftIconClick, onRightIconClick, isDrawingMode }) => (
   <div className="minutes-toolbar">
     <div className="toolbar-left">
       {leftIcons.map((icon, idx) => (
-        <button key={idx} className="toolbar-icon-btn" onClick={() => onLeftIconClick && onLeftIconClick(idx)}>{icon}</button>
+        <button 
+          key={idx} 
+          className={`toolbar-icon-btn ${idx === 14 && isDrawingMode ? 'active' : ''}`} 
+          onClick={() => onLeftIconClick && onLeftIconClick(idx)}
+        >
+          {icon}
+        </button>
       ))}
     </div>
     <div className="toolbar-right">
