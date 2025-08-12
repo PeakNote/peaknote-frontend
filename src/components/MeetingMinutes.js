@@ -10,8 +10,6 @@ import MinutesToolbar from './MinutesToolbar';
 const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   const minutesRef = useRef(null);
   const [contentRef, setContentRef] = useState(null);
-  const [localSelectedFont, setLocalSelectedFont] = useState('Arial');
-
   // Apply font to selected text
   const applyFontToSelection = useCallback((font) => {
     if (!contentRef) return;
@@ -40,7 +38,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
   }, [contentRef]);
 
   const handleFontChange = useCallback((font) => {
-    setLocalSelectedFont(font);
     applyFontToSelection(font);
   }, [applyFontToSelection]);
 
@@ -91,7 +88,7 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       pdfContainer.style.backgroundColor = '#ffffff';
       pdfContainer.style.color = '#000000';
       pdfContainer.style.padding = '40px';
-      pdfContainer.style.fontFamily = config.FONTS[localSelectedFont] || config.FONTS['Arial'];
+      // Remove font-family from container to preserve inline font styles
       pdfContainer.style.fontSize = '14px';
       pdfContainer.style.lineHeight = '1.6';
       
@@ -174,7 +171,7 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       printContainer.style.backgroundColor = '#ffffff';
       printContainer.style.color = '#000000';
       printContainer.style.padding = '40px';
-      printContainer.style.fontFamily = 'Arial, sans-serif';
+      // Remove font-family from container to preserve inline font styles
       printContainer.style.fontSize = '14px';
       printContainer.style.lineHeight = '1.6';
       
@@ -204,7 +201,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
             body {
               margin: 0;
               padding: 20px;
-              font-family: Arial, sans-serif;
               background-color: #ffffff;
               color: #000000;
             }
