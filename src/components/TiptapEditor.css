@@ -1,0 +1,181 @@
+/* TiptapEditor Component Styles */
+.tiptap-editor-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tiptap-editor-loading {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Tiptap Editor Content Styles */
+.tiptap-editor-content {
+  outline: none;
+  padding: 16px;
+  min-height: 200px;
+  line-height: 1.6;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* Placeholder styling */
+.tiptap-editor-content:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Basic typography styles for Tiptap content */
+.tiptap-editor-content h1 {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  line-height: 1.2;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  line-height: 1.2;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content h3 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  line-height: 1.2;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content h4,
+.tiptap-editor-content h5,
+.tiptap-editor-content h6 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  line-height: 1.2;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content p {
+  margin: 0.5em 0;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content ul,
+.tiptap-editor-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content li {
+  margin: 0.25em 0;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content blockquote {
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  margin: 1em 0;
+  padding-left: 1em;
+  color: #fff;
+  font-style: italic;
+  font-family: Arial, sans-serif;
+}
+
+.tiptap-editor-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #fff;
+}
+
+.tiptap-editor-content pre {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1em;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin: 1em 0;
+  color: #fff;
+}
+
+.tiptap-editor-content pre code {
+  background: none;
+  padding: 0;
+  color: #fff;
+}
+
+.tiptap-editor-content strong {
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content em {
+  font-style: italic;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.tiptap-editor-content hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 2em 0;
+}
+
+/* Focus styles */
+.tiptap-editor-content:focus {
+  outline: none;
+}
+
+/* Read-only mode styling */
+.tiptap-editor-wrapper[data-editable="false"] .tiptap-editor-content {
+  cursor: default;
+}
+
+.tiptap-editor-wrapper[data-editable="false"] .tiptap-editor-content:empty::before {
+  display: none;
+}
+/* En
+sure Arial font and white color for meeting minutes editor */
+.arial-white-text .tiptap-editor-content,
+.arial-white-text .tiptap-editor-content * {
+  font-family: Arial, sans-serif !important;
+  color: #fff !important;
+}
+
+.arial-white-text .tiptap-editor-content h1,
+.arial-white-text .tiptap-editor-content h2,
+.arial-white-text .tiptap-editor-content h3,
+.arial-white-text .tiptap-editor-content h4,
+.arial-white-text .tiptap-editor-content h5,
+.arial-white-text .tiptap-editor-content h6 {
+  font-family: Arial, sans-serif !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.arial-white-text .tiptap-editor-content p,
+.arial-white-text .tiptap-editor-content li,
+.arial-white-text .tiptap-editor-content span,
+.arial-white-text .tiptap-editor-content div {
+  font-family: Arial, sans-serif !important;
+  color: #fff !important;
+}
