@@ -81,10 +81,25 @@
   font-style: italic;
 }
 
+.minutes-content h1 {
+  color: #eae9e9;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 50pt;
+}
+
+.minutes-content h2 {
+  color: #eae9e9;
+  margin-top: 22px;
+  margin-bottom: 11px;
+  font-size: 35pt;
+}
+
 .minutes-content h3 {
   color: #eae9e9;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 22px;
+  margin-bottom: 11px;
+  font-size: 25pt;
 }
 
 .minutes-content p {
@@ -152,7 +167,7 @@
 
 .tab-button i {
   margin-right: 8px;
-  font-size: 18px;
+  font-size: 25px;
   transition: transform 0.3s ease;
 }
 

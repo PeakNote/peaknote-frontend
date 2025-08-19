@@ -450,6 +450,58 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     console.log(`Alignment command: ${command}, Result: ${result}`);
   };
 
+  // Toggle Blockquote
+  const toggleBlockquote = () => {
+    if (!contentRef) return;
+    contentRef.focus();
+
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    const anchorNode = selection.anchorNode;
+    let element = anchorNode && anchorNode.nodeType === 1 ? anchorNode : anchorNode?.parentElement;
+    while (element && element !== contentRef && !/^(P|BLOCKQUOTE|DIV|H1|H2|H3|H4|H5|H6)$/i.test(element.tagName)) {
+      element = element.parentElement;
+    }
+    const currentTag = element?.tagName || 'P';
+
+    if (currentTag.toUpperCase() === 'BLOCKQUOTE') {
+      // Back to paragraph
+      let ok = document.execCommand('formatBlock', false, 'P');
+      if (!ok) ok = document.execCommand('formatBlock', false, '<P>');
+      console.log(`Toggle blockquote -> P: ${ok}`);
+    } else {
+      let ok = document.execCommand('formatBlock', false, 'BLOCKQUOTE');
+      if (!ok) ok = document.execCommand('formatBlock', false, '<BLOCKQUOTE>');
+      console.log(`Apply BLOCKQUOTE: ${ok}`);
+    }
+  };
+
+  
+
+  // Set heading level with toggle back to paragraph
+  const setHeadingLevel = (level) => {
+    if (!contentRef) return;
+    contentRef.focus();
+
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    const anchorNode = selection.anchorNode;
+    let element = anchorNode && anchorNode.nodeType === 1 ? anchorNode : anchorNode?.parentElement;
+    while (element && element !== contentRef && !/^(P|H1|H2|H3|H4|H5|H6|DIV)$/i.test(element.tagName)) {
+      element = element.parentElement;
+    }
+    const currentTag = (element?.tagName || 'P').toUpperCase();
+
+    const targetTag = `H${level}`;
+    const nextTag = currentTag === targetTag ? 'P' : targetTag;
+
+    let ok = document.execCommand('formatBlock', false, nextTag);
+    if (!ok) ok = document.execCommand('formatBlock', false, `<${nextTag}>`);
+    console.log(`Set heading to ${nextTag} (requested H${level}), ok=${ok}`);
+  };
+
   const generateContentForPDF = () => {
     const notes = meetingData.notes;
     if (!notes) return '<p>No meeting notes available.</p>';
@@ -523,6 +575,18 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
             break;
           case 5: // 项目符号
             handleBulletPoint();
+            break;
+          case 7: // H1
+            setHeadingLevel(1);
+            break;
+          case 8: // H2
+            setHeadingLevel(2);
+            break;
+          case 9: // H3
+            setHeadingLevel(3);
+            break;
+          case 6: // 引用
+            toggleBlockquote();
             break;
           case 11: // 居左对齐
             handleTextAlignment('left');
