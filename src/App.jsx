@@ -4,19 +4,15 @@ import MeetingForm from './components/MeetingForm';
 import MeetingMinutes from './components/MeetingMinutes';
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
-import useParticles from './hooks/useParticles';
-
+import Pattern from './components/Pattern'; 
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
-  // Initialize particles
-  useParticles();
-
   // Typing animation messages
-  const staticMessage = 'Your intelligent meeting assistant';
+  const staticMessage = 'AI-Driven Meeting Assistant';
 
   const handleMeetingSubmit = (data) => {
     setMeetingData(data);
@@ -55,7 +51,6 @@ function App() {
           src="/background.mp4"
         />
       </div>
-      <div id="particles-js"></div>
       
       <div className="container text-center">
         {/* Header */}
@@ -85,7 +80,7 @@ function App() {
       {/* Footer */}
       <footer className="copyright-footer">
         <div className="container">
-          <p>© PeakNote Team, 2025</p>
+          <p><Pattern size={20} />  PeakNote   Inc.</p>
         </div>
       </footer>
 

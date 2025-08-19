@@ -56,6 +56,22 @@ const MeetingMinutes = ({ meetingData, onShare }) => {
         </div>
       );
     }
+
+    // Handle transcript string from API
+    // if (typeof notes === 'object' && notes.transcript) {
+    //   // 提取 body 内的内容用于显示
+    //   const bodyMatch = notes.transcript.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    //   const displayContent = bodyMatch ? bodyMatch[1] : notes.transcript;
+      
+    //   return (
+    //     <div>
+    //       <div 
+    //         className="html-content"
+    //         dangerouslySetInnerHTML={{ __html: displayContent }}
+    //       />
+    //     </div>
+    //   );
+    // }
     
     // Handle structured notes format (legacy)
     if (typeof notes === 'object' && (notes.agenda || notes.participants || notes.actionItems || notes.decisions)) {

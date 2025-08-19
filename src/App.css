@@ -7,7 +7,7 @@
 
 .container {
   max-width: 800px;
-  margin-top: 100px;
+  margin-top: 150px;
   position: relative;
   z-index: 10;
 }
@@ -15,18 +15,15 @@
 /* Logo and header styles */
 .logo {
   margin-bottom: 30px;
-  animation: fadeInDown 1s ease;
   position: relative;
 }
 
-.bounce-in {
-  animation: bounce-in 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-}
 
 .text-gradient {
   color: white;
   font-weight: 900;
-  font-family: 'Lastica', sans-serif;
+  font-family: 'PublicSans', sans-serif;
+  font-size: 3.5rem;
   display: inline-block;
 }
 
@@ -41,9 +38,6 @@
   overflow: hidden;
   margin: 0 auto;
   letter-spacing: 0.15em;
-  animation: 
-    typing 3.5s steps(40, end),
-    blink-caret 0.75s step-end infinite;
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
   position: relative;
 }
@@ -55,12 +49,13 @@ h1 {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
   transform-style: preserve-3d;
   perspective: 500px;
-  animation: float 6s ease-in-out infinite;
 }
 
 .lead {
   color: rgba(255, 255, 255, 0.9);
-  font-weight: 350; 
+  font-weight: 900; 
+  font-family: 'Lastica', sans-serif; 
+  font-size: 1.25rem;
 }
 
 /* Copyright footer styles */
@@ -77,6 +72,8 @@ h1 {
   font-size: 0.9rem;
   margin: 0;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-family: 'Lastica', sans-serif;
+  font-weight: 900;
 }
 
 /* Animations */
@@ -143,17 +140,17 @@ h1 {
 
 .background-video {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vh;
-  height: 100vw;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  min-width: 0;
-  min-height: 0;
-  transform: translate(-50%, -50%) rotate(90deg);
+  min-width: 100%;
+  min-height: 100%;
+  transform: none;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5; 
+  opacity: 0.5;
 }
 
 /* 导入本地 Lastica 字体 */
@@ -161,6 +158,15 @@ h1 {
   font-family: 'Lastica';
   src: url('../public/fonts/fonnts.com-Lastica.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 导入本地 PublicSans 字体 */
+@font-face {
+  font-family: 'PublicSans';
+  src: url('/public/fonts/PublicSans-Regular-14.otf') format('opentype');
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }

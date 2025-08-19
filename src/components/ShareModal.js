@@ -30,6 +30,19 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
         return;
       }
 
+      // 如果是测试数据（没有eventId），直接使用默认列表
+      // if (!eventId || eventId === 'test-event-id-123') {
+      //   console.log('使用测试数据，直接加载默认参与者列表');
+      //   setAttendees([
+      //     { email: 'gaorz866999@gmail.com', displayName: 'RZ Gao (Test)' },
+      //     { email: 'test1@example.com', displayName: 'Test User 1' },
+      //     { email: 'test2@example.com', displayName: 'Test User 2' },
+      //     { email: 'test3@example.com', displayName: 'Test User 3' }
+      //   ]);
+      //   setIsLoadingAttendees(false);
+      //   return;
+      // }
+
     try {
       setIsLoadingAttendees(true);
       setAttendeesError(null);
@@ -235,6 +248,8 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
     }
   };
 
+//   
+
   const handleSend = async () => {
     if (selectedUsers.length === 0) {
       alert('Please select at least one recipient');
@@ -242,46 +257,71 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
     }
 
     try {
-      // 1. 先生成并下载PDF
-      const fileName = await downloadPDF();
+      setIsGeneratingPDF(true);
       
-      // 2. 获取选中的收件人邮箱
-      const selectedEmails = selectedUsers
-        .map(index => attendees[index].email)
-        .join(',');
-
-      // 3. 构建邮件内容
-      const subject = encodeURIComponent('PeakNote Meeting Summary');
-      const body = encodeURIComponent(`
-Hi,
-
-Please find attached the meeting summary from our recent discussion.
-
-Meeting Details:
-- Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
-
-- Generated: ${new Date().toLocaleString()}
-
-Note: The PDF file "${fileName}" has been downloaded to your device. Please attach it to this email.
-
-Best regards
-
-      `.trim());
-
-      // 4. 构建 mailto 链接并打开邮件客户端
-      const mailtoLink = `mailto:${selectedEmails}?subject=${subject}&body=${body}`;
-      window.open(mailtoLink, '_blank');
+      // 1. 获取会议总结的HTML内容
+      const meetingElement = document.querySelector('.a4-paper');
+      if (!meetingElement) {
+        throw new Error('Meeting content not found. Please generate meeting data first.');
+      }
       
-      // 5. 显示成功消息
-      alert(`PDF "${fileName}" downloaded! Email client opened. Please attach the PDF file.`);
+      // 获取HTML字符串
+      const htmlContent = meetingElement.outerHTML;
+      // const fileResponse = await fetch('/詹姆斯.txt');
+      // if (!fileResponse.ok) {
+      //   throw new Error(`Failed to fetch file: ${fileResponse.status}`);
+      // }
+      // const htmlContent = await fileResponse.text();
       
-      // 6. 关闭模态框
-      onClose();
-      setSelectedUsers([]);
+      // 2. 获取选中的邮箱列表
+      const selectedEmails = selectedUsers.map(index => attendees[index].email);
       
+      // 3. 准备发送数据（只发送必要字段）
+      const sendData = {
+        htmlContent: htmlContent,
+        recipients: selectedEmails
+      };
+
+      console.log('发送的数据：', {
+        htmlContent: htmlContent, // 显示全部内容
+        recipients: selectedEmails
+      });
+
+      // 4. 调用后端API
+      const response = await fetch('https://api.peak-note.com/email/forwardHtml', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify(sendData)
+      });
+
+      console.log('API响应状态：', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API错误响应：', errorText);
+        throw new Error(`Failed to send email: ${response.status} - ${errorText}`);
+      }
+
+      // 获取响应文本
+      const responseText = await response.text();
+      console.log('API响应文本：', responseText);
+
+      if (responseText.includes('Forward successful')) {
+        alert(`✅ Meeting summary sent successfully to ${selectedEmails.length} recipient(s)!`);
+        onClose();
+        setSelectedUsers([]);
+      } else {
+        throw new Error(`Failed to send email: ${responseText}`);
+      }
+
     } catch (error) {
-      console.error('Error in handleSend:', error);
-      alert('Error: ' + error.message);
+      console.error('Error sending email:', error);
+      alert(`❌ Failed to send email: ${error.message}\n\nPlease try again or contact support.`);
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -304,7 +344,7 @@ Best regards
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
-            <p className="text-white mb-3">Select recipients to share the meeting minutes via Outlook:</p>
+            <p className="text-white mb-3">Select recipients to share the meeting minutes</p>
             
              {/* 全选按钮 */}
              {attendees.length > 0 && (
@@ -382,8 +422,11 @@ Best regards
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
-            <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isGeneratingPDF}>
+            {/* <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isGeneratingPDF}>
               Send to Selected
+            </button> */}
+            <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isLoadingAttendees || attendees.length === 0 || isGeneratingPDF}>
+            {isGeneratingPDF ? 'Sending...' : 'Send Meeting Summary'}
             </button>
           </div>
         </div>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LeBron James �� NBA Superstar</title>
+  <meta name="description" content="A concise, readable introduction to NBA star LeBron James: early life, career highlights, playing style, accolades, philanthropy, and more." />
+  <style>
+    :root {
+      --bg: #0f1220;
+      --card: #171a2b;
+      --text: #e8eaf6;
+      --muted: #b6bbd4;
+      --accent: #7aa2ff;
+      --accent-2: #4ade80;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% -20%, #1b2140 0%, var(--bg) 60%) fixed;
+      line-height: 1.6;
+    }
+    header {
+      padding: 56px 20px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0 0 6px 0;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      letter-spacing: 0.5px;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    main {
+      max-width: 1000px;
+      margin: 24px auto 80px;
+      padding: 0 20px;
+      display: grid;
+      gap: 18px;
+    }
+    section, .card {
+      background: linear-gradient(180deg, var(--card), #121528);
+      border: 1px solid rgba(122,162,255,0.12);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+      color: var(--accent);
+    }
+    h3 { margin: 1.2rem 0 0.4rem; font-size: 1.05rem; color: var(--accent-2); }
+    ul { margin: 0.2rem 0 0.8rem 1.2rem; }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .kpi {
+      background: #11142a;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid rgba(122,162,255,0.14);
+      text-align: center;
+    }
+    .kpi b { display: block; font-size: 1.35rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(122,162,255,0.14);
+      text-align: left;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px 16px 40px;
+      font-size: 0.9rem;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LeBron James</h1>
+    <p>NBA Superstar ? Playmaker ? Champion ? Philanthropist</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="intro">
+      <h2 id="intro">Overview</h2>
+      <p>
+        LeBron Raymone James Sr. (born December 30, 1984, in Akron, Ohio) is widely regarded as one of the greatest
+        basketball players in history. A versatile forward with elite court vision and strength, he has excelled as a
+        scorer, facilitator, and defender across two decades in the NBA.
+      </p>
+      <div class="kpis">
+        <div class="kpi"><b>4��</b> NBA Champion</div>
+        <div class="kpi"><b>4��</b> NBA MVP</div>
+        <div class="kpi"><b>4��</b> Finals MVP</div>
+        <div class="kpi"><b>All-time</b> Scoring Leader</div>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="career-cards">
+      <div class="card">
+        <h2>Early Life  Draft</h2>
+        <p>
+          Raised in Akron, LeBron was a high-school phenomenon at St. Vincent�CSt. Mary, earning national attention
+          for his all-around game. He entered the 2003 NBA Draft directly from high school and was selected
+          <strong>No. 1 overall</strong> by the Cleveland Cavaliers.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>NBA Journey</h2>
+        <ul>
+          <li><strong>Cleveland Cavaliers</strong> (2003�C2010): Rookie of the Year; first Finals appearance in 2007.</li>
+          <li><strong>Miami Heat</strong> (2010�C2014): Won back-to-back titles in 2012 and 2013.</li>
+          <li><strong>Cleveland Cavaliers</strong> (2014�C2018): Delivered the 2016 championship, overcoming a 3�C1 Finals deficit.</li>
+          <li><strong>Los Angeles Lakers</strong> (2018�Cpresent): Won the 2020 title in the Orlando ��bubble.��</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Playing Style</h2>
+        <p>
+          LeBron blends power and finesse: downhill drives, post play, and pinpoint passing. He often functions as a
+          point-forward, initiating offense through pick-and-rolls and transition pushes. Defensively, he can guard
+          multiple positions and is known for chase-down blocks and high-IQ rotations.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="records">
+      <h2 id="records">Records  Accolades</h2>
+      <ul>
+        <li>NBA��s all-time leader in total points; among the leaders in assists and playoff wins.</li>
+        <li>Multiple selections to All-Star Games and All-NBA Teams (record-setting totals).</li>
+        <li>Two Olympic gold medals (2008, 2012) with Team USA.</li>
+        <li>2016 Finals: led both teams in points, rebounds, assists, steals, and blocks across the series.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="offcourt">
+      <h2 id="offcourt">Off the Court</h2>
+      <p>
+        Beyond basketball, LeBron is an entrepreneur and philanthropist. Through the LeBron James Family Foundation,
+        he launched the <em>I PROMISE School</em> in Akron to support at-risk students and families. He also co-founded
+        media ventures and supports numerous community initiatives, while holding a lifetime partnership with Nike.
+      </p>
+    </section>
+
+    <section aria-labelledby="stats">
+      <h2 id="stats">Selected Career Averages (Regular Season)</h2>
+      <table aria-label="Selected Career Averages">
+        <thead>
+          <tr>
+            <th>Games</th>
+            <th>Minutes</th>
+            <th>Points</th>
+            <th>Rebounds</th>
+            <th>Assists</th>
+            <th>FG%</th>
+            <th>3P%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1,400+*</td>
+            <td>~38</td>
+            <td>~27.0</td>
+            <td>~7.5</td>
+            <td>~7.3</td>
+            <td>~50%</td>
+            <td>~34%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color: var(--muted); font-size: 0.9rem;">*Rounded figures; actual totals evolve as seasons progress.</p>
+    </section>
+
+    <section aria-labelledby="legacy">
+      <h2 id="legacy">Legacy</h2>
+      <p>
+        LeBron��s longevity, peak performance, and leadership have defined an era. Whether compared with past greats
+        or judged on his own terms, his combination of production, versatility, and impact on and off the court
+        places him firmly among the all-time legends of the game.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Built as a single-file, standards-compliant HTML page. You can reuse this template and update stats as needed.
+  </footer>
+</body>
+</html>

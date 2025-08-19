@@ -1,16 +1,6 @@
 /* Main application styles */
 body {
-  background-color: #150429;
-  background-image: 
-    radial-gradient(circle at 20% 30%, rgba(86, 10, 135, 0.8) 0%, rgba(86, 10, 135, 0) 20%),
-    radial-gradient(circle at 60% 20%, rgba(197, 52, 52, 0.8) 0%, rgba(197, 52, 52, 0) 25%),
-    radial-gradient(circle at 90% 50%, rgba(14, 92, 55, 0.8) 0%, rgba(14, 92, 55, 0) 25%),
-    radial-gradient(circle at 33% 70%, rgba(205, 114, 9, 0.8) 0%, rgba(205, 114, 9, 0) 25%),
-    radial-gradient(circle at 80% 85%, rgba(14, 60, 95, 0.8) 0%, rgba(14, 60, 95, 0) 25%),
-    radial-gradient(circle at 65% 60%, rgba(128, 20, 83, 0.8) 0%, rgba(128, 20, 83, 0) 20%),
-    radial-gradient(circle at 15% 10%, rgba(101, 87, 15, 0.8) 0%, rgba(101, 87, 15, 0) 20%),
-    radial-gradient(circle at 40% 50%, rgba(74, 10, 135, 0.8) 0%, rgba(74, 10, 135, 0) 30%),
-    radial-gradient(circle at 10% 90%, rgba(167, 28, 70, 0.8) 0%, rgba(167, 28, 70, 0) 25%);
+  background-color: #150429; 
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
