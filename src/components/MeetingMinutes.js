@@ -293,25 +293,24 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
       return;
     }
     
-    // Split selected text into lines
+    // Check if the selected text already has bullet points
     const lines = selectedText.split('\n').filter(line => line.trim() !== '');
+    const hasBullets = lines.every(line => line.trim().startsWith('• '));
     
-    if (lines.length === 0) {
-      alert('Please select text to create bullet points first');
-      return;
+    if (hasBullets) {
+      // Remove bullet points
+      const textWithoutBullets = lines.map(line => line.replace(/^•\s*/, '')).join('\n');
+      const result = document.execCommand('insertText', false, textWithoutBullets);
+      console.log(`Remove bullet points result: ${result}`);
+    } else {
+      // Add bullet points
+      const bulletList = lines.map(line => `• ${line}`).join('\n');
+      const result = document.execCommand('insertText', false, bulletList);
+      console.log(`Add bullet points result: ${result}`);
     }
-    
-    // Create bullet point list
-    const bulletList = lines.map(line => `• ${line}`).join('\n');
-    
-    // Replace selected text with bullet points
-    const result = document.execCommand('insertText', false, bulletList);
     
     // Clear selection
     selection.removeAllRanges();
-    
-    // Debug info
-    console.log(`Bullet point command result: ${result}`);
   };
 
   // Handle text selection
@@ -450,15 +449,6 @@ const MeetingMinutes = ({ meetingData, onDownload, onShare }) => {
     // Debug info
     console.log(`Alignment command: ${command}, Result: ${result}`);
   };
-
-  const handleLeftIconClick = (idx) => {
-    if (idx === 11) { // Left Align
-      handleTextAlignment('left');
-    } else if (idx === 12) { // Center Align
-      handleTextAlignment('center');
-    }
-  };
-
 
   const generateContentForPDF = () => {
     const notes = meetingData.notes;

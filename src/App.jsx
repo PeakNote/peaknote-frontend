@@ -11,6 +11,7 @@ function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+
   // Initialize particles
   useParticles();
 
@@ -30,7 +31,6 @@ function App() {
 
   // const handleDownload = () => {
   //   console.log('Download meeting minutes');
-  //   // Download functionality is now implemented in MeetingMinutes component
   // };
 
   // const handleShare = () => {

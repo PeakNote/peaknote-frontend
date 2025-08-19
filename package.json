@@ -4,6 +4,10 @@
   "private": true,
   "description": "PeakNote - Microsoft Teams Tab app for meeting notes",
   "dependencies": {
+    "@tiptap/extension-link": "^3.2.0",
+    "@tiptap/extension-text-align": "^3.2.0",
+    "@tiptap/react": "^3.2.0",
+    "@tiptap/starter-kit": "^3.2.0",
     "bootstrap": "^5.3.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
