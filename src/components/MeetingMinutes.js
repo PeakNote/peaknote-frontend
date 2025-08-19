@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
+import TiptapEditor from './TiptapEditor';
 import './MeetingMinutes.css';
-
-import MinutesToolbar from './MinutesToolbar';
 
 const MeetingMinutes = ({ meetingData, onShare }) => {
   const minutesRef = useRef(null);
@@ -18,101 +16,90 @@ const MeetingMinutes = ({ meetingData, onShare }) => {
         paper.classList.add('paper-reveal');
       }
 
-      // Animate content elements
-      setTimeout(() => {
-        const paragraphs = minutesRef.current.querySelectorAll('.minutes-content p, .minutes-content h3, .minutes-content ul');
-        paragraphs.forEach((p, index) => {
-          p.classList.add('chat-bubble');
-          p.style.animationDelay = (0.8 + index * 0.1) + 's';
-        });
-      }, 700);
+      // Remove floating animations - content displays normally
     }
   }, [meetingData]);
 
-  const handleShare = () => {
-    console.log('handleShare called'); // 添加调试信息
-    console.log('onShare:', onShare); // 检查 onShare 的值
-  
-    if (onShare && typeof onShare === 'function') {
-      console.log('Calling onShare function'); // 添加调试信息
-      onShare();
-    } else {
-      console.error('onShare is not available:', onShare);
-      alert('Share function not available. onShare:', onShare);
-    }
-  };
 
-  const generateContent = () => {
-    const notes = meetingData.notes;
-    if (!notes) return <p>No meeting notes available.</p>;
+
+  // Generate HTML content for Tiptap editor from backend API data
+  // Requirement 2.3: Handle HTML content from backend API directly
+  // Requirement 3.1: Pass HTML content to Tiptap without conversion when possible
+  const getEditorContent = () => {
+    const notes = meetingData?.notes;
+    if (!notes) return '<p>No meeting notes available.</p>';
     
-    // Handle transcript string from API
+    // Primary: Handle HTML content from backend API directly (Requirement 3.1)
     if (typeof notes === 'object' && notes.transcript) {
-      return (
-        <div>
-          <div className="markdown-content">
-            <ReactMarkdown>{notes.transcript}</ReactMarkdown>
-          </div>
-        </div>
-      );
+      // If backend returns HTML content, pass it directly to Tiptap (Requirement 2.3)
+      if (typeof notes.transcript === 'string') {
+        // Check if it's HTML content
+        if (notes.transcript.trim().startsWith('<') || notes.transcript.includes('<p>') || notes.transcript.includes('<h')) {
+          return notes.transcript;
+        }
+        
+        // Fallback: Convert plain text/markdown to HTML for compatibility
+        if (notes.transcript.trim()) {
+          // Simple markdown-like conversion for backward compatibility
+          let htmlContent = notes.transcript
+            .replace(/\n\n/g, '</p><p>')  // Double newlines become paragraph breaks
+            .replace(/\n/g, '<br>')       // Single newlines become line breaks
+            .replace(/^(.+)$/gm, '<p>$1</p>'); // Wrap in paragraphs
+          
+          // Clean up any double paragraph tags
+          htmlContent = htmlContent.replace(/<p><\/p>/g, '');
+          
+          return htmlContent || '<p>No meeting content available.</p>';
+        }
+      }
     }
     
-    // Handle structured notes format (legacy)
+    // Secondary: Handle structured notes format (legacy) - convert to HTML
     if (typeof notes === 'object' && (notes.agenda || notes.participants || notes.actionItems || notes.decisions)) {
-      return (
-        <>
-          <h3>Agenda</h3>
-          <ul>
-            {notes.agenda?.map((item, index) => (
-              <li key={index}>{item}</li>
-            )) || <li>No agenda items</li>}
-          </ul>
-          
-          <h3>Participants</h3>
-          <ul>
-            {notes.participants?.map((participant, index) => (
-              <li key={index}>{participant}</li>
-            )) || <li>No participants listed</li>}
-          </ul>
-          
-          <h3>Action Items</h3>
-          <ul>
-            {notes.actionItems?.map((item, index) => (
-              <li key={index}>{item}</li>
-            )) || <li>No action items</li>}
-          </ul>
-          
-          <h3>Decisions</h3>
-          <ul>
-            {notes.decisions?.map((decision, index) => (
-              <li key={index}>{decision}</li>
-            )) || <li>No decisions recorded</li>}
-          </ul>
-        </>
-      );
+      let htmlSections = [];
+      
+      if (notes.agenda && Array.isArray(notes.agenda) && notes.agenda.length > 0) {
+        const agendaItems = notes.agenda.map(item => `<li>${item}</li>`).join('');
+        htmlSections.push(`<h3>Agenda</h3><ul>${agendaItems}</ul>`);
+      }
+      
+      if (notes.participants && Array.isArray(notes.participants) && notes.participants.length > 0) {
+        const participantItems = notes.participants.map(participant => `<li>${participant}</li>`).join('');
+        htmlSections.push(`<h3>Participants</h3><ul>${participantItems}</ul>`);
+      }
+      
+      if (notes.actionItems && Array.isArray(notes.actionItems) && notes.actionItems.length > 0) {
+        const actionItems = notes.actionItems.map(item => `<li>${item}</li>`).join('');
+        htmlSections.push(`<h3>Action Items</h3><ul>${actionItems}</ul>`);
+      }
+      
+      if (notes.decisions && Array.isArray(notes.decisions) && notes.decisions.length > 0) {
+        const decisionItems = notes.decisions.map(decision => `<li>${decision}</li>`).join('');
+        htmlSections.push(`<h3>Decisions</h3><ul>${decisionItems}</ul>`);
+      }
+      
+      return htmlSections.length > 0 ? htmlSections.join('') : '<p>No meeting content available.</p>';
     }
 
-    return <p>No meeting content available.</p>;
+    // Fallback for any other content format
+    if (typeof notes === 'string' && notes.trim()) {
+      return `<p>${notes}</p>`;
+    }
+
+    return '<p>No meeting notes available.</p>';
   };
 
   return (
     <div className="minutes-section" ref={minutesRef}>
-      <MinutesToolbar
-      onLeftIconClick={idx => { /* 这里可以写左侧图标点击逻辑 */ }}
-      onRightIconClick={idx => { 
-        console.log('Right icon clicked, index:', idx); // 添加调试信息
-        if (idx === 0) { // 分享图标（第一个右侧图标）
-          console.log('Share icon clicked, calling handleShare'); // 添加调试信息
-          handleShare();
-          // onShare();
-       }
-       // 可以添加其他右侧图标的处理
-      }}
-      />
-      <div className="chat-bubble" style={{ animationDelay: '0.1s' }}>
+      <div>
         <div className="a4-paper"> 
           <div className="minutes-content">
-            {generateContent()}
+            <TiptapEditor 
+              content={getEditorContent()}
+              editable={true}
+              placeholder="Meeting notes will appear here..."
+              className="meeting-minutes-editor arial-white-text"
+            />
           </div>
         </div>
       </div>
