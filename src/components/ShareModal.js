@@ -48,11 +48,13 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
       setAttendeesError(null);
 
       console.log('Using eventId from meeting data:', eventId);
+      
+      // console.log('Full API URL:', `https://7c627128b3e1.ngrok-free.app/attendees?eventId=${eventId}`);
       console.log('Full API URL:', `https://api.peak-note.com/attendees?eventId=${eventId}`);
-
       
       // 调用参与者API
       const response = await fetch(`https://api.peak-note.com/attendees?eventId=${eventId}`, {
+      // const response = await fetch(`https://7c627128b3e1.ngrok-free.app/attendees?eventId=${eventId}`, {
         method: 'GET',
         headers: {
           'ngrok-skip-browser-warning': 'true'  
@@ -154,101 +156,100 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
 const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees.length;
 
 
-  // 生成PDF函数
-  const generatePDF = async () => {
-    try {
-      // 获取 .a4-paper 元素
-      const element = document.querySelector('.a4-paper');
+  // // 生成PDF函数
+  // const generatePDF = async () => {
+  //   try {
+  //     // 获取 .a4-paper 元素
+  //     const element = document.querySelector('.a4-paper');
       
-      if (!element) {
-        throw new Error('Meeting content not found. Please generate meeting data first.');
-      }
+  //     if (!element) {
+  //       throw new Error('Meeting content not found. Please generate meeting data first.');
+  //     }
 
-      // 临时隐藏不需要的元素
-      const originalDisplay = element.style.display;
-      element.style.display = 'block';
-      element.style.position = 'absolute';
-      element.style.left = '-9999px';
-      element.style.top = '0';
-      element.style.zIndex = '-1';
+  //     // 临时隐藏不需要的元素
+  //     const originalDisplay = element.style.display;
+  //     element.style.display = 'block';
+  //     element.style.position = 'absolute';
+  //     element.style.left = '-9999px';
+  //     element.style.top = '0';
+  //     element.style.zIndex = '-1';
 
-      // 使用改进的 html2canvas 配置
-      const canvas = await html2canvas(element, {
-        scale: 3, // 更高的清晰度
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
-        foreignObjectRendering: false,
-        removeContainer: true,
-        logging: false
-      });
+  //     // 使用改进的 html2canvas 配置
+  //     const canvas = await html2canvas(element, {
+  //       scale: 3, // 更高的清晰度
+  //       useCORS: true,
+  //       allowTaint: true,
+  //       backgroundColor: '#ffffff',
+  //       width: element.scrollWidth,
+  //       height: element.scrollHeight,
+  //       scrollX: 0,
+  //       scrollY: 0,
+  //       windowWidth: element.scrollWidth,
+  //       windowHeight: element.scrollHeight,
+  //       foreignObjectRendering: false,
+  //       removeContainer: true,
+  //       logging: false
+  //     });
 
-      // 恢复元素样式
-      element.style.display = originalDisplay;
-      element.style.position = '';
-      element.style.left = '';
-      element.style.top = '';
-      element.style.zIndex = '';
+  //     // 恢复元素样式
+  //     element.style.display = originalDisplay;
+  //     element.style.position = '';
+  //     element.style.left = '';
+  //     element.style.top = '';
+  //     element.style.zIndex = '';
 
-      // 创建高质量PDF
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF('p', 'mm', 'a4');
+  //     // 创建高质量PDF
+  //     const imgData = canvas.toDataURL('image/png', 1.0);
+  //     const pdf = new jsPDF('p', 'mm', 'a4');
       
-      const imgWidth = 210; // A4 宽度 (mm)
-      const pageHeight = 297; // A4 高度 (mm)
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+  //     const imgWidth = 210; // A4 宽度 (mm)
+  //     const pageHeight = 297; // A4 高度 (mm)
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //     let heightLeft = imgHeight;
+  //     let position = 0;
 
-      // 添加第一页
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+  //     // 添加第一页
+  //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //     heightLeft -= pageHeight;
 
-      // 如果内容超过一页，添加后续页面
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+  //     // 如果内容超过一页，添加后续页面
+  //     while (heightLeft >= 0) {
+  //       position = heightLeft - imgHeight;
+  //       pdf.addPage();
+  //       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //       heightLeft -= pageHeight;
+  //     }
 
-      return pdf;
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      throw error;
-    }
-  };
+  //     return pdf;
+  //   } catch (error) {
+  //     console.error('Error generating PDF:', error);
+  //     throw error;
+  //   }
+  // };
 
-  // 下载PDF函数
-  const downloadPDF = async () => {
-    try {
-      setIsGeneratingPDF(true);
+  // // 下载PDF函数
+  // const downloadPDF = async () => {
+  //   try {
+  //     setIsGeneratingPDF(true);
       
-      const pdf = await generatePDF();
+  //     const pdf = await generatePDF();
       
-      // 生成文件名
-      const fileName = `PeakNote-Meeting-Summary-${new Date().toISOString().split('T')[0]}.pdf`;
+  //     // 生成文件名
+  //     const fileName = `PeakNote-Meeting-Summary-${new Date().toISOString().split('T')[0]}.pdf`;
       
-      // 下载PDF
-      pdf.save(fileName);
+  //     // 下载PDF
+  //     pdf.save(fileName);
       
-      return fileName;
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      alert('Error generating PDF: ' + error.message);
-      throw error;
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
-//   
+  //     return fileName;
+  //   } catch (error) {
+  //     console.error('Error downloading PDF:', error);
+  //     alert('Error generating PDF: ' + error.message);
+  //     throw error;
+  //   } finally {
+  //     setIsGeneratingPDF(false);
+  //   }
+  // };
+   
 
   const handleSend = async () => {
     if (selectedUsers.length === 0) {
@@ -286,9 +287,10 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
         htmlContent: htmlContent, // 显示全部内容
         recipients: selectedEmails
       });
-
+      
       // 4. 调用后端API
       const response = await fetch('https://api.peak-note.com/email/forwardHtml', {
+      // const response = await fetch('https://7c627128b3e1.ngrok-free.app/email/forwardHtml', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

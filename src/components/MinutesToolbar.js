@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './MinutesToolbar.css';
 
 const leftIcons = [
@@ -46,26 +46,61 @@ const leftIcons = [
 
 const rightIcons = [
   // 分享
-  <svg width="34" height="38" viewBox="0 0 34 38" fill="none" xmlns="http://www.w3.org/2000/svg" key="share"><path d="M11.3167 21.5167L22.7 28.15M22.6833 9.85001L11.3167 16.4833M32 7.33334C32 10.0948 29.7614 12.3333 27 12.3333C24.2386 12.3333 22 10.0948 22 7.33334C22 4.57192 24.2386 2.33334 27 2.33334C29.7614 2.33334 32 4.57192 32 7.33334ZM12 19C12 21.7614 9.76142 24 7 24C4.23858 24 2 21.7614 2 19C2 16.2386 4.23858 14 7 14C9.76142 14 12 16.2386 12 19ZM32 30.6667C32 33.4281 29.7614 35.6667 27 35.6667C24.2386 35.6667 22 33.4281 22 30.6667C22 27.9053 24.2386 25.6667 27 25.6667C29.7614 25.6667 32 27.9053 32 30.6667Z" stroke="#C2BBD4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" key="share"><path d="M8.59 13.51L15.42 17.49M15.41 6.51L8.59 10.49M21 5C21 6.65685 19.6569 8 18 8C16.3431 8 15 6.65685 15 5C15 3.34315 16.3431 2 18 2C19.6569 2 21 3.34315 21 5ZM9 12C9 13.6569 7.65685 15 6 15C4.34315 15 3 13.6569 3 12C3 10.3431 4.34315 9 6 9C7.65685 9 9 10.3431 9 12ZM21 19C21 20.6569 19.6569 22 18 22C16.3431 22 15 20.6569 15 19C15 17.3431 16.3431 16 18 16C19.6569 16 21 17.3431 21 19Z" stroke="#C2BBD4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>,
   // 下载
-  <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" key="download"><path d="M32 22V28.6667C32 29.5507 31.6488 30.3986 31.0237 31.0237C30.3986 31.6488 29.5507 32 28.6667 32H5.33333C4.44928 32 3.60143 31.6488 2.97631 31.0237C2.35119 30.3986 2 29.5507 2 28.6667V22M8.66667 13.6667L17 22M17 22L25.3333 13.6667M17 22V2" stroke="#C2BBD4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" key="download"><path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="#C2BBD4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>,
   // 打印
-  <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" key="print"><path d="M9.00065 14V2.33334H29.0007V14M9.00065 29H5.66732C4.78326 29 3.93542 28.6488 3.31029 28.0237C2.68517 27.3986 2.33398 26.5507 2.33398 25.6667V17.3333C2.33398 16.4493 2.68517 15.6014 3.31029 14.9763C3.93542 14.3512 4.78326 14 5.66732 14H32.334C33.218 14 34.0659 14.3512 34.691 14.9763C35.3161 15.6014 35.6673 16.4493 35.6673 17.3333V25.6667C35.6673 26.5507 35.3161 27.3986 34.691 28.0237C34.0659 28.6488 33.218 29 32.334 29H29.0007M9.00065 22.3333H29.0007V35.6667H9.00065V22.3333Z" stroke="#C2BBD4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" key="print"><path d="M6 9V2H18V9M6 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V11C2 10.4696 2.21071 9.96086 2.58579 9.58579C2.96086 9.21071 3.46957 9 4 9H20C20.5304 9 21.0391 9.21071 21.4142 9.58579C21.7893 9.96086 22 10.4696 22 11V16C22 16.5304 21.7893 17.0391 21.4142 17.4142C21.0391 17.7893 20.5304 18 20 18H18M6 14H18V22H6V14Z" stroke="#C2BBD4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>,
 ];
 
-const MinutesToolbar = ({ onLeftIconClick, onRightIconClick }) => (
-  <div className="minutes-toolbar">
-    <div className="toolbar-left">
-      {leftIcons.map((icon, idx) => (
-        <button key={idx} className="toolbar-icon-btn" onClick={() => onLeftIconClick && onLeftIconClick(idx)}>{icon}</button>
-      ))}
+const MinutesToolbar = ({ onLeftIconClick, onRightIconClick }) => {
+  const toolbarRef = useRef(null);
+  const [isFloating, setIsFloating] = useState(false);
+  const originalPositionRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (toolbarRef.current) {
+        // 获取工具栏相对于文档的位置
+        const rect = toolbarRef.current.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // 如果是第一次，记录原始位置
+        if (originalPositionRef.current === null) {
+          originalPositionRef.current = scrollTop + rect.top;
+        }
+        
+        // 判断是否应该浮动
+        const shouldFloat = scrollTop > originalPositionRef.current;
+        
+        if (shouldFloat && !isFloating) {
+          setIsFloating(true);
+          toolbarRef.current.classList.add('floating');
+        } else if (!shouldFloat && isFloating) {
+          setIsFloating(false);
+          toolbarRef.current.classList.remove('floating');
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isFloating]);
+
+  return (
+    <div className="minutes-toolbar" ref={toolbarRef}>
+      <div className="toolbar-left">
+        {leftIcons.map((icon, idx) => (
+          <button key={idx} className="toolbar-icon-btn" onClick={() => onLeftIconClick && onLeftIconClick(idx)}>{icon}</button>
+        ))}
+      </div>
+      <div className="toolbar-right">
+        {rightIcons.map((icon, idx) => (
+          <button key={idx} className="toolbar-icon-btn toolbar-icon-btn-large" onClick={() => onRightIconClick && onRightIconClick(idx)}>{icon}</button>
+        ))}
+      </div>
     </div>
-    <div className="toolbar-right">
-      {rightIcons.map((icon, idx) => (
-        <button key={idx} className="toolbar-icon-btn toolbar-icon-btn-large" onClick={() => onRightIconClick && onRightIconClick(idx)}>{icon}</button>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 export default MinutesToolbar; 

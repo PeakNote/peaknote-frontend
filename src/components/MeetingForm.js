@@ -13,6 +13,7 @@ const MeetingForm = ({ onSubmit }) => {
     try {
       // Use the meeting URL directly as it should already be properly encoded
       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
+      // const apiUrl = `https://7c627128b3e1.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
 
       console.log('Calling API:', apiUrl); // 调试信息
       // Call transcript API

@@ -3,11 +3,12 @@
   position: relative;
   z-index: 10;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .container {
   max-width: 800px;
-  margin-top: 150px;
+  margin-top: 100px;
   position: relative;
   z-index: 10;
 }
@@ -54,15 +55,16 @@ h1 {
 .lead {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 900; 
-  font-family: 'Lastica', sans-serif; 
+  font-family: 'LasticaBold', sans-serif; 
   font-size: 1.25rem;
+  letter-spacing: 0.05em;
 }
 
 /* Copyright footer styles */
 .copyright-footer {
   position: relative;
   z-index: 10;
-  padding: 20px 0;
+  padding: 5px 0;
   margin-top: 50px;
   text-align: center;
 }
@@ -157,6 +159,15 @@ h1 {
 @font-face {
   font-family: 'Lastica';
   src: url('../public/fonts/fonnts.com-Lastica.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 导入本地 Lastica Bold 字体 */
+@font-face {
+  font-family: 'LasticaBold';
+  src: url('../public/fonts/lastica bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
