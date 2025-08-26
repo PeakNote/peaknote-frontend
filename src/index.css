@@ -1,3 +1,7 @@
+/* Tiptap UI Components styles */
+@import './@/styles/_variables.scss';
+@import './@/styles/_keyframe-animations.scss';
+
 /* Main application styles */
 body {
   background-color: #150429; 
