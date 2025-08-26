@@ -10,12 +10,19 @@ function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   // Typing animation messages
   const staticMessage = 'AI-Driven Meeting Assistant';
 
   const handleMeetingSubmit = (data) => {
     setMeetingData(data);
+    // Clear error state when successful, or set error state when data is null
+    if (data === null) {
+      setHasError(true);
+    } else {
+      setHasError(false);
+    }
   };
 
   const handleShare = () => {
@@ -66,10 +73,13 @@ function App() {
         </div>
         
         {/* Meeting Form */}
-        <MeetingForm onSubmit={handleMeetingSubmit} />
+        <MeetingForm 
+          onSubmit={handleMeetingSubmit} 
+          onError={(error) => setHasError(error !== null)}
+        />
         
         {/* Meeting Minutes */}
-        {meetingData && (
+        {meetingData && !hasError && (
           <MeetingMinutes 
             meetingData={meetingData}
             onShare={handleShare} 

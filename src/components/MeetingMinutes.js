@@ -46,6 +46,16 @@ const MeetingMinutes = ({ meetingData, onShare }) => {
     const notes = meetingData.notes;
     if (!notes) return <p>No meeting notes available.</p>;
     
+    // Check for error in the response
+    if (typeof notes === 'object' && notes.error) {
+      return (
+        <div className="error-message">
+          <h3>Error</h3>  
+          <p>{notes.error}</p>
+        </div>
+      );
+    }
+    
     // Handle transcript string from API
     if (typeof notes === 'object' && notes.transcript) {
       return (
