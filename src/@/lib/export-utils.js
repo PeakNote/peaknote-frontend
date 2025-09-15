@@ -2,6 +2,16 @@
  * 导出工具函数
  */
 
+// 动态导入jsPDF
+let jsPDF = null;
+const loadJsPDF = async () => {
+  if (!jsPDF) {
+    const { default: jsPDFModule } = await import('jspdf');
+    jsPDF = jsPDFModule;
+  }
+  return jsPDF;
+};
+
 /**
  * 将HTML内容转换为纯文本
  * @param {string} html - HTML字符串
@@ -102,11 +112,47 @@ export function downloadFile(content, filename, mimeType = 'text/plain') {
 }
 
 /**
+ * 将HTML内容转换为PDF
+ * @param {string} htmlContent - HTML内容
+ * @returns {Promise<Blob>} PDF Blob
+ */
+export async function htmlToPDF(htmlContent) {
+  const jsPDF = await loadJsPDF();
+  const doc = new jsPDF();
+  
+  // 获取纯文本内容
+  const textContent = htmlToText(htmlContent);
+  
+  // 设置字体
+  doc.setFont('helvetica');
+  doc.setFontSize(12);
+  
+  // 分割文本为行
+  const lines = doc.splitTextToSize(textContent, 180); // 180mm width
+  
+  // 添加文本到PDF
+  let y = 20;
+  const pageHeight = 280; // A4 height in mm
+  const lineHeight = 6;
+  
+  for (let i = 0; i < lines.length; i++) {
+    if (y + lineHeight > pageHeight) {
+      doc.addPage();
+      y = 20;
+    }
+    doc.text(lines[i], 15, y);
+    y += lineHeight;
+  }
+  
+  return doc.output('blob');
+}
+
+/**
  * 下载编辑器内容为不同格式
  * @param {string} htmlContent - HTML内容
- * @param {string} format - 格式 ('html', 'markdown', 'txt')
+ * @param {string} format - 格式 ('html', 'markdown', 'txt', 'pdf')
  */
-export function downloadEditorContent(htmlContent, format = 'html') {
+export async function downloadEditorContent(htmlContent, format = 'html') {
   const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
   let content, filename, mimeType;
 
@@ -115,22 +161,40 @@ export function downloadEditorContent(htmlContent, format = 'html') {
       content = htmlContent;
       filename = `document-${timestamp}.html`;
       mimeType = 'text/html';
+      downloadFile(content, filename, mimeType);
       break;
     case 'markdown':
       content = htmlToMarkdown(htmlContent);
       filename = `document-${timestamp}.md`;
       mimeType = 'text/markdown';
+      downloadFile(content, filename, mimeType);
       break;
     case 'txt':
       content = htmlToText(htmlContent);
       filename = `document-${timestamp}.txt`;
       mimeType = 'text/plain';
+      downloadFile(content, filename, mimeType);
+      break;
+    case 'pdf':
+      try {
+        const pdfBlob = await htmlToPDF(htmlContent);
+        filename = `document-${timestamp}.pdf`;
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('PDF生成失败:', error);
+        throw new Error('PDF生成失败，请重试');
+      }
       break;
     default:
       throw new Error(`Unsupported format: ${format}`);
   }
-
-  downloadFile(content, filename, mimeType);
 }
 
 /**

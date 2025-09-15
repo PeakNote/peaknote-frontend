@@ -15,7 +15,7 @@ import { downloadEditorContent } from "@/lib/export-utils"
 export const DownloadButton = React.forwardRef(({ editor: providedEditor, ...props }, ref) => {
   const { editor } = useTiptapEditor(providedEditor)
 
-  const handleClick = React.useCallback((e) => {
+  const handleClick = React.useCallback(async (e) => {
     e.preventDefault()
     
     if (!editor) return
@@ -23,32 +23,12 @@ export const DownloadButton = React.forwardRef(({ editor: providedEditor, ...pro
     // 获取编辑器内容
     const htmlContent = editor.getHTML()
     
-    // 显示格式选择对话框
-    const format = prompt('选择下载格式:\n1. HTML\n2. Markdown\n3. 纯文本\n\n请输入数字 (1-3):', '1')
-    
-    if (format) {
-      let selectedFormat = 'html'
-      switch (format.trim()) {
-        case '1':
-          selectedFormat = 'html'
-          break
-        case '2':
-          selectedFormat = 'markdown'
-          break
-        case '3':
-          selectedFormat = 'txt'
-          break
-        default:
-          alert('无效选择，将下载为HTML格式')
-          selectedFormat = 'html'
-      }
-      
-      try {
-        downloadEditorContent(htmlContent, selectedFormat)
-      } catch (error) {
-        console.error('下载失败:', error)
-        alert('下载失败，请重试')
-      }
+    try {
+      // 直接下载PDF格式
+      await downloadEditorContent(htmlContent, 'pdf')
+    } catch (error) {
+      console.error('下载失败:', error)
+      alert('下载失败，请重试')
     }
   }, [editor])
 
