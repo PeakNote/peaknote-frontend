@@ -3,475 +3,124 @@
   "content": [
     {
       "type": "heading",
-      "attrs": {
-        "textAlign": null,
-        "level": 1
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Getting started"
-        }
-      ]
+      "attrs": { "textAlign": "left", "level": 1 },
+      "content": [{ "type": "text", "text": "Meeting Minutes - Project Aurora" }]
     },
     {
       "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      },
+      "attrs": { "textAlign": "left" },
       "content": [
-        {
-          "type": "text",
-          "text": "Welcome to the "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "italic"
-            },
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-yellow)"
-              }
-            }
-          ],
-          "text": "Simple Editor"
-        },
-        {
-          "type": "text",
-          "text": " template! This template integrates "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "open source"
-        },
-        {
-          "type": "text",
-          "text": " UI components and Tiptap extensions licensed under "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "MIT"
-        },
-        {
-          "type": "text",
-          "text": "."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Integrate it by following the "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Tiptap UI Components docs"
-        },
-        {
-          "type": "text",
-          "text": " or using our CLI tool."
-        }
-      ]
-    },
-    {
-      "type": "codeBlock",
-      "attrs": {
-        "language": null
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "npx @tiptap/cli init"
-        }
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "Date: " },
+        { "type": "text", "text": "Sep 15, 2025 10:00–11:00 AM" },
+        { "type": "text", "text": "  |  " },
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "Location: " },
+        { "type": "text", "text": "Zoom Conference" }
       ]
     },
     {
       "type": "heading",
-      "attrs": {
-        "textAlign": null,
-        "level": 2
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Features"
-        }
-      ]
-    },
-    {
-      "type": "blockquote",
-      "content": [
-        {
-          "type": "paragraph",
-          "attrs": {
-            "textAlign": null
-          },
-          "content": [
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "**"
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": " or use keyboard shortcuts "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "⌘+B"
-            },
-            {
-              "type": "text",
-              "text": " for "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "strike"
-                }
-              ],
-              "text": "most"
-            },
-            {
-              "type": "text",
-              "text": " all common markdown marks. 🪄"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Add images, customize alignment, and apply "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-blue)"
-              }
-            }
-          ],
-          "text": "advanced formatting"
-        },
-        {
-          "type": "text",
-          "text": " to make your writing more engaging and professional."
-        }
-      ]
-    },
-    {
-      "type": "image",
-      "attrs": {
-        "src": "/images/tiptap-ui-placeholder-image.jpg",
-        "alt": "placeholder-image",
-        "title": "placeholder-image"
-      }
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Attendees" }]
     },
     {
       "type": "bulletList",
       "content": [
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "Superscript"
-                },
-                {
-                  "type": "text",
-                  "text": " (x"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "superscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": ") and "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "Subscript"
-                },
-                {
-                  "type": "text",
-                  "text": " (H"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "subscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": "O) for precision."
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "listItem",
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "Typographic conversion"
-                },
-                {
-                  "type": "text",
-                  "text": ": automatically convert to "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ],
-                  "text": "->"
-                },
-                {
-                  "type": "text",
-                  "text": " an arrow "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "→"
-                },
-                {
-                  "type": "text",
-                  "text": "."
-                }
-              ]
-            }
-          ]
-        }
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Alice Johnson (PM)" }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Brian Lee (Engineering)" }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Carol Smith (Design)" }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "David Kim (QA)" }] }] }
       ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "italic"
-            }
-          ],
-          "text": "→ "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Learn more"
-        }
-      ]
-    },
-    {
-      "type": "horizontalRule"
     },
     {
       "type": "heading",
-      "attrs": {
-        "textAlign": "left",
-        "level": 2
-      },
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Agenda" }]
+    },
+    {
+      "type": "orderedList",
       "content": [
-        {
-          "type": "text",
-          "text": "Make it your own"
-        }
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Sprint 18 status update" }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Design review: dashboard widgets" }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Release readiness and risks" }] }] }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Discussion Notes" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "Engineering: " },
+        { "type": "text", "text": "API integration 90% complete. Blocker on auth token refresh fixed by patch v1.2.3." }
       ]
     },
     {
       "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
+      "attrs": { "textAlign": "left" },
       "content": [
-        {
-          "type": "text",
-          "text": "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style."
-        }
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "Design: " },
+        { "type": "text", "text": "Widget empty states approved. Minor tweaks to color contrast pending for accessibility (AA)." }
       ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "QA: " },
+        { "type": "text", "text": "Regression pass started on staging; 5 medium issues logged, no blockers." }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Action Items" }]
     },
     {
       "type": "taskList",
       "content": [
         {
           "type": "taskItem",
-          "attrs": {
-            "checked": true
-          },
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "text": "Test template"
-                }
-              ]
-            }
-          ]
+          "attrs": { "checked": false },
+          "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Brian: finalize token refresh tests (Due: Sep 18)" }] }]
         },
         {
           "type": "taskItem",
-          "attrs": {
-            "checked": false
-          },
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "link",
-                      "attrs": {
-                        "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                        "target": "_blank",
-                        "rel": "noopener noreferrer nofollow",
-                        "class": null
-                      }
-                    }
-                  ],
-                  "text": "Integrate the free template"
-                }
-              ]
-            }
-          ]
+          "attrs": { "checked": false },
+          "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Carol: update dashboard contrast ratios and handoff (Due: Sep 17)" }] }]
+        },
+        {
+          "type": "taskItem",
+          "attrs": { "checked": false },
+          "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "David: verify bug fixes (#4312–#4316) on build 1.2.3 (Due: Sep 19)" }] }]
         }
       ]
     },
     {
+      "type": "heading",
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Decisions" }]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Proceed with dashboard widgets v2 in this release." }] }] },
+        { "type": "listItem", "content": [{ "type": "paragraph", "attrs": { "textAlign": "left" }, "content": [{ "type": "text", "text": "Push SSO enhancements to next sprint due to dependency timing." }] }] }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "textAlign": "left", "level": 2 },
+      "content": [{ "type": "text", "text": "Next Meeting" }]
+    },
+    {
       "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      }
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "Sep 22, 2025 10:00–11:00 AM  |  Zoom Conference" }
+      ]
     }
   ]
 }

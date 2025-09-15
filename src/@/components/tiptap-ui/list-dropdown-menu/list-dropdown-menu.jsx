@@ -25,7 +25,8 @@ export function ListDropdownMenu({
   types = ["bulletList", "orderedList", "taskList"],
   hideWhenUnavailable = false,
   onOpenChange,
-  portal = false,
+  portal = true,
+  inlineButtons = true,
   ...props
 }) {
   const { editor } = useTiptapEditor(providedEditor)
@@ -45,6 +46,26 @@ export function ListDropdownMenu({
 
   if (!isVisible || !editor || !editor.isEditable) {
     return null
+  }
+
+  // Render three inline list buttons instead of dropdown when enabled
+  if (inlineButtons) {
+    const order = ["bulletList", "orderedList", "taskList"]
+    const ordered = order.filter(t => types.includes(t))
+    return (
+      <ButtonGroup orientation="horizontal">
+        {ordered.map((type) => (
+          <ListButton
+            key={`list-inline-${type}`}
+            editor={editor}
+            type={type}
+            text={undefined}
+            showTooltip={true}
+            {...props}
+          />
+        ))}
+      </ButtonGroup>
+    )
   }
 
   return (

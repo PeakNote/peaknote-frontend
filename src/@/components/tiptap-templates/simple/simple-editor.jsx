@@ -53,6 +53,9 @@ import {
 import { MarkButton } from "@/components/tiptap-ui/mark-button"
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
+import { ShareButton } from "@/components/tiptap-ui/share-button"
+import { DownloadButton } from "@/components/tiptap-ui/download-button"
+import { PrintButton } from "@/components/tiptap-ui/print-button"
 
 // --- Icons ---
 import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
@@ -82,7 +85,6 @@ const MainToolbarContent = ({
 }) => {
   return (
     <>
-      <Spacer />
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
@@ -123,11 +125,13 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
       <ToolbarGroup>
         <ImageUploadButton text="Add" />
+        <ThemeToggle />
       </ToolbarGroup>
       <Spacer />
-      {isMobile && <ToolbarSeparator />}
       <ToolbarGroup>
-        <ThemeToggle />
+        <ShareButton onClick={() => console.log('Share clicked')} />
+        <DownloadButton />
+        <PrintButton />
       </ToolbarGroup>
     </>
   );
@@ -186,7 +190,11 @@ export function SimpleEditor() {
         },
       }),
       HorizontalRule,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      TextAlign.configure({ 
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right', 'justify'],
+        defaultAlignment: 'left'
+      }),
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),

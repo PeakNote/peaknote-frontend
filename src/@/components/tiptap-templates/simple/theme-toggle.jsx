@@ -8,7 +8,7 @@ import { MoonStarIcon } from "@/components/tiptap-icons/moon-star-icon"
 import { SunIcon } from "@/components/tiptap-icons/sun-icon"
 
 export function ThemeToggle() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
+  const [isDarkMode, setIsDarkMode] = React.useState(true)
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
@@ -17,11 +17,9 @@ export function ThemeToggle() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [])
 
+  // Force dark mode as default on initial mount
   React.useEffect(() => {
-    const initialDarkMode =
-      !!document.querySelector('meta[name="color-scheme"][content="dark"]') ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    setIsDarkMode(initialDarkMode)
+    setIsDarkMode(true)
   }, [])
 
   React.useEffect(() => {

@@ -29,7 +29,8 @@ export const HeadingDropdownMenu = React.forwardRef((
     editor: providedEditor,
     levels = [1, 2, 3, 4, 5, 6],
     hideWhenUnavailable = false,
-    portal = false,
+    portal = true,
+    inlineButtons = true,
     onOpenChange,
     ...buttonProps
   },
@@ -51,6 +52,25 @@ export const HeadingDropdownMenu = React.forwardRef((
 
   if (!isVisible) {
     return null
+  }
+
+  // Render inline buttons (H1/H2/H3) instead of dropdown when enabled
+  if (inlineButtons) {
+    const inlineLevels = levels.slice(0, 3) // default show H1-H3
+    return (
+      <ButtonGroup orientation="horizontal">
+        {inlineLevels.map((level) => (
+          <HeadingButton
+            key={`heading-inline-${level}`}
+            editor={editor}
+            level={level}
+            text={undefined}
+            showTooltip={true}
+            {...buttonProps}
+          />
+        ))}
+      </ButtonGroup>
+    )
   }
 
   return (

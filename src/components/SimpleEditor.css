@@ -1,0 +1,218 @@
+/* SimpleEditor 自定义样式 */
+.simple-editor-container {
+  width: 290mm;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: visible;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: transparent;
+}
+
+/* 确保下拉/弹出菜单不被容器裁剪并显示在最上层 */
+.simple-editor-container .tiptap-dropdown-menu,
+.simple-editor-container .tiptap-popover,
+.tiptap-dropdown-menu,
+.tiptap-popover,
+[data-radix-popper-content-wrapper] {
+  z-index: 11000 !important;
+}
+
+/* 覆盖原始样式，使工具栏居中 */
+.simple-editor-container .simple-editor-wrapper {
+  width: 100%;
+  height: auto;
+  /* 让容器根据内容自然增高，移除高度上限，避免截断 */
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 确保工具栏左对齐并固定宽度 */
+.simple-editor-container .tiptap-toolbar[data-variant="fixed"] {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important; /* 强制左对齐 */
+  flex-wrap: nowrap;
+  gap: 0.03125rem; /* 减少工具栏组之间的间距 */
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  overflow-x: auto;
+  z-index: 1000; /* 置顶于编辑内容之上，低于弹出层 */
+}
+
+/* 工具栏组左对齐 */
+.simple-editor-container .tiptap-toolbar-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important; /* 强制左对齐 */
+  gap: 0.03125rem; /* 减少组内按钮间距 */
+}
+
+/* 工具栏按钮样式 */
+.simple-editor-container .tiptap-toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.simple-editor-container .tiptap-toolbar button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.simple-editor-container .tiptap-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.simple-editor-container .tiptap-toolbar button[data-state="active"] {
+  background: rgba(59, 130, 246, 0.8);
+  color: white;
+  border-color: rgba(37, 99, 235, 0.8);
+}
+
+/* 分隔符样式 */
+.simple-editor-container .tiptap-separator {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 0 4px;
+}
+
+/* 编辑器内容区域居中 */
+.simple-editor-container .simple-editor-content {
+  max-width: none;
+  width: 100%;
+  margin: 0 auto;
+  height: auto;
+  min-height: 300px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 0; /* 将内容层级降到最低 */
+}
+
+/* 编辑器文本区域 */
+.simple-editor-container .tiptap.ProseMirror.simple-editor {
+  padding: 2rem;
+  min-height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  background: transparent;
+  color: white;
+  outline: none;
+  flex: 1;
+  backdrop-filter: blur(10px);
+  /* 保证内容不会溢出容器宽度 */
+  overflow: visible;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  position: relative;
+  z-index: 0; /* 编辑文本框保持最低层级 */
+}
+
+/* 让编辑器内的所有元素不超过容器宽度 */
+.simple-editor-container .simple-editor-content *,
+.simple-editor-container .tiptap.ProseMirror.simple-editor * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* 支持内联样式和类名的文本对齐 */
+.simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: left"],
+.simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: center"],
+.simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: right"],
+.simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: justify"] {
+  /* 让内联样式生效 */
+}
+
+/* 确保文本对齐按钮的激活状态正确显示 */
+.simple-editor-container .tiptap-toolbar button[data-state="active"][aria-label*="Align left"],
+.simple-editor-container .tiptap-toolbar button[data-state="active"][aria-label*="Align center"],
+.simple-editor-container .tiptap-toolbar button[data-state="active"][aria-label*="Align right"],
+.simple-editor-container .tiptap-toolbar button[data-state="active"][aria-label*="Align justify"] {
+  background: rgba(59, 130, 246, 0.8) !important;
+  color: white !important;
+  border-color: rgba(37, 99, 235, 0.8) !important;
+}
+
+/* 媒体与代码块处理 */
+.simple-editor-container .tiptap.ProseMirror.simple-editor img,
+.simple-editor-container .tiptap.ProseMirror.simple-editor video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.simple-editor-container .tiptap.ProseMirror.simple-editor pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .simple-editor-container {
+    margin: 0 1rem;
+  }
+  
+  .simple-editor-container .tiptap.ProseMirror.simple-editor {
+    padding: 1rem;
+  }
+  
+  /* 移动端工具栏调整 */
+  .simple-editor-container .tiptap-toolbar[data-variant="fixed"] {
+    padding: 0.125rem;
+    gap: 0.0625rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  
+  .simple-editor-container .tiptap-toolbar-group {
+    flex-shrink: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-container {
+    margin: 0 0.5rem;
+    border-radius: 4px;
+  }
+  
+  .simple-editor-container .tiptap-toolbar[data-variant="fixed"] {
+    border-radius: 4px 4px 0 0;
+    padding: 0.125rem;
+  }
+  
+  .simple-editor-container .tiptap.ProseMirror.simple-editor {
+    padding: 0.75rem;
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+/* dark mode */
+.dark .simple-editor-container .tiptap.ProseMirror.simple-editor {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f9fafb;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Align Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .test-text {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>文本对齐功能测试</h1>
+        
+        <div class="test-section">
+            <h3>测试说明</h3>
+            <p>请按照以下步骤测试文本对齐功能：</p>
+            <ol>
+                <li>在下面的编辑器中输入一些文本</li>
+                <li>选中要对齐的文本</li>
+                <li>点击工具栏中的对齐按钮（左对齐、居中、右对齐、两端对齐）</li>
+                <li>观察文本是否正确对齐</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>测试区域</h3>
+            <p>这里应该显示 Tiptap Simple Editor</p>
+            <!-- 编辑器将在这里渲染 -->
+        </div>
+
+        <div class="test-section">
+            <h3>预期结果</h3>
+            <div class="test-text" style="text-align: left;">左对齐文本示例</div>
+            <div class="test-text" style="text-align: center;">居中对齐文本示例</div>
+            <div class="test-text" style="text-align: right;">右对齐文本示例</div>
+            <div class="test-text" style="text-align: justify;">两端对齐文本示例 - 这是一段较长的文本，用来测试两端对齐功能是否正常工作。文本应该均匀分布在行内，左右两端对齐。</div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Text align test page loaded');
+        
+        // 添加一些调试信息
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking for Tiptap editor...');
+            
+            // 检查是否在 React 环境中
+            setTimeout(() => {
+                const editor = document.querySelector('.simple-editor-container');
+                if (editor) {
+                    console.log('Tiptap editor found:', editor);
+                    
+                    // 检查文本对齐按钮
+                    const alignButtons = document.querySelectorAll('[aria-label*="Align"]');
+                    console.log('Text align buttons found:', alignButtons.length);
+                    alignButtons.forEach((btn, index) => {
+                        console.log(`Button ${index + 1}:`, btn.getAttribute('aria-label'));
+                    });
+                } else {
+                    console.log('Tiptap editor not found');
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
