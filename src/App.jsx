@@ -4,8 +4,7 @@ import MeetingForm from './components/MeetingForm';
 import MeetingMinutes from './components/MeetingMinutes';
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
-import Pattern from './components/Pattern';
-import SimpleEditor from './components/SimpleEditor'; 
+import Pattern from './components/Pattern'; 
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
@@ -68,12 +67,6 @@ function App() {
         
         {/* Meeting Form */}
         <MeetingForm onSubmit={handleMeetingSubmit} />
-        
-        {/* Simple Editor Demo */}
-        <div style={{ margin: '2rem 0', padding: '1rem', background: 'rgba(255,255,255,0.9)', borderRadius: '8px' }}>
-          <h3>Tiptap Simple Editor</h3>
-          <SimpleEditor />
-        </div>
 
         {/* Meeting Minutes */}
         {meetingData && (
