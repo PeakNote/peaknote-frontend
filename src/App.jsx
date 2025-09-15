@@ -15,6 +15,7 @@ function App() {
   const staticMessage = 'AI-Driven Meeting Assistant';
 
   const handleMeetingSubmit = (data) => {
+    console.log('App.jsx: Meeting data received:', data); // Debug log
     setMeetingData(data);
   };
 

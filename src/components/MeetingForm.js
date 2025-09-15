@@ -11,10 +11,85 @@ const MeetingForm = ({ onSubmit }) => {
     setIsProcessing(true);
 
     try {
+      console.log('MeetingForm: Submitted URL:', meetingUrl); // Debug log
+      
+      // Check for test URL to generate sample content
+      if (meetingUrl.toLowerCase().trim() === 'test') {
+        console.log('MeetingForm: Test mode detected'); // Debug log
+        
+        // Generate sample meeting data for testing
+        const sampleData = {
+          meetingUrl: 'https://teams.microsoft.com/l/meetup-join/sample-test-meeting',
+          template: 'smart',
+          notes: {
+            transcript: `# Weekly Product Team Meeting
+
+*December 15, 2024 | 10:00 AM - 11:00 AM EST*
+
+---
+
+## 📋 Meeting Agenda
+
+- Q4 Product roadmap review
+- Customer feedback analysis
+- Resource allocation for Q1 2025
+
+## 👥 Participants
+
+- **Sarah Johnson** - Product Manager
+- **Mike Chen** - Engineering Lead
+- **Lisa Rodriguez** - UX Designer
+- **David Thompson** - Marketing Director
+
+## 💡 Key Discussion Points
+
+### Q4 Roadmap Performance
+
+We've successfully delivered **85% of planned features** for Q4. The new dashboard feature received particularly positive feedback from beta users.
+
+> *"The new analytics dashboard has improved our workflow efficiency by 40%. This is exactly what we needed." - Customer Beta Tester*
+
+### Customer Feedback Analysis
+
+Lisa presented the latest UX research findings. Key insights include:
+
+1. **Mobile responsiveness** is our top priority for Q1 2025
+2. Users want more customization options in their workspace  
+3. Integration with Slack and Microsoft Teams is highly requested
+
+## ✅ Action Items
+
+- [ ] **Mike**: Create technical specifications for mobile app by **December 22**
+- [ ] **Lisa**: Design mockups for customization features by January 5
+- [ ] **David**: Research integration partnerships with Slack and Teams by January 10
+- [ ] **Sarah**: Schedule Q1 planning session with stakeholders by January 3
+
+## 🎯 Key Decisions Made
+
+- **Budget Allocation:** 60% for mobile development, 40% for integrations in Q1 2025
+- **Timeline:** Mobile app MVP to be completed by March 31, 2025
+- **Team Structure:** Hiring 2 additional mobile developers starting January 2025
+
+---
+
+*Next meeting: December 22, 2024 at 10:00 AM EST*  
+*Meeting notes compiled by PeakNote AI Assistant*`
+          },
+          generatedAt: new Date().toISOString()
+        };
+
+        // Simulate processing time
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        onSubmit(sampleData);
+        setIsFinished(true);
+        return;
+      }
+
       // Use the meeting URL directly as it should already be properly encoded
       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
 
-      console.log('Calling API:', apiUrl); // 调试信息
+      console.log('Calling API:', apiUrl);
       // Call transcript API
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -37,7 +112,7 @@ const MeetingForm = ({ onSubmit }) => {
       const formattedData = {
         meetingUrl,
         template: 'smart',
-        notes: transcriptData, // Changed from 'transcript' to 'notes' to match MeetingMinutes expectation
+        notes: transcriptData,
         generatedAt: new Date().toISOString()
       };
 
@@ -61,10 +136,10 @@ const MeetingForm = ({ onSubmit }) => {
       <form onSubmit={handleSubmit}>
         <div className="mb-3 row">  
             <input
-              type="url"
+              type="text"
               className="form-control"
               id="teams-url"
-              placeholder="Enter Teams meeting URL"
+              placeholder="Enter Teams meeting URL or type 'test' for demo"
               value={meetingUrl}
               onChange={handleUrlChange}
               required

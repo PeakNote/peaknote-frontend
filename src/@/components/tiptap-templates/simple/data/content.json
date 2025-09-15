@@ -4,113 +4,102 @@
     {
       "type": "heading",
       "attrs": {
-        "textAlign": null,
+        "textAlign": "left",
         "level": 1
       },
       "content": [
         {
           "type": "text",
-          "text": "Getting started"
+          "text": "Weekly Product Team Meeting"
         }
       ]
     },
     {
       "type": "paragraph",
       "attrs": {
-        "textAlign": null
+        "textAlign": "left"
       },
       "content": [
-        {
-          "type": "text",
-          "text": "Welcome to the "
-        },
         {
           "type": "text",
           "marks": [
             {
               "type": "italic"
-            },
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-yellow)"
-              }
             }
           ],
-          "text": "Simple Editor"
-        },
-        {
-          "type": "text",
-          "text": " template! This template integrates "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "open source"
-        },
-        {
-          "type": "text",
-          "text": " UI components and Tiptap extensions licensed under "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "MIT"
-        },
-        {
-          "type": "text",
-          "text": "."
+          "text": "December 15, 2024 | 10:00 AM - 11:00 AM EST"
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "horizontalRule"
+    },
+    {
+      "type": "heading",
       "attrs": {
-        "textAlign": null
+        "textAlign": null,
+        "level": 2
       },
       "content": [
         {
           "type": "text",
-          "text": "Integrate it by following the "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Tiptap UI Components docs"
-        },
-        {
-          "type": "text",
-          "text": " or using our CLI tool."
+          "text": "📋 Meeting Agenda"
         }
       ]
     },
     {
-      "type": "codeBlock",
-      "attrs": {
-        "language": null
-      },
+      "type": "bulletList",
       "content": [
         {
-          "type": "text",
-          "text": "npx @tiptap/cli init"
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4 Product roadmap review"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Customer feedback analysis"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Resource allocation for Q1 2025"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -123,7 +112,173 @@
       "content": [
         {
           "type": "text",
-          "text": "Features"
+          "text": "👥 Participants"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Sarah Johnson"
+                },
+                {
+                  "type": "text",
+                  "text": " - Product Manager"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Mike Chen"
+                },
+                {
+                  "type": "text",
+                  "text": " - Engineering Lead"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Lisa Rodriguez"
+                },
+                {
+                  "type": "text",
+                  "text": " - UX Designer"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "David Thompson"
+                },
+                {
+                  "type": "text",
+                  "text": " - Marketing Director"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "💡 Key Discussion Points"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Q4 Roadmap Performance"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "We've successfully delivered "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            },
+            {
+              "type": "highlight",
+              "attrs": {
+                "color": "var(--tt-color-highlight-green)"
+              }
+            }
+          ],
+          "text": "85% of planned features"
+        },
+        {
+          "type": "text",
+          "text": " for Q4. The new dashboard feature received particularly positive feedback from beta users."
         }
       ]
     },
@@ -143,91 +298,302 @@
                   "type": "italic"
                 }
               ],
-              "text": "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "**"
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": " or use keyboard shortcuts "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "⌘+B"
-            },
-            {
-              "type": "text",
-              "text": " for "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "strike"
-                }
-              ],
-              "text": "most"
-            },
-            {
-              "type": "text",
-              "text": " all common markdown marks. 🪄"
+              "text": "\"The new analytics dashboard has improved our workflow efficiency by 40%. This is exactly what we needed.\" - Customer Beta Tester"
             }
           ]
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
       "attrs": {
-        "textAlign": "left"
+        "textAlign": null,
+        "level": 3
       },
       "content": [
         {
           "type": "text",
-          "text": "Add images, customize alignment, and apply "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-blue)"
-              }
-            }
-          ],
-          "text": "advanced formatting"
-        },
-        {
-          "type": "text",
-          "text": " to make your writing more engaging and professional."
+          "text": "Customer Feedback Analysis"
         }
       ]
     },
     {
-      "type": "image",
+      "type": "paragraph",
       "attrs": {
-        "src": "/images/tiptap-ui-placeholder-image.jpg",
-        "alt": "placeholder-image",
-        "title": "placeholder-image"
-      }
+        "textAlign": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Lisa presented the latest UX research findings. Key insights include:"
+        }
+      ]
+    },
+    {
+      "type": "orderedList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "highlight",
+                      "attrs": {
+                        "color": "var(--tt-color-highlight-yellow)"
+                      }
+                    }
+                  ],
+                  "text": "Mobile responsiveness"
+                },
+                {
+                  "type": "text",
+                  "text": " is our top priority for Q1 2025"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Users want more "
+                },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "underline"
+                    }
+                  ],
+                  "text": "customization options"
+                },
+                {
+                  "type": "text",
+                  "text": " in their workspace"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Integration with "
+                },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ],
+                  "text": "Slack"
+                },
+                {
+                  "type": "text",
+                  "text": " and "
+                },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ],
+                  "text": "Microsoft Teams"
+                },
+                {
+                  "type": "text",
+                  "text": " is highly requested"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "✅ Action Items"
+        }
+      ]
+    },
+    {
+      "type": "taskList",
+      "content": [
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Mike"
+                },
+                {
+                  "type": "text",
+                  "text": ": Create technical specifications for mobile app by "
+                },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "highlight",
+                      "attrs": {
+                        "color": "var(--tt-color-highlight-red)"
+                      }
+                    }
+                  ],
+                  "text": "December 22"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Lisa"
+                },
+                {
+                  "type": "text",
+                  "text": ": Design mockups for customization features by January 5"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "David"
+                },
+                {
+                  "type": "text",
+                  "text": ": Research integration partnerships with Slack and Teams by January 10"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "text": "Sarah"
+                },
+                {
+                  "type": "text",
+                  "text": ": Schedule Q1 planning session with stakeholders by January 3"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "🎯 Key Decisions Made"
+        }
+      ]
     },
     {
       "type": "bulletList",
@@ -238,7 +604,7 @@
             {
               "type": "paragraph",
               "attrs": {
-                "textAlign": "left"
+                "textAlign": null
               },
               "content": [
                 {
@@ -248,50 +614,11 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Superscript"
+                  "text": "Budget Allocation:"
                 },
                 {
                   "type": "text",
-                  "text": " (x"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "superscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": ") and "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "Subscript"
-                },
-                {
-                  "type": "text",
-                  "text": " (H"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "subscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": "O) for precision."
+                  "text": " 60% for mobile development, 40% for integrations in Q1 2025"
                 }
               ]
             }
@@ -303,7 +630,7 @@
             {
               "type": "paragraph",
               "attrs": {
-                "textAlign": "left"
+                "textAlign": null
               },
               "content": [
                 {
@@ -313,25 +640,25 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Typographic conversion"
+                  "text": "Timeline:"
                 },
                 {
                   "type": "text",
-                  "text": ": automatically convert to "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ],
-                  "text": "->"
-                },
-                {
-                  "type": "text",
-                  "text": " an arrow "
-                },
+                  "text": " Mobile app MVP to be completed by March 31, 2025"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": null
+              },
+              "content": [
                 {
                   "type": "text",
                   "marks": [
@@ -339,15 +666,35 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "→"
+                  "text": "Team Structure:"
                 },
                 {
                   "type": "text",
-                  "text": "."
+                  "text": " Hiring 2 additional mobile developers starting January 2025"
                 }
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "horizontalRule"
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": "left"
+      },
+      "content": [
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ],
+          "text": "Next meeting: December 22, 2024 at 10:00 AM EST"
         }
       ]
     },
@@ -364,114 +711,9 @@
               "type": "italic"
             }
           ],
-          "text": "→ "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Learn more"
+          "text": "Meeting notes compiled by PeakNote AI Assistant"
         }
       ]
-    },
-    {
-      "type": "horizontalRule"
-    },
-    {
-      "type": "heading",
-      "attrs": {
-        "textAlign": "left",
-        "level": 2
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Make it your own"
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style."
-        }
-      ]
-    },
-    {
-      "type": "taskList",
-      "content": [
-        {
-          "type": "taskItem",
-          "attrs": {
-            "checked": true
-          },
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "text": "Test template"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "taskItem",
-          "attrs": {
-            "checked": false
-          },
-          "content": [
-            {
-              "type": "paragraph",
-              "attrs": {
-                "textAlign": "left"
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "link",
-                      "attrs": {
-                        "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                        "target": "_blank",
-                        "rel": "noopener noreferrer nofollow",
-                        "class": null
-                      }
-                    }
-                  ],
-                  "text": "Integrate the free template"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      }
     }
   ]
 }

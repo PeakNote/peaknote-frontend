@@ -7,23 +7,25 @@ import MinutesToolbar from './MinutesToolbar';
 const MeetingMinutes = ({ meetingData, onShare }) => {
   const minutesRef = useRef(null);
 
+  console.log('MeetingMinutes received data:', meetingData); // Debug log
+
   useEffect(() => {
     if (minutesRef.current) {
       minutesRef.current.classList.add('show');
       minutesRef.current.scrollIntoView({ behavior: 'smooth' });
 
       // Add paper reveal animation
-      const paper = minutesRef.current.querySelector('.a4-paper');
+      const paper = minutesRef.current.querySelector('.tiptap-editor-wrapper');
       if (paper) {
         paper.classList.add('paper-reveal');
       }
 
       // Animate content elements
       setTimeout(() => {
-        const paragraphs = minutesRef.current.querySelectorAll('.minutes-content p, .minutes-content h3, .minutes-content ul');
-        paragraphs.forEach((p, index) => {
-          p.classList.add('chat-bubble');
-          p.style.animationDelay = (0.8 + index * 0.1) + 's';
+        const elements = minutesRef.current.querySelectorAll('.editor-container *');
+        elements.forEach((el, index) => {
+          el.classList.add('chat-bubble');
+          el.style.animationDelay = (0.8 + index * 0.1) + 's';
         });
       }, 700);
     }

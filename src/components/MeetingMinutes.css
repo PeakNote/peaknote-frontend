@@ -1,8 +1,11 @@
 /* TipTap Editor Integration */
 .editor-container {
-  max-width: 210mm;
-  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 0;
+  margin: 0;
 }
 
 .tiptap-editor-wrapper {
@@ -10,7 +13,7 @@
   border: 1px solid rgba(138, 43, 226, 0.1);
   width: 210mm;
   min-height: 297mm;
-  margin: 0 auto;
+  margin: 0;
   padding: 20mm;
   border-radius: 5px;
   box-shadow: 0 5px 25px rgba(0,0,0,0.2);
@@ -25,6 +28,7 @@
 .tiptap-editor-wrapper .simple-editor-wrapper {
   height: 100%;
   min-height: 257mm; /* A4 minus padding */
+  position: relative;
 }
 
 .tiptap-editor-wrapper .simple-editor-content {
@@ -40,7 +44,7 @@
   min-height: 257mm;
 }
 
-/* Override TipTap styles for dark theme */
+/* Override TipTap styles for dark theme and proper text alignment */
 .tiptap-editor-wrapper .ProseMirror {
   background: transparent !important;
   color: #fff !important;
@@ -48,6 +52,7 @@
   outline: none !important;
   padding: 0 !important;
   min-height: 257mm !important;
+  text-align: left !important; /* Default to left alignment, not center */
 }
 
 .tiptap-editor-wrapper .ProseMirror h1,
@@ -57,23 +62,27 @@
 .tiptap-editor-wrapper .ProseMirror h5,
 .tiptap-editor-wrapper .ProseMirror h6 {
   color: #fff !important;
+  text-align: left !important; /* Headers default to left, unless specifically centered */
 }
 
 .tiptap-editor-wrapper .ProseMirror p {
   color: #fff !important;
+  text-align: left !important; /* Paragraphs default to left */
 }
 
 .tiptap-editor-wrapper .ProseMirror ul,
 .tiptap-editor-wrapper .ProseMirror ol {
   color: #fff !important;
+  text-align: left !important;
 }
 
 .tiptap-editor-wrapper .ProseMirror li {
   color: #fff !important;
+  text-align: left !important;
 }
 
-/* TipTap Toolbar positioning */
-.tiptap-editor-wrapper .simple-editor-wrapper .toolbar {
+/* TipTap Toolbar positioning - fix centering */
+.tiptap-editor-wrapper .simple-editor-wrapper [data-tiptap-toolbar] {
   position: fixed !important;
   top: 20px !important;
   left: 50% !important;
@@ -84,6 +93,23 @@
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 12px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  padding: 8px 16px !important;
+}
+
+/* Alternative toolbar selector */
+.simple-editor-wrapper .toolbar,
+.simple-editor-wrapper [role="toolbar"] {
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1000 !important;
+  background: rgba(84, 54, 137, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  padding: 8px 16px !important;
 }
 
 /* Meeting Minutes styles */
