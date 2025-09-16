@@ -20,7 +20,7 @@
 
 /* 覆盖原始样式，使工具栏居中 */
 .simple-editor-container .simple-editor-wrapper {
-  width: 100%;
+  width: 210mm;
   height: auto;
   /* 让容器根据内容自然增高，移除高度上限，避免截断 */
   overflow: visible;

@@ -55,14 +55,13 @@ body,
 }
 
 .simple-editor-wrapper {
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
+  width: 210mm;
+  height: auto;
+  margin: 0 auto;
 }
 
 .simple-editor-content {
-  max-width: 648px;
-  width: 100%;
+  width: 210mm;
   margin: 0 auto;
   height: 100%;
   display: flex;
