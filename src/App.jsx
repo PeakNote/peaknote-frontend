@@ -69,21 +69,15 @@ function App() {
         
         {/* Meeting Form */}
         <MeetingForm onSubmit={handleMeetingSubmit} />
-        
-        {/* Simple Editor Demo */}
-        <div style={{ margin: '2rem 0' }}>
+
+        {/* Meeting Minutes */}
+        {meetingData && (
+          <div style={{ margin: '2rem 0' }}>
           <SimpleEditor 
             content={editorContent} 
             onChange={(content) => setEditorContent(content)} 
           />
-        </div>
-
-        {/* Meeting Minutes */}
-        {meetingData && (
-          <MeetingMinutes 
-            meetingData={meetingData}
-            onShare={handleShare} 
-          />
+          </div>
         )}
       </div>
 
