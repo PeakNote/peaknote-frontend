@@ -72,12 +72,6 @@ function App() {
 
         {/* Meeting Minutes */}
         {meetingData && (
-          <MeetingMinutes 
-            meetingData={meetingData}
-            onShare={handleShare} 
-          />
-        )}
-        {meetingData && (
           <div style={{ margin: '2rem 0' }}>
           <SimpleEditor 
             content={editorContent} 
