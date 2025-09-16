@@ -70,8 +70,7 @@ function App() {
         <MeetingForm onSubmit={handleMeetingSubmit} />
         
         {/* Simple Editor Demo */}
-        <div style={{ margin: '2rem 0', padding: '1rem', background: 'rgba(255,255,255,0.9)', borderRadius: '8px' }}>
-          <h3>Tiptap Simple Editor</h3>
+        <div style={{ margin: '2rem 0', padding: '0', width: '210mm',  background: 'rgba(84, 54, 137, 0.386)', borderRadius: '12px' }}>
           <SimpleEditor />
         </div>
 

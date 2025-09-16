@@ -42,7 +42,7 @@
 .tiptap-card-body {
   padding: 0.375rem;
   flex: 1 1 auto;
-  overflow-y: auto;
+  overflow-y: visible !important;
 }
 
 .tiptap-card-item-group {

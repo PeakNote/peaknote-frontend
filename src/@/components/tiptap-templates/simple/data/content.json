@@ -37,24 +37,11 @@
               }
             }
           ],
-          "text": "Simple Editor"
+          "text": "PeakNote"
         },
         {
           "type": "text",
-          "text": " template! This template integrates "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "open source"
-        },
-        {
-          "type": "text",
-          "text": " UI components and Tiptap extensions licensed under "
+          "text": " – your AI-powered meeting assistant for Microsoft Teams. With PeakNote, you can automatically "
         },
         {
           "type": "text",
@@ -63,11 +50,11 @@
               "type": "bold"
             }
           ],
-          "text": "MIT"
+          "text": "transcribe meetings, generate smart summaries, and extract action items"
         },
         {
           "type": "text",
-          "text": "."
+          "text": ", making it easier than ever to stay organised and productive. "
         }
       ]
     },

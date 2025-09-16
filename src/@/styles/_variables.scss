@@ -118,6 +118,13 @@
   --black: rgba(14, 14, 17, 1);
   --transparent: rgba(255, 255, 255, 0);
 
+  /* Theme colors */
+  --purple-light:  rgba(27, 6, 53, 0.34);
+  --purple-dark:  rgba(20, 2, 41, 0.833);
+  --border-light-color: rgba(240,240,241,0.15);
+  --border-dark-color: rgba(240,240,241,0.2);
+  --background-light-color: rgba(84, 54, 137, 0.386);
+  --background-dark-color: rgba(20, 2, 41, 0.833);
   /****************** 
   Shadow variables
   ******************/
@@ -177,7 +184,7 @@
   **************************************************/
 
   /* Global colors - Light mode */
-  --tt-bg-color: var(--white);
+  --tt-bg-color: var(--background-light-color);
   --tt-border-color: var(--tt-gray-light-a-200);
   --tt-border-color-tint: var(--tt-gray-light-a-100);
   --tt-sidebar-bg-color: var(--tt-gray-light-100);
@@ -190,7 +197,7 @@
 
 /* Global colors - Dark mode */
 .dark {
-  --tt-bg-color: var(--black);
+  --tt-bg-color: var(--background-dark-color);
   --tt-border-color: var(--tt-gray-dark-a-200);
   --tt-border-color-tint: var(--tt-gray-dark-a-100);
   --tt-sidebar-bg-color: var(--tt-gray-dark-100);

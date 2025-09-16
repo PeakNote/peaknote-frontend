@@ -82,7 +82,7 @@ const MainToolbarContent = ({
 }) => {
   return (
     <>
-      <Spacer />
+      
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
@@ -122,9 +122,9 @@ const MainToolbarContent = ({
       </ToolbarGroup>
       <ToolbarSeparator />
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
+        <ImageUploadButton />
       </ToolbarGroup>
-      <Spacer />
+      
       {isMobile && <ToolbarSeparator />}
       <ToolbarGroup>
         <ThemeToggle />

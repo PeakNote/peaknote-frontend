@@ -150,7 +150,8 @@ h1 {
   transform: none;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 1;
+  filter: brightness(0.8)
 }
 
 /* 导入本地 Lastica 字体 */
