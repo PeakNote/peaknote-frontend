@@ -1,0 +1,70 @@
+.font-dropdown-menu {
+  position: relative;
+  z-index: 99999;
+  
+  .tiptap-dropdown-menu {
+    z-index: 99999 !important;
+    position: relative !important;
+  }
+  
+  // 确保下拉菜单内容能够突破工具栏的overflow限制
+  [data-radix-popper-content-wrapper] {
+    z-index: 99999 !important;
+    position: fixed !important;
+  }
+  
+  [data-radix-dropdown-menu-content] {
+    z-index: 99999 !important;
+    position: relative !important;
+    width: 110px; // 与按钮宽度保持一致
+    min-width: 110px;
+    max-width: 110px;
+  }
+  
+  // 确保Radix UI的Portal容器有正确的层级
+  [data-radix-portal] {
+    z-index: 99999 !important;
+  }
+  
+  .font-option-button {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 8px 12px;
+    min-height: 36px;
+    border: none;
+    background: transparent;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    &:hover {
+      background-color: var(--tt-gray-light-a-50);
+      
+      .dark & {
+        background-color: var(--tt-gray-dark-a-100);
+      }
+    }
+  }
+  
+  .font-trigger-button {
+    width: 110px; // 固定宽度
+    min-width: 110px;
+    max-width: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px; // 适中的间距
+    
+    .font-name {
+      font-size: 13px; // 适中的字体大小
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0; // 确保文本可以被截断
+    }
+  }
+}
+
