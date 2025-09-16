@@ -29,7 +29,7 @@ body,
 #root,
 #app {
   height: 100%;
-  background-color: transparent;
+  background-color: var(--tt-bg-color);
 }
 
 ::-webkit-scrollbar {

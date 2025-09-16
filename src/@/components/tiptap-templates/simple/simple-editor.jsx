@@ -68,7 +68,7 @@ import { useWindowSize } from "@/hooks/use-window-size"
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
+// ThemeToggle removed - using default dark mode
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
@@ -125,7 +125,6 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
       <ToolbarGroup>
         <ImageUploadButton text="Add" />
-        <ThemeToggle />
       </ToolbarGroup>
       <Spacer />
       <ToolbarGroup>
@@ -168,6 +167,11 @@ export function SimpleEditor() {
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
   const toolbarRef = React.useRef(null)
+
+  // 设置默认夜间模式
+  React.useEffect(() => {
+    document.documentElement.classList.add("dark")
+  }, [])
 
   const editor = useEditor({
     immediatelyRender: false,

@@ -4,6 +4,7 @@
 
 // 动态导入jsPDF
 let jsPDF = null;
+
 const loadJsPDF = async () => {
   if (!jsPDF) {
     const { default: jsPDFModule } = await import('jspdf');
@@ -112,39 +113,466 @@ export function downloadFile(content, filename, mimeType = 'text/plain') {
 }
 
 /**
- * 将HTML内容转换为PDF
+ * 将HTML内容转换为矢量PDF
  * @param {string} htmlContent - HTML内容
  * @returns {Promise<Blob>} PDF Blob
  */
 export async function htmlToPDF(htmlContent) {
   const jsPDF = await loadJsPDF();
-  const doc = new jsPDF();
   
-  // 获取纯文本内容
-  const textContent = htmlToText(htmlContent);
+  // 创建PDF文档
+  const pdf = new jsPDF('p', 'mm', 'a4');
   
-  // 设置字体
-  doc.setFont('helvetica');
-  doc.setFontSize(12);
+  // 设置页面参数，与打印格式保持一致
+  const pageWidth = 210; // A4 width in mm
+  const pageHeight = 297; // A4 height in mm
+  const margin = 20; // 20mm margin，与打印样式一致
+  const contentWidth = pageWidth - (margin * 2);
+  let currentY = margin;
+  const lineHeight = 4.8; // 12pt * 1.6 = 4.8mm，与打印样式一致
   
-  // 分割文本为行
-  const lines = doc.splitTextToSize(textContent, 180); // 180mm width
+  // 设置字体，与打印样式一致
+  pdf.setFont('helvetica'); // jsPDF中helvetica最接近Arial
+  pdf.setFontSize(12); // 12pt基础字体大小
   
-  // 添加文本到PDF
-  let y = 20;
-  const pageHeight = 280; // A4 height in mm
-  const lineHeight = 6;
+  // 解析HTML内容并转换为PDF文本
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
   
-  for (let i = 0; i < lines.length; i++) {
-    if (y + lineHeight > pageHeight) {
-      doc.addPage();
-      y = 20;
+  // 处理带格式的文本内容，支持文本对齐
+  function processFormattedText(node, x = margin, maxWidth = contentWidth, alignment = 'left') {
+    if (currentY > pageHeight - margin) {
+      pdf.addPage();
+      currentY = margin;
     }
-    doc.text(lines[i], 15, y);
-    y += lineHeight;
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim()) {
+        const lines = pdf.splitTextToSize(text, maxWidth);
+        for (const line of lines) {
+          if (currentY > pageHeight - margin) {
+            pdf.addPage();
+            currentY = margin;
+          }
+          
+          // 根据对齐方式设置文本位置
+          let textX = x;
+          if (alignment === 'center') {
+            textX = x + maxWidth / 2;
+          } else if (alignment === 'right') {
+            textX = x + maxWidth;
+          }
+          
+          pdf.text(line, textX, currentY, { align: alignment });
+          currentY += lineHeight;
+        }
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName.toLowerCase();
+      
+      // 处理内联格式标签
+      if (['strong', 'b'].includes(tagName)) {
+        const originalFont = pdf.internal.getFont();
+        pdf.setFont('helvetica', 'bold');
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        pdf.setFont(originalFont.fontName, originalFont.fontStyle);
+      }
+      else if (['em', 'i'].includes(tagName)) {
+        const originalFont = pdf.internal.getFont();
+        pdf.setFont('helvetica', 'italic');
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        pdf.setFont(originalFont.fontName, originalFont.fontStyle);
+      }
+      else if (['u'].includes(tagName)) {
+        // 下划线处理（jsPDF不直接支持，用下划线字符模拟）
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+      }
+      else if (['s', 'strike'].includes(tagName)) {
+        // 删除线处理（用横线字符模拟）
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+      }
+      else if (['code'].includes(tagName)) {
+        const originalFont = pdf.internal.getFont();
+        pdf.setFont('courier');
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        pdf.setFont(originalFont.fontName, originalFont.fontStyle);
+      }
+      else if (['sup'].includes(tagName)) {
+        // 上标处理
+        const originalFontSize = pdf.internal.getFontSize();
+        pdf.setFontSize(originalFontSize * 0.7);
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        pdf.setFontSize(originalFontSize);
+      }
+      else if (['sub'].includes(tagName)) {
+        // 下标处理
+        const originalFontSize = pdf.internal.getFontSize();
+        pdf.setFontSize(originalFontSize * 0.7);
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        pdf.setFontSize(originalFontSize);
+      }
+      else if (['mark', 'highlight'].includes(tagName)) {
+        // 高亮处理（背景色）
+        const originalFont = pdf.internal.getFont();
+        const originalFontSize = pdf.internal.getFontSize();
+        
+        // 获取高亮颜色
+        const highlightColor = node.getAttribute('data-color') || node.style?.backgroundColor || '#ffff00';
+        
+        // 设置背景色（jsPDF通过填充矩形实现）
+        const text = node.textContent;
+        if (text.trim()) {
+          const lines = pdf.splitTextToSize(text, maxWidth);
+          for (const line of lines) {
+            if (currentY > pageHeight - margin) {
+              pdf.addPage();
+              currentY = margin;
+            }
+            
+            // 计算文本宽度
+            const textWidth = pdf.getTextWidth(line);
+            const textHeight = originalFontSize * 0.4; // 高亮高度
+            
+            // 设置高亮颜色
+            const rgb = hexToRgb(highlightColor);
+            if (rgb) {
+              pdf.setFillColor(rgb.r, rgb.g, rgb.b);
+              pdf.rect(x, currentY - textHeight, textWidth, textHeight, 'F');
+            }
+            
+            // 绘制文本
+            let textX = x;
+            if (alignment === 'center') {
+              textX = x + maxWidth / 2;
+            } else if (alignment === 'right') {
+              textX = x + maxWidth;
+            }
+            
+            pdf.text(line, textX, currentY, { align: alignment });
+            currentY += lineHeight;
+          }
+        }
+      }
+      else if (['a'].includes(tagName)) {
+        // 链接处理
+        const originalFont = pdf.internal.getFont();
+        const originalFontSize = pdf.internal.getFontSize();
+        const href = node.getAttribute('href');
+        
+        // 设置链接样式（蓝色+下划线）
+        pdf.setFont('helvetica', 'italic');
+        pdf.setTextColor(0, 0, 255); // 蓝色
+        
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+        
+        // 恢复原始样式
+        pdf.setFont(originalFont.fontName, originalFont.fontStyle);
+        pdf.setTextColor(0, 0, 0); // 黑色
+      }
+      else {
+        // 处理其他内联元素
+        for (const child of node.childNodes) {
+          processFormattedText(child, x, maxWidth, alignment);
+        }
+      }
+    }
+  }
+
+  // 将十六进制颜色转换为RGB
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  // 获取文本对齐方式
+  function getTextAlignment(node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const style = node.getAttribute('style');
+      if (style) {
+        const textAlignMatch = style.match(/text-align:\s*(\w+)/);
+        if (textAlignMatch) {
+          return textAlignMatch[1];
+        }
+      }
+      
+      // 检查data-text-align属性（Tiptap编辑器使用）
+      const dataAlign = node.getAttribute('data-text-align');
+      if (dataAlign) {
+        return dataAlign;
+      }
+    }
+    return 'left'; // 默认左对齐
+  }
+
+  // 递归处理DOM节点
+  function processNode(node, depth = 0) {
+    if (currentY > pageHeight - margin) {
+      pdf.addPage();
+      currentY = margin;
+    }
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent.trim();
+      if (text) {
+        // 处理文本内容
+        const lines = pdf.splitTextToSize(text, contentWidth);
+        for (const line of lines) {
+          if (currentY > pageHeight - margin) {
+            pdf.addPage();
+            currentY = margin;
+          }
+          pdf.text(line, margin, currentY);
+          currentY += lineHeight;
+        }
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName.toLowerCase();
+      const alignment = getTextAlignment(node);
+      
+      // 处理标题，与打印格式保持一致
+      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
+        currentY += 8; // 标题前间距，与打印样式一致
+        if (currentY > pageHeight - margin) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        const level = parseInt(tagName.charAt(1));
+        // 调整字体大小，与打印样式更一致
+        const fontSize = 16 - (level - 1) * 1.5; // h1=16, h2=14.5, h3=13, etc.
+        pdf.setFontSize(fontSize);
+        pdf.setFont('helvetica', 'bold');
+        
+        // 使用格式化文本处理，支持对齐
+        for (const child of node.childNodes) {
+          processFormattedText(child, margin, contentWidth, alignment);
+        }
+        
+        currentY += 4; // 标题后间距，与打印样式一致
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+      }
+      // 处理段落，与打印格式保持一致
+      else if (tagName === 'p') {
+        currentY += 2; // 段落前间距，与打印样式一致
+        if (currentY > pageHeight - margin) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        // 使用格式化文本处理，支持对齐
+        for (const child of node.childNodes) {
+          processFormattedText(child, margin, contentWidth, alignment);
+        }
+        
+        currentY += 2; // 段落后间距，与打印样式一致
+      }
+      // 处理列表，与打印格式保持一致
+      else if (['ul', 'ol'].includes(tagName)) {
+        currentY += 2; // 列表前间距，与打印样式一致
+        const isOrdered = tagName === 'ol';
+        let itemNumber = 1;
+        
+        for (const child of node.children) {
+          if (child.tagName.toLowerCase() === 'li') {
+            if (currentY > pageHeight - margin) {
+              pdf.addPage();
+              currentY = margin;
+            }
+            
+            const prefix = isOrdered ? `${itemNumber}. ` : '• ';
+            pdf.text(prefix, margin + 10, currentY);
+            
+            // 处理列表项内容，支持格式
+            for (const grandChild of child.childNodes) {
+              processFormattedText(grandChild, margin + 20, contentWidth - 20);
+            }
+            itemNumber++;
+          }
+        }
+        currentY += 2; // 列表后间距，与打印样式一致
+      }
+      // 处理引用，与打印格式保持一致
+      else if (tagName === 'blockquote') {
+        currentY += 4; // 引用前间距，与打印样式一致
+        if (currentY > pageHeight - margin) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        // 绘制左边框，与打印样式一致
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, currentY - 4, margin, currentY + 15);
+        
+        // 使用格式化文本处理
+        for (const child of node.childNodes) {
+          processFormattedText(child, margin + 10, contentWidth - 15);
+        }
+        currentY += 4; // 引用后间距，与打印样式一致
+      }
+      // 处理预格式化文本，与打印格式保持一致
+      else if (tagName === 'pre') {
+        currentY += 2; // 预格式化文本前间距，与打印样式一致
+        pdf.setFont('courier');
+        const text = node.textContent.trim();
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (currentY > pageHeight - margin) {
+            pdf.addPage();
+            currentY = margin;
+          }
+          pdf.text(line, margin, currentY);
+          currentY += lineHeight;
+        }
+        currentY += 2; // 预格式化文本后间距，与打印样式一致
+        pdf.setFont('helvetica');
+      }
+      // 处理图片
+      else if (tagName === 'img') {
+        currentY += 4; // 图片前间距
+        if (currentY > pageHeight - margin - 20) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        const src = node.getAttribute('src');
+        const alt = node.getAttribute('alt') || 'Image';
+        const width = parseInt(node.getAttribute('width')) || 100;
+        const height = parseInt(node.getAttribute('height')) || 100;
+        
+        // 计算图片在PDF中的尺寸
+        const maxWidth = contentWidth;
+        const maxHeight = 50; // 最大高度50mm
+        let imgWidth = width;
+        let imgHeight = height;
+        
+        // 按比例缩放
+        if (imgWidth > maxWidth) {
+          imgHeight = (imgHeight * maxWidth) / imgWidth;
+          imgWidth = maxWidth;
+        }
+        if (imgHeight > maxHeight) {
+          imgWidth = (imgWidth * maxHeight) / imgHeight;
+          imgHeight = maxHeight;
+        }
+        
+        // 居中显示图片
+        const imgX = margin + (contentWidth - imgWidth) / 2;
+        
+        try {
+          // 尝试添加图片（如果是base64或URL）
+          if (src.startsWith('data:') || src.startsWith('http')) {
+            pdf.addImage(src, 'JPEG', imgX, currentY, imgWidth, imgHeight);
+          } else {
+            // 如果是相对路径，显示占位符
+            pdf.setFillColor(240, 240, 240);
+            pdf.rect(imgX, currentY, imgWidth, imgHeight, 'F');
+            pdf.setTextColor(100, 100, 100);
+            pdf.setFontSize(8);
+            pdf.text(alt, imgX + imgWidth/2, currentY + imgHeight/2, { align: 'center' });
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontSize(12);
+          }
+        } catch (error) {
+          // 如果图片加载失败，显示占位符
+          pdf.setFillColor(240, 240, 240);
+          pdf.rect(imgX, currentY, imgWidth, imgHeight, 'F');
+          pdf.setTextColor(100, 100, 100);
+          pdf.setFontSize(8);
+          pdf.text(alt, imgX + imgWidth/2, currentY + imgHeight/2, { align: 'center' });
+          pdf.setTextColor(0, 0, 0);
+          pdf.setFontSize(12);
+        }
+        
+        currentY += imgHeight + 4; // 图片后间距
+      }
+      // 处理水平线
+      else if (tagName === 'hr') {
+        currentY += 4; // 水平线前间距
+        if (currentY > pageHeight - margin) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        // 绘制水平线
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, currentY, margin + contentWidth, currentY);
+        
+        currentY += 4; // 水平线后间距
+      }
+      // 处理任务列表项
+      else if (tagName === 'li' && node.getAttribute('data-type') === 'taskItem') {
+        if (currentY > pageHeight - margin) {
+          pdf.addPage();
+          currentY = margin;
+        }
+        
+        const isChecked = node.getAttribute('data-checked') === 'true';
+        const checkbox = isChecked ? '☑' : '☐';
+        const text = node.textContent.trim();
+        
+        // 绘制复选框和文本
+        pdf.text(checkbox + ' ', margin + 10, currentY);
+        
+        // 处理任务项内容，支持格式
+        for (const child of node.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            const text = child.textContent.trim();
+            if (text) {
+              const lines = pdf.splitTextToSize(text, contentWidth - 30);
+              for (const line of lines) {
+                if (currentY > pageHeight - margin) {
+                  pdf.addPage();
+                  currentY = margin;
+                }
+                pdf.text(line, margin + 20, currentY);
+                currentY += lineHeight;
+              }
+            }
+          } else {
+            processFormattedText(child, margin + 20, contentWidth - 20, alignment);
+          }
+        }
+      }
+      // 处理其他元素
+      else {
+        // 递归处理子节点
+        for (const child of node.childNodes) {
+          processNode(child, depth + 1);
+        }
+      }
+    }
   }
   
-  return doc.output('blob');
+  // 处理所有子节点
+  for (const child of tempDiv.childNodes) {
+    processNode(child);
+  }
+  
+  return pdf.output('blob');
 }
 
 /**
