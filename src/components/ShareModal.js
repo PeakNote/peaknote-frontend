@@ -154,175 +154,47 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
 const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees.length;
 
 
-  // 生成PDF函数
-  const generatePDF = async () => {
-    try {
-      // 获取 .a4-paper 元素
-      const element = document.querySelector('.a4-paper');
-      
-      if (!element) {
-        throw new Error('Meeting content not found. Please generate meeting data first.');
-      }
-
-      // 临时隐藏不需要的元素
-      const originalDisplay = element.style.display;
-      element.style.display = 'block';
-      element.style.position = 'absolute';
-      element.style.left = '-9999px';
-      element.style.top = '0';
-      element.style.zIndex = '-1';
-
-      // 使用改进的 html2canvas 配置
-      const canvas = await html2canvas(element, {
-        scale: 3, // 更高的清晰度
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
-        foreignObjectRendering: false,
-        removeContainer: true,
-        logging: false
-      });
-
-      // 恢复元素样式
-      element.style.display = originalDisplay;
-      element.style.position = '';
-      element.style.left = '';
-      element.style.top = '';
-      element.style.zIndex = '';
-
-      // 创建高质量PDF
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const imgWidth = 210; // A4 宽度 (mm)
-      const pageHeight = 297; // A4 高度 (mm)
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      // 添加第一页
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      // 如果内容超过一页，添加后续页面
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      return pdf;
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      throw error;
-    }
-  };
-
-  // 下载PDF函数
-  const downloadPDF = async () => {
-    try {
-      setIsGeneratingPDF(true);
-      
-      const pdf = await generatePDF();
-      
-      // 生成文件名
-      const fileName = `PeakNote-Meeting-Summary-${new Date().toISOString().split('T')[0]}.pdf`;
-      
-      // 下载PDF
-      pdf.save(fileName);
-      
-      return fileName;
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      alert('Error generating PDF: ' + error.message);
-      throw error;
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
-//   
-
-  const handleSend = async () => {
+  const handleSend = () => {
     if (selectedUsers.length === 0) {
       alert('Please select at least one recipient');
       return;
     }
 
-    try {
-      setIsGeneratingPDF(true);
-      
-      // 1. 获取会议总结的HTML内容
-      const meetingElement = document.querySelector('.a4-paper');
-      if (!meetingElement) {
-        throw new Error('Meeting content not found. Please generate meeting data first.');
-      }
-      
-      // 获取HTML字符串
-      const htmlContent = meetingElement.outerHTML;
-      // const fileResponse = await fetch('/詹姆斯.txt');
-      // if (!fileResponse.ok) {
-      //   throw new Error(`Failed to fetch file: ${fileResponse.status}`);
-      // }
-      // const htmlContent = await fileResponse.text();
-      
-      // 2. 获取选中的邮箱列表
-      const selectedEmails = selectedUsers.map(index => attendees[index].email);
-      
-      // 3. 准备发送数据（只发送必要字段）
-      const sendData = {
-        htmlContent: htmlContent,
-        recipients: selectedEmails
-      };
+    // 获取选中的收件人邮箱
+    const selectedEmails = selectedUsers.map(index => attendees[index].email);
+    
+    console.log('选中的邮箱列表：', selectedEmails);
 
-      console.log('发送的数据：', {
-        htmlContent: htmlContent, // 显示全部内容
-        recipients: selectedEmails
-      });
+    // 构建邮件内容
+    const subject = encodeURIComponent('PeakNote Meeting Summary');
+    const body = encodeURIComponent(`
+Dear Team,
 
-      // 4. 调用后端API
-      const response = await fetch('https://api.peak-note.com/email/forwardHtml', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true'
-        },
-        body: JSON.stringify(sendData)
-      });
+Please find attached the meeting summary from our recent discussion.
 
-      console.log('API响应状态：', response.status);
+Meeting Details:
+- Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
+- Generated: ${new Date().toLocaleString()}
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API错误响应：', errorText);
-        throw new Error(`Failed to send email: ${response.status} - ${errorText}`);
-      }
+Note: The PDF file has been downloaded to your device. Please attach it to this email.
 
-      // 获取响应文本
-      const responseText = await response.text();
-      console.log('API响应文本：', responseText);
+Best regards,
+PeakNote Team
+`.trim());
 
-      if (responseText.includes('Forward successful')) {
-        alert(`✅ Meeting summary sent successfully to ${selectedEmails.length} recipient(s)!`);
-        onClose();
-        setSelectedUsers([]);
-      } else {
-        throw new Error(`Failed to send email: ${responseText}`);
-      }
+    // 构建 mailto 链接并打开邮件客户端
+    const mailtoLink = `mailto:${selectedEmails.join(',')}?subject=${subject}&body=${body}`;
+    console.log('生成的 mailto 链接：', mailtoLink);
+    
+    window.open(mailtoLink, '_blank');
 
-    } catch (error) {
-      console.error('Error sending email:', error);
-      alert(`❌ Failed to send email: ${error.message}\n\nPlease try again or contact support.`);
-    } finally {
-      setIsGeneratingPDF(false);
-    }
+    // 显示成功消息
+    alert('Email client opened! Please attach the PDF file manually.');
+    console.log('邮件客户端已打开，用户需要手动附加PDF文件');
+
+    // 关闭模态框
+    onClose();
+    setSelectedUsers([]);
   };
 
   const getInitials = (name) => {
@@ -344,7 +216,7 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
-            <p className="text-white mb-3">Select recipients to share the meeting minutes</p>
+            <p className="text-white mb-3">Select recipients to share the meeting minutes via email:</p>
             
              {/* 全选按钮 */}
              {attendees.length > 0 && (
@@ -425,8 +297,8 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
             {/* <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isGeneratingPDF}>
               Send to Selected
             </button> */}
-            <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isLoadingAttendees || attendees.length === 0 || isGeneratingPDF}>
-            {isGeneratingPDF ? 'Sending...' : 'Send Meeting Summary'}
+            <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isLoadingAttendees || attendees.length === 0}>
+            Open Email Client
             </button>
           </div>
         </div>

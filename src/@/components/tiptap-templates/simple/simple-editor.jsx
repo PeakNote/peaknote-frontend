@@ -81,7 +81,8 @@ import content from "@/components/tiptap-templates/simple/data/content.json"
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
-  isMobile
+  isMobile,
+  onShareClick
 }) => {
   return (
     <>
@@ -128,7 +129,7 @@ const MainToolbarContent = ({
       </ToolbarGroup>
       <Spacer />
       <ToolbarGroup>
-        <ShareButton onClick={() => console.log('Share clicked')} />
+        <ShareButton onClick={onShareClick} />
         <DownloadButton />
         <PrintButton />
       </ToolbarGroup>
@@ -162,7 +163,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ meetingData, onShareClick }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
@@ -172,6 +173,65 @@ export function SimpleEditor() {
   React.useEffect(() => {
     document.documentElement.classList.add("dark")
   }, [])
+
+  // 根据meetingData生成编辑器内容
+  const getEditorContent = () => {
+    if (meetingData && meetingData.notes) {
+      const notes = meetingData.notes;
+      
+      // 如果notes是对象且包含transcript字段
+      if (typeof notes === 'object' && notes.transcript) {
+        return notes.transcript;
+      }
+      
+      // 如果notes是字符串
+      if (typeof notes === 'string') {
+        return notes;
+      }
+      
+      // 如果是结构化数据，转换为HTML
+      if (typeof notes === 'object' && (notes.agenda || notes.participants || notes.actionItems || notes.decisions)) {
+        let htmlContent = '';
+        
+        if (notes.agenda && notes.agenda.length > 0) {
+          htmlContent += '<h2>Agenda</h2><ul>';
+          notes.agenda.forEach(item => {
+            htmlContent += `<li>${item}</li>`;
+          });
+          htmlContent += '</ul>';
+        }
+        
+        if (notes.participants && notes.participants.length > 0) {
+          htmlContent += '<h2>Participants</h2><ul>';
+          notes.participants.forEach(participant => {
+            htmlContent += `<li>${participant}</li>`;
+          });
+          htmlContent += '</ul>';
+        }
+        
+        if (notes.actionItems && notes.actionItems.length > 0) {
+          htmlContent += '<h2>Action Items</h2><ul>';
+          notes.actionItems.forEach(item => {
+            htmlContent += `<li>${item}</li>`;
+          });
+          htmlContent += '</ul>';
+        }
+        
+        if (notes.decisions && notes.decisions.length > 0) {
+          htmlContent += '<h2>Decisions</h2><ul>';
+          notes.decisions.forEach(decision => {
+            htmlContent += `<li>${decision}</li>`;
+          });
+          htmlContent += '</ul>';
+        }
+        
+        return htmlContent;
+      }
+    }
+    
+    // 如果没有meetingData，返回空内容
+    return '';
+  };
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -215,7 +275,7 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    content: getEditorContent(),
   })
 
   const rect = useCursorVisibility({
@@ -228,6 +288,19 @@ export function SimpleEditor() {
       setMobileView("main")
     }
   }, [isMobile, mobileView])
+
+  // 当meetingData变化时，更新编辑器内容
+  React.useEffect(() => {
+    if (editor && meetingData && meetingData.notes) {
+      const newContent = getEditorContent();
+      editor.commands.setContent(newContent);
+      console.log('Editor content updated with meeting data:', newContent);
+    } else if (editor && !meetingData) {
+      // 如果没有meetingData，清空编辑器内容
+      editor.commands.setContent('');
+      console.log('Editor content cleared - no meeting data');
+    }
+  }, [meetingData, editor])
 
   return (
     <div className="simple-editor-wrapper">
@@ -245,7 +318,8 @@ export function SimpleEditor() {
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}
               onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile} />
+              isMobile={isMobile}
+              onShareClick={onShareClick} />
           ) : (
             <MobileToolbarContent
               type={mobileView === "highlighter" ? "highlighter" : "link"}

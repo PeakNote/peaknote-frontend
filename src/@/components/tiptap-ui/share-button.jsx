@@ -9,6 +9,7 @@ import { Button } from "@/components/tiptap-ui-primitive/button"
 export const ShareButton = React.forwardRef(({ onClick, ...props }, ref) => {
   const handleClick = React.useCallback((e) => {
     e.preventDefault()
+    console.log('Share button clicked');
     onClick?.(e)
   }, [onClick])
 
