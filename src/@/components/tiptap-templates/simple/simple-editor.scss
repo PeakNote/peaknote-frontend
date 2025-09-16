@@ -58,6 +58,8 @@ body,
   width: 210mm;
   height: auto;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .simple-editor-content {

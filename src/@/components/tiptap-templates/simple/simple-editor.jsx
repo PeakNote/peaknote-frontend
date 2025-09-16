@@ -13,6 +13,8 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
+import { FontFamily } from "@tiptap/extension-font-family"
+import { TextStyle } from "@tiptap/extension-text-style"
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
@@ -36,6 +38,7 @@ import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
+import { FontDropdownMenu } from "@/components/tiptap-ui/font-dropdown-menu"
 import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button"
 import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu"
 import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button"
@@ -125,7 +128,8 @@ const MainToolbarContent = ({
       </ToolbarGroup>
       <ToolbarSeparator />
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
+        <ImageUploadButton />
+        <FontDropdownMenu portal={isMobile} />
       </ToolbarGroup>
       <Spacer />
       <ToolbarGroup>
@@ -267,6 +271,10 @@ export function SimpleEditor({ meetingData, onShareClick }) {
       Superscript,
       Subscript,
       Selection,
+      TextStyle,
+      FontFamily.configure({
+        types: ['textStyle'],
+      }),
       ImageUploadNode.configure({
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,
