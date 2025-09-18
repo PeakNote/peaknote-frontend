@@ -109,7 +109,7 @@ const LinkMain = ({
             <Button
               type="button"
               onClick={openLink}
-              title="Insert link"
+              title="Open in new window"
               disabled={!url && !isActive}
               data-style="ghost">
               <ExternalLinkIcon className="tiptap-button-icon" />

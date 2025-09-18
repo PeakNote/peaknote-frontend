@@ -170,12 +170,46 @@ export function SimpleEditor() {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
+  const [isToolbarFloating, setIsToolbarFloating] = React.useState(false)
   const toolbarRef = React.useRef(null)
+  const editorWrapperRef = React.useRef(null)
 
   // 设置默认夜间模式
   React.useEffect(() => {
     document.documentElement.classList.add("dark")
   }, [])
+
+  // 监听滚动，实现工具栏悬浮效果
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (!editorWrapperRef.current || !toolbarRef.current) return
+
+      const wrapperRect = editorWrapperRef.current.getBoundingClientRect()
+      const toolbarRect = toolbarRef.current.getBoundingClientRect()
+      
+      // 当编辑器容器顶部超出视窗时，激活悬浮状态
+      const shouldFloat = wrapperRect.top < -50 // 给一些缓冲距离
+      
+      if (shouldFloat !== isToolbarFloating) {
+        setIsToolbarFloating(shouldFloat)
+      }
+    }
+
+    // 使用节流优化性能
+    let ticking = false
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', throttledHandleScroll)
+  }, [isToolbarFloating])
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -238,10 +272,11 @@ export function SimpleEditor() {
   }, [isMobile, mobileView])
 
   return (
-    <div className="simple-editor-wrapper">
+    <div className="simple-editor-wrapper" ref={editorWrapperRef}>
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
+          className={isToolbarFloating ? 'toolbar-floating' : ''}
           style={{
             ...(isMobile
               ? {

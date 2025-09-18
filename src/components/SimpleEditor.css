@@ -46,7 +46,26 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   overflow-x: auto;
-  z-index: 1000; /* 置顶于编辑内容之上，低于弹出层 */
+  z-index: 9999 !important; /* 确保工具栏在最顶层 */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 工具栏滚动悬浮状态 */
+.simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+  position: fixed !important;
+  top: 0 !important;
+  left: calc(50% + 10px) !important;
+  transform: translateX(-50%) !important;
+  width: 210mm !important;
+  max-width: calc(100% - 32px) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px !important;
+  z-index: 10000 !important; /* 确保悬浮时在最顶层 */
+  transition: none !important; /* 移除所有过渡动画 */
 }
 
 /* 工具栏组左对齐 */
@@ -145,6 +164,7 @@
 .simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: right"],
 .simple-editor-container .tiptap.ProseMirror.simple-editor [style*="text-align: justify"] {
   /* 让内联样式生效 */
+  display: block;
 }
 
 /* 确保文本对齐按钮的激活状态正确显示 */
@@ -190,6 +210,14 @@
   
   .simple-editor-container .tiptap-toolbar-group {
     flex-shrink: 0;
+  }
+  
+  /* 移动端悬浮工具栏调整 */
+  .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+    left: calc(50% + 10px) !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 32px) !important;
+    max-width: 210mm !important;
   }
 }
 
