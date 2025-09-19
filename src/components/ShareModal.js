@@ -225,27 +225,11 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
     }
   };
 
-  // 下载PDF函数
+  // 下载PDF函数 - 已禁用
   const downloadPDF = async () => {
-    try {
-      setIsGeneratingPDF(true);
-      
-      const pdf = await generatePDF();
-      
-      // 生成文件名
-      const fileName = `PeakNote-Meeting-Summary-${new Date().toISOString().split('T')[0]}.pdf`;
-      
-      // 下载PDF
-      pdf.save(fileName);
-      
-      return fileName;
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      alert('Error generating PDF: ' + error.message);
-      throw error;
-    } finally {
-      setIsGeneratingPDF(false);
-    }
+    // 下载功能已禁用
+    alert('下载功能暂时不可用');
+    return null;
   };
 
 //   

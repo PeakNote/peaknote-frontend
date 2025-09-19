@@ -128,13 +128,107 @@ export async function htmlToPDF(htmlContent) {
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
   tempContainer.style.top = '0';
-  tempContainer.style.width = '210mm'; // A4 width
-  tempContainer.style.padding = '20mm';
-  tempContainer.style.fontFamily = 'PublicSans, Arial, sans-serif';
-  tempContainer.style.fontSize = '12pt';
-  tempContainer.style.lineHeight = '1.6';
+  tempContainer.style.width = '190mm'; // A4 width - 左右边距 (210mm - 20mm)
+  tempContainer.style.minHeight = '267mm'; // A4 height - 上下边距 (297mm - 30mm)  
+  tempContainer.style.padding = '15mm 10mm'; // 上下15mm，左右10mm
   tempContainer.style.color = '#000';
   tempContainer.style.backgroundColor = '#fff';
+  tempContainer.style.boxSizing = 'border-box';
+  tempContainer.style.wordBreak = 'break-word';
+  tempContainer.style.hyphens = 'auto';
+  
+  // 应用打印样式
+  const printStyles = document.createElement('style');
+  printStyles.textContent = `
+    /* 不强制覆盖字体，让编辑器中的字体设置生效 */
+    h1 {
+      color: #000 !important;
+      font-size: 24pt !important;
+      margin-top: 20px !important;
+      margin-bottom: 10px !important;
+      page-break-after: avoid !important;
+      line-height: 1.2 !important;
+      display: block !important;
+      visibility: visible !important;
+    }
+    h2 {
+      color: #000 !important;
+      font-size: 20pt !important;
+      margin-top: 18px !important;
+      margin-bottom: 8px !important;
+      page-break-after: avoid !important;
+      line-height: 1.2 !important;
+    }
+    h3 {
+      color: #000 !important;
+      font-size: 16pt !important;
+      margin-top: 16px !important;
+      margin-bottom: 6px !important;
+      page-break-after: avoid !important;
+      line-height: 1.2 !important;
+    }
+    h4, h5, h6 {
+      color: #000 !important;
+      font-size: 14pt !important;
+      margin-top: 14px !important;
+      margin-bottom: 6px !important;
+      page-break-after: avoid !important;
+      line-height: 1.2 !important;
+    }
+    p {
+      color: #000 !important;
+      margin-bottom: 10px !important;
+      orphans: 3 !important;
+      widows: 3 !important;
+      line-height: 1.6 !important;
+    }
+    ul, ol {
+      color: #000 !important;
+      margin-bottom: 10px !important;
+      padding-left: 20px !important;
+      line-height: 1.6 !important;
+    }
+    li {
+      color: #000 !important;
+      margin-bottom: 5px !important;
+      line-height: 1.6 !important;
+    }
+    blockquote {
+      color: #000 !important;
+      border-left: 3px solid #ccc !important;
+      padding-left: 15px !important;
+      margin: 15px 0 !important;
+      font-style: italic !important;
+      line-height: 1.6 !important;
+    }
+    code {
+      color: #000 !important;
+      background-color: #f4f4f4 !important;
+      padding: 2px 4px !important;
+      border-radius: 3px !important;
+      font-family: 'Courier New', monospace !important;
+    }
+    pre {
+      color: #000 !important;
+      background-color: #f4f4f4 !important;
+      padding: 10px !important;
+      border-radius: 5px !important;
+      overflow-x: auto !important;
+      page-break-inside: avoid !important;
+      line-height: 1.4 !important;
+    }
+    pre code {
+      font-family: 'Courier New', monospace !important;
+    }
+    a {
+      color: #000 !important;
+      text-decoration: underline !important;
+    }
+  `;
+  
+  // 将样式添加到临时容器的头部
+  tempContainer.appendChild(printStyles);
+  
   tempContainer.innerHTML = htmlContent;
   
   // 添加到DOM
@@ -143,14 +237,40 @@ export async function htmlToPDF(htmlContent) {
   try {
     // 使用html2canvas渲染为图片
     const canvas = await html2canvas(tempContainer, {
-      scale: 2, // 提高清晰度
+      scale: 3, // 提高清晰度，防止文字模糊
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       width: tempContainer.offsetWidth,
       height: tempContainer.offsetHeight,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      // 改进文字渲染
+      logging: false,
+      // 确保字体正确加载
+      onclone: function(clonedDoc) {
+        // 确保字体样式正确应用，但不强制覆盖用户设置的字体
+        const style = clonedDoc.createElement('style');
+        style.textContent = `
+          * {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+          }
+          h1 {
+            color: #000 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+          h2, h3, h4, h5, h6 {
+            color: #000 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+        `;
+        clonedDoc.head.appendChild(style);
+      }
     });
     
     // 创建PDF文档
@@ -163,33 +283,83 @@ export async function htmlToPDF(htmlContent) {
     const imgHeight = (canvas.height * pageWidth) / canvas.width;
     
     // 如果内容超过一页，需要分页处理
-    if (imgHeight <= pageHeight) {
-      // 单页内容
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+    const topMargin = 15; // 顶部边距 (mm)
+    const bottomMargin = 15; // 底部边距 (mm)
+    const leftMargin = 10; // 左侧边距 (mm)
+    const rightMargin = 10; // 右侧边距 (mm)
+    const contentWidth = pageWidth - leftMargin - rightMargin; // 实际内容宽度 (mm)
+    const contentHeight = pageHeight - topMargin - bottomMargin; // 实际内容高度 (mm)
+    
+    // 重新计算图片尺寸，考虑边距
+    const adjustedImgWidth = contentWidth;
+    const adjustedImgHeight = (canvas.height * contentWidth) / canvas.width;
+    
+    if (adjustedImgHeight <= contentHeight) {
+      // 单页内容，添加边距
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', leftMargin, topMargin, adjustedImgWidth, adjustedImgHeight);
     } else {
-      // 多页内容
-      const totalPages = Math.ceil(imgHeight / pageHeight);
+      // 多页内容 - 改进的分页算法，考虑页面边距
+      const canvasPageHeight = (contentHeight / adjustedImgWidth) * canvas.width; // 对应的canvas内容高度 (px)
+      const totalPages = Math.ceil(canvas.height / canvasPageHeight);
+      
+      // 添加页面间距缓冲区，避免内容过于紧密
+      const pageBuffer = 5; // 页面缓冲区 (px)，用于避免文字被截断
+      
       for (let i = 0; i < totalPages; i++) {
         if (i > 0) {
           pdf.addPage();
         }
         
-        const sourceY = i * pageHeight * (canvas.height / imgHeight);
-        const sourceHeight = Math.min(pageHeight * (canvas.height / imgHeight), canvas.height - sourceY);
+        // 计算当前页在原canvas中的位置和尺寸
+        let sourceY = i * canvasPageHeight;
+        let sourceHeight = Math.min(canvasPageHeight, canvas.height - sourceY);
+        
+        // 为非首页添加小的重叠缓冲区，确保文字不被截断
+        if (i > 0) {
+          sourceY = Math.max(0, sourceY - pageBuffer);
+          sourceHeight = Math.min(canvasPageHeight + pageBuffer, canvas.height - sourceY);
+        }
+        
+        // 为非最后一页减少一点高度，避免内容过于紧密
+        if (i < totalPages - 1) {
+          sourceHeight = Math.max(sourceHeight - pageBuffer, canvasPageHeight * 0.9);
+        }
         
         // 创建临时canvas来裁剪当前页
         const pageCanvas = document.createElement('canvas');
         const pageCtx = pageCanvas.getContext('2d');
+        if (!pageCtx) {
+          console.error('无法创建canvas 2d context');
+          continue;
+        }
         pageCanvas.width = canvas.width;
         pageCanvas.height = sourceHeight;
         
+        // 设置高质量渲染
+        pageCtx.imageSmoothingEnabled = true;
+        pageCtx.imageSmoothingQuality = 'high';
+        
+        // 填充白色背景
+        pageCtx.fillStyle = '#ffffff';
+        pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        
+        // 裁剪并绘制当前页内容
         pageCtx.drawImage(
           canvas,
-          0, sourceY, canvas.width, sourceHeight,
-          0, 0, canvas.width, sourceHeight
+          0, sourceY, canvas.width, sourceHeight, // 源区域
+          0, 0, canvas.width, sourceHeight        // 目标区域
         );
         
-        pdf.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, pageHeight);
+        // 计算在PDF中的实际高度
+        const pdfImgHeight = (sourceHeight / canvas.width) * adjustedImgWidth;
+        
+        // 添加到PDF，保持页面边距
+        pdf.addImage(
+          pageCanvas.toDataURL('image/png', 0.95), 
+          'PNG', 
+          leftMargin, topMargin, // 添加左侧和顶部边距
+          adjustedImgWidth, pdfImgHeight
+        );
       }
     }
     
