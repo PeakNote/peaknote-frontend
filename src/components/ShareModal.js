@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ShareModal.css';
 
 const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
@@ -11,7 +9,7 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
   const [attendeesError, setAttendeesError] = useState(null);
 
   // 获取会议参与者
-  const fetchAttendees = async () => { 
+  const fetchAttendees = useCallback(async () => { 
       // 检查是否有eventId
       const eventId = meetingData?.notes?.eventId;
         // 添加详细的调试信息
@@ -106,7 +104,7 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
     } finally {
       setIsLoadingAttendees(false);
     }
-  };
+  }, [meetingData]);
 
   // 控制背景滚动
   useEffect(() => {
@@ -128,7 +126,7 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
       document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
     };
-  }, [isOpen, meetingData?.meetingUrl]);
+  }, [isOpen, fetchAttendees]);
 
 
   const toggleUserSelection = (index) => {
@@ -154,8 +152,8 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
 const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees.length;
 
 
-  // 生成PDF函数
-  const generatePDF = async () => {
+  // 生成PDF函数 - 暂时未使用
+  /* const generatePDF = async () => {
     try {
       // 获取 .a4-paper 元素
       const element = document.querySelector('.a4-paper');
@@ -223,14 +221,14 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
       console.error('Error generating PDF:', error);
       throw error;
     }
-  };
+  }; */
 
   // 下载PDF函数 - 已禁用
-  const downloadPDF = async () => {
-    // 下载功能已禁用
-    alert('下载功能暂时不可用');
-    return null;
-  };
+  // const downloadPDF = async () => {
+  //   // 下载功能已禁用
+  //   alert('下载功能暂时不可用');
+  //   return null;
+  // };
 
 //   
 

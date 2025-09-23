@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import MeetingForm from './components/MeetingForm';
-import MeetingMinutes from './components/MeetingMinutes';
+
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import Pattern from './components/Pattern.jsx';
@@ -25,10 +25,7 @@ function App() {
     }
   };
 
-  const handleShare = () => {
-    console.log('App.jsx: handleShare called'); // 添加调试信息
-    setShowShareModal(true);
-  };
+
 
   const handleShareSend = (recipients) => {
     setShowShareModal(false);

@@ -278,9 +278,7 @@ export async function htmlToPDF(htmlContent) {
     const pageWidth = 210; // A4 width in mm
     const pageHeight = 297; // A4 height in mm
     
-    // 计算图片在PDF中的尺寸
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+    // Calculate image dimensions for PDF
     
     // 如果内容超过一页，需要分页处理
     const topMargin = 15; // 顶部边距 (mm)

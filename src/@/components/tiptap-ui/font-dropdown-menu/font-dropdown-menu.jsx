@@ -31,10 +31,7 @@ const FONT_OPTIONS = [
   { value: "Trebuchet MS", label: "Trebuchet MS", fontFamily: '"Trebuchet MS"' },
 ]
 
-// 简化的字体验证函数
-const validateFontFamily = (fontFamily) => {
-  return fontFamily && typeof fontFamily === 'string' && fontFamily.trim().length > 0
-}
+
 
 /**
  * 字体选择下拉菜单组件

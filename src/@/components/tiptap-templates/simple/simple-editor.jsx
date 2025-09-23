@@ -80,7 +80,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -186,7 +186,6 @@ export function SimpleEditor({ content, onChange }) {
       if (!editorWrapperRef.current || !toolbarRef.current) return
 
       const wrapperRect = editorWrapperRef.current.getBoundingClientRect()
-      const toolbarRect = toolbarRef.current.getBoundingClientRect()
       
       // 当编辑器容器顶部超出视窗时，激活悬浮状态
       const shouldFloat = wrapperRect.top < -50 // 给一些缓冲距离
