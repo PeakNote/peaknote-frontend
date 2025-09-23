@@ -273,34 +273,76 @@ export function SimpleEditor({ content, onChange }) {
     }
   }, [isMobile, mobileView])
 
+  // 使用ref来跟踪是否是用户输入导致的内容变化
+  const isUserInputRef = React.useRef(false);
+  const lastContentRef = React.useRef(null);
+
   // Update editor content when content prop changes
   React.useEffect(() => {
     if (editor && content) {
-      console.log('SimpleEditor: Updating editor content with:', content);
-      try {
-        // Clear editor first
-        editor.commands.clearContent();
-        // Set new content
-        editor.commands.setContent(content);
-        console.log('SimpleEditor: Content set successfully');
-      } catch (error) {
-        console.error('SimpleEditor: Error setting content:', error);
-        // Fallback: try to set as plain text
-        if (typeof content === 'string') {
+      // 如果是用户输入导致的变化，跳过重新设置
+      if (isUserInputRef.current) {
+        isUserInputRef.current = false;
+        return;
+      }
+
+      // 检查内容是否真的发生了变化
+      const currentContent = editor.getJSON();
+      const isContentDifferent = JSON.stringify(currentContent) !== JSON.stringify(content);
+      
+      if (isContentDifferent) {
+        console.log('SimpleEditor: Updating editor content with:', content);
+        try {
+          // 保存当前光标位置
+          const { from, to } = editor.state.selection;
+          
+          // 设置新内容
           editor.commands.setContent(content);
-        } else if (content && content.content) {
-          editor.commands.setContent(content.content);
+          
+          // 尝试恢复光标位置
+          try {
+            editor.commands.setTextSelection({ from, to });
+          } catch (e) {
+            // 如果恢复光标位置失败，将光标移到末尾
+            editor.commands.setTextSelection(editor.state.doc.content.size);
+          }
+          
+          console.log('SimpleEditor: Content set successfully');
+        } catch (error) {
+          console.error('SimpleEditor: Error setting content:', error);
+          // Fallback: try to set as plain text
+          if (typeof content === 'string') {
+            editor.commands.setContent(content);
+          } else if (content && content.content) {
+            editor.commands.setContent(content.content);
+          }
         }
       }
     }
   }, [editor, content])
 
+  // 防抖处理，减少频繁更新
+  const debouncedOnChange = React.useCallback(
+    React.useMemo(() => {
+      let timeoutId;
+      return (json) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          onChange(json);
+        }, 100); // 100ms防抖
+      };
+    }, [onChange]),
+    [onChange]
+  );
+
   // Handle content changes
   React.useEffect(() => {
     if (editor && onChange) {
       const handleUpdate = () => {
+        // 标记这是用户输入导致的变化
+        isUserInputRef.current = true;
         const json = editor.getJSON()
-        onChange(json)
+        debouncedOnChange(json)
       }
       
       editor.on('update', handleUpdate)
@@ -308,7 +350,7 @@ export function SimpleEditor({ content, onChange }) {
         editor.off('update', handleUpdate)
       }
     }
-  }, [editor, onChange])
+  }, [editor, onChange, debouncedOnChange])
 
   return (
     <div className="simple-editor-wrapper" ref={editorWrapperRef}>

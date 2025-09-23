@@ -25,6 +25,11 @@ function App() {
     }
   };
 
+  // 优化onChange处理，避免不必要的重新渲染
+  const handleEditorChange = React.useCallback((content) => {
+    setEditorContent(content);
+  }, []);
+
   const handleShare = () => {
     console.log('App.jsx: handleShare called'); // 添加调试信息
     setShowShareModal(true);
@@ -80,7 +85,7 @@ function App() {
           <div style={{ margin: '2rem 0' }}>
           <SimpleEditor 
             content={editorContent} 
-            onChange={(content) => setEditorContent(content)} 
+            onChange={handleEditorChange} 
           />
           </div>
         )}
