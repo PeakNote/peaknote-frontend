@@ -15,23 +15,23 @@
 }
 
 .App.sidebar-open .container {
-  margin-left: 400px;
-  margin-right: 0;
-  max-width: calc(100vw - 400px - 40px); /* 减去侧边栏宽度和左右边距 */
+  margin-left: 400px !important;
+  margin-right: 0 !important;
+  max-width: calc(100vw - 400px - 40px) !important; /* 减去侧边栏宽度和左右边距 */
 }
 
 /* Responsive adjustments for sidebar */
 @media (max-width: 768px) {
   .App.sidebar-open .container {
-    margin-left: 320px;
-    max-width: calc(100vw - 320px - 40px);
+    margin-left: 320px !important;
+    max-width: calc(100vw - 320px - 40px) !important;
   }
 }
 
 @media (max-width: 480px) {
   .App.sidebar-open .container {
-    margin-left: 280px;
-    max-width: calc(100vw - 280px - 40px);
+    margin-left: 280px !important;
+    max-width: calc(100vw - 280px - 40px) !important;
   }
 }
 
@@ -95,23 +95,23 @@ h1 {
 }
 
 .App.sidebar-open .copyright-footer {
-  margin-left: 400px;
-  margin-right: 0;
-  max-width: calc(100vw - 400px - 40px);
+  margin-left: 400px !important;
+  margin-right: 0 !important;
+  max-width: calc(100vw - 400px - 40px) !important;
 }
 
 /* Responsive adjustments for sidebar */
 @media (max-width: 768px) {
   .App.sidebar-open .copyright-footer {
-    margin-left: 320px;
-    max-width: calc(100vw - 320px - 40px);
+    margin-left: 320px !important;
+    max-width: calc(100vw - 320px - 40px) !important;
   }
 }
 
 @media (max-width: 480px) {
   .App.sidebar-open .copyright-footer {
-    margin-left: 280px;
-    max-width: calc(100vw - 280px - 40px);
+    margin-left: 280px !important;
+    max-width: calc(100vw - 280px - 40px) !important;
   }
 }
 
