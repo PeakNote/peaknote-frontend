@@ -92,12 +92,14 @@ h1 {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
 }
 
 .App.sidebar-open .copyright-footer {
   margin-left: 400px !important;
   margin-right: 0 !important;
   max-width: calc(100vw - 400px - 40px) !important;
+  width: calc(100vw - 400px - 40px) !important;
 }
 
 /* Responsive adjustments for sidebar */
@@ -105,6 +107,7 @@ h1 {
   .App.sidebar-open .copyright-footer {
     margin-left: 320px !important;
     max-width: calc(100vw - 320px - 40px) !important;
+    width: calc(100vw - 320px - 40px) !important;
   }
 }
 
@@ -112,6 +115,7 @@ h1 {
   .App.sidebar-open .copyright-footer {
     margin-left: 280px !important;
     max-width: calc(100vw - 280px - 40px) !important;
+    width: calc(100vw - 280px - 40px) !important;
   }
 }
 

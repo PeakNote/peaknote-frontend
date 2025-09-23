@@ -123,9 +123,7 @@ function App() {
 
       {/* Footer */}
       <footer className="copyright-footer">
-        <div className="container">
-          <p><Pattern size={20} />  PeakNote   Inc.</p>
-        </div>
+        <p><Pattern size={20} />  PeakNote   Inc.</p>
       </footer>
 
       {/* Share Modal */}
