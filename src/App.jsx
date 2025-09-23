@@ -5,19 +5,38 @@ import MeetingMinutes from './components/MeetingMinutes';
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import Pattern from './components/Pattern.jsx';
-import SimpleEditor from './components/SimpleEditor.jsx'; 
+import SimpleEditor from './components/SimpleEditor.jsx';
+import MeetingHistorySidebar from './components/MeetingHistorySidebar'; 
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [editorContent, setEditorContent] = useState(null);
+  
+  // Meeting History Sidebar states
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [meetingList, setMeetingList] = useState([]);
+  const [currentEventId, setCurrentEventId] = useState(null);
 
   // Typing animation messages
   const staticMessage = 'AI-Driven Meeting Assistant';
 
   const handleMeetingSubmit = (data) => {
     setMeetingData(data);
+    
+    // Extract meeting list from the API response if available
+    if (data.meetingList) {
+      setMeetingList(data.meetingList);
+    }
+    
+    // Set current event ID from the API response
+    if (data.currentEventId) {
+      setCurrentEventId(data.currentEventId);
+    } else if (data.meetingList && data.meetingList.length > 0) {
+      // Fallback to first meeting if no current event ID is provided
+      setCurrentEventId(data.meetingList[0].eventId);
+    }
   };
 
   const handleShare = () => {
@@ -40,8 +59,28 @@ function App() {
     setShowSuccessAnimation(false);
   };
 
+  // Sidebar handlers
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleSelectMeeting = (meeting) => {
+    setCurrentEventId(meeting.eventId);
+    // TODO: 这里将来会向后端发送eventID请求对应的会议记录
+    console.log('Selected meeting:', meeting);
+  };
+
   return (
-    <div className="App">
+    <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Meeting History Sidebar */}
+      <MeetingHistorySidebar
+        isOpen={isSidebarOpen}
+        onToggle={handleSidebarToggle}
+        meetingList={meetingList}
+        onSelectMeeting={handleSelectMeeting}
+        currentEventId={currentEventId}
+      />
+      
       {/* Particles background */}
       <div className="background-video-wrapper">
         <video
@@ -75,7 +114,8 @@ function App() {
           <div style={{ margin: '2rem 0' }}>
           <SimpleEditor 
             content={editorContent} 
-            onChange={(content) => setEditorContent(content)} 
+            onChange={(content) => setEditorContent(content)}
+            meetingData={meetingData}
           />
           </div>
         )}

@@ -12,9 +12,9 @@ const MeetingForm = ({ onSubmit }) => {
 
     try {
       // Use the meeting URL directly as it should already be properly encoded
-      // const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
+       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
       
-      const apiUrl = `https://9d0a5cd27d6f.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
+      // const apiUrl = `https://9d0a5cd27d6f.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
 
       console.log('Calling API:', apiUrl); // 调试信息
       // Call transcript API
@@ -40,6 +40,8 @@ const MeetingForm = ({ onSubmit }) => {
         meetingUrl,
         template: 'smart',
         notes: transcriptData.meetingDetails.transcript, // Extract transcript from meetingDetails
+        meetingList: transcriptData.meetingList || [], // Extract meeting list
+        currentEventId: transcriptData.meetingDetails.eventId, // Extract current event ID
         generatedAt: new Date().toISOString()
       };
 

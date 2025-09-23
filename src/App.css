@@ -1,16 +1,38 @@
 /* App component styles */
 .App {
   position: relative;
-  z-index: 10;
+  z-index: 999;
   min-height: 100vh;
   overflow: hidden;
 }
 
 .container {
   max-width: 800px;
-  margin-top: 150px;
+  margin: 150px auto 0;
   position: relative;
-  z-index: 10;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.App.sidebar-open .container {
+  margin-left: 400px;
+  margin-right: 0;
+  max-width: calc(100vw - 400px - 40px); /* 减去侧边栏宽度和左右边距 */
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 768px) {
+  .App.sidebar-open .container {
+    margin-left: 320px;
+    max-width: calc(100vw - 320px - 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .App.sidebar-open .container {
+    margin-left: 280px;
+    max-width: calc(100vw - 280px - 40px);
+  }
 }
 
 /* Logo and header styles */
@@ -62,10 +84,35 @@ h1 {
 /* Copyright footer styles */
 .copyright-footer {
   position: relative;
-  z-index: 10;
+  z-index: 1000;
   padding: 20px 0;
   margin-top: 50px;
   text-align: center;
+  transition: all 0.3s ease;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.App.sidebar-open .copyright-footer {
+  margin-left: 400px;
+  margin-right: 0;
+  max-width: calc(100vw - 400px - 40px);
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 768px) {
+  .App.sidebar-open .copyright-footer {
+    margin-left: 320px;
+    max-width: calc(100vw - 320px - 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .App.sidebar-open .copyright-footer {
+    margin-left: 280px;
+    max-width: calc(100vw - 280px - 40px);
+  }
 }
 
 .copyright-footer p {
