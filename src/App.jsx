@@ -18,6 +18,11 @@ function App() {
 
   const handleMeetingSubmit = (data) => {
     setMeetingData(data);
+    // Set the editor content with the meeting notes
+    if (data.notes) {
+      console.log('App.jsx: Setting editor content:', data.notes);
+      setEditorContent(data.notes);
+    }
   };
 
   const handleShare = () => {

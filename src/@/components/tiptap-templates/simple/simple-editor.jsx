@@ -12,6 +12,7 @@ import { Typography } from "@tiptap/extension-typography"
 import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
+import { Underline } from "@tiptap/extension-underline"
 import { Selection } from "@tiptap/extensions"
 import { FontFamily } from "@tiptap/extension-font-family"
 import { TextStyle } from "@tiptap/extension-text-style"
@@ -166,7 +167,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ content, onChange }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
@@ -212,8 +213,8 @@ export function SimpleEditor() {
   }, [isToolbarFloating])
 
   const editor = useEditor({
-    immediatelyRender: false,
-    shouldRerenderOnTransaction: false,
+    immediatelyRender: true,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -244,6 +245,7 @@ export function SimpleEditor() {
       Typography,
       Superscript,
       Subscript,
+      Underline,
       Selection,
       TextStyle,
       FontFamily.configure({
@@ -257,7 +259,7 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    content: content || content,
   })
 
   const rect = useCursorVisibility({
@@ -270,6 +272,43 @@ export function SimpleEditor() {
       setMobileView("main")
     }
   }, [isMobile, mobileView])
+
+  // Update editor content when content prop changes
+  React.useEffect(() => {
+    if (editor && content) {
+      console.log('SimpleEditor: Updating editor content with:', content);
+      try {
+        // Clear editor first
+        editor.commands.clearContent();
+        // Set new content
+        editor.commands.setContent(content);
+        console.log('SimpleEditor: Content set successfully');
+      } catch (error) {
+        console.error('SimpleEditor: Error setting content:', error);
+        // Fallback: try to set as plain text
+        if (typeof content === 'string') {
+          editor.commands.setContent(content);
+        } else if (content && content.content) {
+          editor.commands.setContent(content.content);
+        }
+      }
+    }
+  }, [editor, content])
+
+  // Handle content changes
+  React.useEffect(() => {
+    if (editor && onChange) {
+      const handleUpdate = () => {
+        const json = editor.getJSON()
+        onChange(json)
+      }
+      
+      editor.on('update', handleUpdate)
+      return () => {
+        editor.off('update', handleUpdate)
+      }
+    }
+  }, [editor, onChange])
 
   return (
     <div className="simple-editor-wrapper" ref={editorWrapperRef}>
