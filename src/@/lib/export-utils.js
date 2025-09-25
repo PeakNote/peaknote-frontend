@@ -326,6 +326,64 @@ export async function htmlToPDF(htmlContent) {
             visibility: visible !important;
             opacity: 1 !important;
           }
+          /* 任务列表样式 - 复选框和文字在同一行 */
+          ul[data-type="taskList"] {
+            list-style: none !important;
+            padding-left: 0 !important;
+          }
+          ul[data-type="taskList"] li {
+            display: inline-block !important;
+            width: 100% !important;
+            margin-bottom: 8px !important;
+            line-height: 1.6 !important;
+            white-space: nowrap !important;
+          }
+          ul[data-type="taskList"] li input[type="checkbox"] {
+            display: inline !important;
+            margin-right: 4px !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            vertical-align: middle !important;
+            width: 16px !important;
+            height: 16px !important;
+            float: none !important;
+            clear: none !important;
+          }
+          ul[data-type="taskList"] li > div {
+            display: inline !important;
+            text-align: left !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+          ul[data-type="taskList"] li p {
+            display: inline !important;
+            margin: 0 !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+          /* 普通列表项中的复选框 */
+          li input[type="checkbox"] {
+            display: inline !important;
+            margin-right: 4px !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            vertical-align: middle !important;
+            width: 16px !important;
+            height: 16px !important;
+            float: none !important;
+            clear: none !important;
+          }
+          /* 确保复选框和文字在同一行 */
+          li {
+            display: inline-block !important;
+            width: 100% !important;
+            white-space: nowrap !important;
+          }
+          li > *:not(input[type="checkbox"]) {
+            display: inline !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
         `;
         clonedDoc.head.appendChild(style);
       }
