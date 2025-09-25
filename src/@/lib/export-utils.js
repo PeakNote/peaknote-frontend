@@ -224,6 +224,48 @@ export async function htmlToPDF(htmlContent) {
       color: #000 !important;
       text-decoration: underline !important;
     }
+    /* 任务列表样式 - 复选框和文字在同一行 */
+    ul[data-type="taskList"] {
+      list-style: none !important;
+      padding-left: 0 !important;
+    }
+    ul[data-type="taskList"] li {
+      display: block !important;
+      margin-bottom: 8px !important;
+      line-height: 1.6 !important;
+    }
+    ul[data-type="taskList"] li input[type="checkbox"] {
+      display: inline !important;
+      margin-right: 4px !important;
+      margin-top: 2px !important;
+      vertical-align: top !important;
+      width: 16px !important;
+      height: 16px !important;
+    }
+    ul[data-type="taskList"] li > div {
+      display: inline !important;
+      text-align: left !important;
+    }
+    ul[data-type="taskList"] li p {
+      display: inline !important;
+      margin: 0 !important;
+    }
+    /* 普通列表项中的复选框 */
+    li input[type="checkbox"] {
+      display: inline !important;
+      margin-right: 4px !important;
+      margin-top: 2px !important;
+      vertical-align: top !important;
+      width: 16px !important;
+      height: 16px !important;
+    }
+    /* 确保复选框和文字在同一行 */
+    li {
+      display: block !important;
+    }
+    li > *:not(input[type="checkbox"]) {
+      display: inline !important;
+    }
   `;
   
   // 将样式添加到临时容器的头部
@@ -474,6 +516,48 @@ export function printEditorContent(htmlContent) {
         img {
           max-width: 100%;
           height: auto;
+        }
+        /* 任务列表样式 - 复选框和文字在同一行 */
+        ul[data-type="taskList"] {
+          list-style: none;
+          padding-left: 0;
+        }
+        ul[data-type="taskList"] li {
+          display: block;
+          margin-bottom: 8px;
+          line-height: 1.6;
+        }
+        ul[data-type="taskList"] li input[type="checkbox"] {
+          display: inline;
+          margin-right: 4px;
+          margin-top: 2px;
+          vertical-align: top;
+          width: 16px;
+          height: 16px;
+        }
+        ul[data-type="taskList"] li > div {
+          display: inline;
+          text-align: left;
+        }
+        ul[data-type="taskList"] li p {
+          display: inline;
+          margin: 0;
+        }
+        /* 普通列表项中的复选框 */
+        li input[type="checkbox"] {
+          display: inline;
+          margin-right: 4px;
+          margin-top: 2px;
+          vertical-align: top;
+          width: 16px;
+          height: 16px;
+        }
+        /* 确保复选框和文字在同一行 */
+        li {
+          display: block;
+        }
+        li > *:not(input[type="checkbox"]) {
+          display: inline;
         }
       }
     </style>
