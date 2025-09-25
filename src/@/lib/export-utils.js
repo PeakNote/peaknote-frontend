@@ -230,41 +230,57 @@ export async function htmlToPDF(htmlContent) {
       padding-left: 0 !important;
     }
     ul[data-type="taskList"] li {
-      display: block !important;
+      display: inline-block !important;
+      width: 100% !important;
       margin-bottom: 8px !important;
       line-height: 1.6 !important;
+      white-space: nowrap !important;
     }
     ul[data-type="taskList"] li input[type="checkbox"] {
       display: inline !important;
       margin-right: 4px !important;
-      margin-top: 2px !important;
-      vertical-align: top !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      vertical-align: middle !important;
       width: 16px !important;
       height: 16px !important;
+      float: none !important;
+      clear: none !important;
     }
     ul[data-type="taskList"] li > div {
       display: inline !important;
       text-align: left !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
     }
     ul[data-type="taskList"] li p {
       display: inline !important;
       margin: 0 !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
     }
     /* 普通列表项中的复选框 */
     li input[type="checkbox"] {
       display: inline !important;
       margin-right: 4px !important;
-      margin-top: 2px !important;
-      vertical-align: top !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      vertical-align: middle !important;
       width: 16px !important;
       height: 16px !important;
+      float: none !important;
+      clear: none !important;
     }
     /* 确保复选框和文字在同一行 */
     li {
-      display: block !important;
+      display: inline-block !important;
+      width: 100% !important;
+      white-space: nowrap !important;
     }
     li > *:not(input[type="checkbox"]) {
       display: inline !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
     }
   `;
   
@@ -523,41 +539,57 @@ export function printEditorContent(htmlContent) {
           padding-left: 0;
         }
         ul[data-type="taskList"] li {
-          display: block;
+          display: inline-block;
+          width: 100%;
           margin-bottom: 8px;
           line-height: 1.6;
+          white-space: nowrap;
         }
         ul[data-type="taskList"] li input[type="checkbox"] {
           display: inline;
           margin-right: 4px;
-          margin-top: 2px;
-          vertical-align: top;
+          margin-top: 0;
+          margin-bottom: 0;
+          vertical-align: middle;
           width: 16px;
           height: 16px;
+          float: none;
+          clear: none;
         }
         ul[data-type="taskList"] li > div {
           display: inline;
           text-align: left;
+          white-space: normal;
+          word-wrap: break-word;
         }
         ul[data-type="taskList"] li p {
           display: inline;
           margin: 0;
+          white-space: normal;
+          word-wrap: break-word;
         }
         /* 普通列表项中的复选框 */
         li input[type="checkbox"] {
           display: inline;
           margin-right: 4px;
-          margin-top: 2px;
-          vertical-align: top;
+          margin-top: 0;
+          margin-bottom: 0;
+          vertical-align: middle;
           width: 16px;
           height: 16px;
+          float: none;
+          clear: none;
         }
         /* 确保复选框和文字在同一行 */
         li {
-          display: block;
+          display: inline-block;
+          width: 100%;
+          white-space: nowrap;
         }
         li > *:not(input[type="checkbox"]) {
           display: inline;
+          white-space: normal;
+          word-wrap: break-word;
         }
       }
     </style>
