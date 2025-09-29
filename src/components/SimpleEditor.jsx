@@ -3,7 +3,7 @@ import { SimpleEditor as TiptapSimpleEditor } from '@/components/tiptap-template
 import ShareModal from './ShareModal';
 import './SimpleEditor.css';
 
-const SimpleEditor = ({ content, onChange, className = '', meetingData }) => {
+const SimpleEditor = ({ content, onChange, className = '', meetingData, onShareClick }) => {
   const [showShareModal, setShowShareModal] = useState(false);
 
   // 添加一些调试信息
@@ -19,6 +19,8 @@ const SimpleEditor = ({ content, onChange, className = '', meetingData }) => {
   return (
     <div className={`simple-editor-container ${className}`}>
       <TiptapSimpleEditor 
+        content={content}
+        onChange={onChange}
         meetingData={meetingData} 
         onShareClick={handleShareClick}
       />
