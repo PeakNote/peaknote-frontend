@@ -114,6 +114,7 @@ export function downloadFile(content, filename, mimeType = 'text/plain') {
 
 /**
  * 将HTML内容转换为PDF（使用html2canvas保持字体）
+ * 将HTML内容转换为PDF（使用html2canvas保持字体）
  * @param {string} htmlContent - HTML内容
  * @returns {Promise<Blob>} PDF Blob
  */
@@ -128,13 +129,180 @@ export async function htmlToPDF(htmlContent) {
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
   tempContainer.style.top = '0';
-  tempContainer.style.width = '210mm'; // A4 width
-  tempContainer.style.padding = '20mm';
-  tempContainer.style.fontFamily = 'PublicSans, Arial, sans-serif';
-  tempContainer.style.fontSize = '12pt';
-  tempContainer.style.lineHeight = '1.6';
+  tempContainer.style.width = '190mm'; // A4 width - 左右边距 (210mm - 20mm)
+  tempContainer.style.height = 'auto'; // 移除固定高度，让内容决定高度
+  tempContainer.style.minHeight = 'auto'; // 移除最小高度限制
+  tempContainer.style.padding = '10mm 10mm'; // 减少上下边距，避免空白页
+  tempContainer.style.margin = '0'; // 确保没有额外边距
   tempContainer.style.color = '#000';
   tempContainer.style.backgroundColor = '#fff';
+  tempContainer.style.boxSizing = 'border-box';
+  tempContainer.style.wordBreak = 'break-word';
+  tempContainer.style.hyphens = 'auto';
+  tempContainer.style.overflow = 'visible'; // 确保内容不被裁剪
+  
+  // 应用打印样式
+  const printStyles = document.createElement('style');
+  printStyles.textContent = `
+    /* 不强制覆盖字体，让编辑器中的字体设置生效 */
+    h1 {
+      color: #000 !important;
+      font-size: 18pt !important;
+      margin-top: 8pt !important;
+      margin-bottom: 6pt !important;
+      page-break-after: avoid !important;
+      line-height: 1.3 !important;
+      display: block !important;
+      visibility: visible !important;
+    }
+    h2 {
+      color: #000 !important;
+      font-size: 16pt !important;
+      margin-top: 6pt !important;
+      margin-bottom: 4pt !important;
+      page-break-after: avoid !important;
+      line-height: 1.3 !important;
+    }
+    h3 {
+      color: #000 !important;
+      font-size: 14pt !important;
+      margin-top: 4pt !important;
+      margin-bottom: 3pt !important;
+      page-break-after: avoid !important;
+      line-height: 1.3 !important;
+    }
+    h4, h5, h6 {
+      color: #000 !important;
+      font-size: 12pt !important;
+      margin-top: 3pt !important;
+      margin-bottom: 3pt !important;
+      page-break-after: avoid !important;
+      line-height: 1.3 !important;
+    }
+    p {
+      color: #000 !important;
+      font-size: 11pt !important;
+      margin-bottom: 4pt !important;
+      orphans: 2 !important;
+      widows: 2 !important;
+      line-height: 1.5 !important;
+    }
+    ul, ol {
+      color: #000 !important;
+      font-size: 11pt !important;
+      margin-bottom: 4pt !important;
+      padding-left: 12pt !important;
+      line-height: 1.5 !important;
+    }
+    li {
+      color: #000 !important;
+      font-size: 11pt !important;
+      margin-bottom: 2pt !important;
+      line-height: 1.5 !important;
+    }
+    blockquote {
+      color: #000 !important;
+      font-size: 11pt !important;
+      border-left: 2pt solid #ccc !important;
+      padding-left: 8pt !important;
+      margin: 8pt 0 !important;
+      font-style: italic !important;
+      line-height: 1.5 !important;
+    }
+    code {
+      color: #000 !important;
+      font-size: 10pt !important;
+      background-color: #f4f4f4 !important;
+      padding: 1pt 2pt !important;
+      border-radius: 2pt !important;
+      font-family: 'Courier New', monospace !important;
+    }
+    pre {
+      color: #000 !important;
+      font-size: 10pt !important;
+      background-color: #f4f4f4 !important;
+      padding: 6pt !important;
+      border-radius: 3pt !important;
+      overflow-x: auto !important;
+      page-break-inside: avoid !important;
+      line-height: 1.4 !important;
+    }
+    pre code {
+      font-family: 'Courier New', monospace !important;
+      font-size: 10pt !important;
+    }
+    a {
+      color: #000 !important;
+      text-decoration: underline !important;
+    }
+    /* 任务列表样式 - 复选框和文字在同一行 */
+    ul[data-type="taskList"] {
+      list-style: none !important;
+      padding-left: 0 !important;
+    }
+    ul[data-type="taskList"] li {
+      display: inline-block !important;
+      width: 100% !important;
+      margin-bottom: 4pt !important;
+      line-height: 1.5 !important;
+      white-space: nowrap !important;
+      font-size: 11pt !important;
+    }
+    ul[data-type="taskList"] li input[type="checkbox"] {
+      display: inline !important;
+      margin-right: 3pt !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      vertical-align: middle !important;
+      width: 12pt !important;
+      height: 12pt !important;
+      float: none !important;
+      clear: none !important;
+    }
+    ul[data-type="taskList"] li > div {
+      display: inline !important;
+      text-align: left !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
+      font-size: 11pt !important;
+    }
+    ul[data-type="taskList"] li p {
+      display: inline !important;
+      margin: 0 !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
+      font-size: 11pt !important;
+    }
+    /* 普通列表项中的复选框 */
+    li input[type="checkbox"] {
+      display: inline !important;
+      margin-right: 3pt !important;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      vertical-align: middle !important;
+      width: 12pt !important;
+      height: 12pt !important;
+      float: none !important;
+      clear: none !important;
+    }
+    /* 确保复选框和文字在同一行 */
+    li {
+      display: inline-block !important;
+      width: 100% !important;
+      white-space: nowrap !important;
+      font-size: 11pt !important;
+    }
+    li > *:not(input[type="checkbox"]) {
+      display: inline !important;
+      white-space: normal !important;
+      word-wrap: break-word !important;
+      font-size: 11pt !important;
+    }
+  `;
+  
+  // 将样式添加到临时容器的头部
+  tempContainer.appendChild(printStyles);
+  
   tempContainer.innerHTML = htmlContent;
   
   // 添加到DOM
@@ -143,14 +311,118 @@ export async function htmlToPDF(htmlContent) {
   try {
     // 使用html2canvas渲染为图片
     const canvas = await html2canvas(tempContainer, {
-      scale: 2, // 提高清晰度
+      scale: 3, // 提高清晰度，防止文字模糊
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       width: tempContainer.offsetWidth,
       height: tempContainer.offsetHeight,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      // 改进文字渲染
+      logging: false,
+      // 确保字体正确加载
+      onclone: function(clonedDoc) {
+        // 确保字体样式正确应用，但不强制覆盖用户设置的字体
+        const style = clonedDoc.createElement('style');
+        style.textContent = `
+          * {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+          }
+          h1 {
+            color: #000 !important;
+            font-size: 18pt !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+          h2 {
+            color: #000 !important;
+            font-size: 16pt !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+          h3 {
+            color: #000 !important;
+            font-size: 14pt !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+          h4, h5, h6 {
+            color: #000 !important;
+            font-size: 12pt !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+          p, li, div {
+            color: #000 !important;
+            font-size: 11pt !important;
+          }
+          /* 任务列表样式 - 复选框和文字在同一行 */
+          ul[data-type="taskList"] {
+            list-style: none !important;
+            padding-left: 0 !important;
+          }
+          ul[data-type="taskList"] li {
+            display: inline-block !important;
+            width: 100% !important;
+            margin-bottom: 8px !important;
+            line-height: 1.6 !important;
+            white-space: nowrap !important;
+          }
+          ul[data-type="taskList"] li input[type="checkbox"] {
+            display: inline !important;
+            margin-right: 3pt !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            vertical-align: middle !important;
+            width: 12pt !important;
+            height: 12pt !important;
+            float: none !important;
+            clear: none !important;
+          }
+          ul[data-type="taskList"] li > div {
+            display: inline !important;
+            text-align: left !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+          ul[data-type="taskList"] li p {
+            display: inline !important;
+            margin: 0 !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+          /* 普通列表项中的复选框 */
+          li input[type="checkbox"] {
+            display: inline !important;
+            margin-right: 3pt !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            vertical-align: middle !important;
+            width: 12pt !important;
+            height: 12pt !important;
+            float: none !important;
+            clear: none !important;
+          }
+          /* 确保复选框和文字在同一行 */
+          li {
+            display: inline-block !important;
+            width: 100% !important;
+            white-space: nowrap !important;
+          }
+          li > *:not(input[type="checkbox"]) {
+            display: inline !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+        `;
+        clonedDoc.head.appendChild(style);
+      }
     });
     
     // 创建PDF文档
@@ -163,33 +435,113 @@ export async function htmlToPDF(htmlContent) {
     const imgHeight = (canvas.height * pageWidth) / canvas.width;
     
     // 如果内容超过一页，需要分页处理
-    if (imgHeight <= pageHeight) {
-      // 单页内容
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+    const topMargin = 10; // 减少顶部边距 (mm)
+    const bottomMargin = 10; // 减少底部边距 (mm)
+    const leftMargin = 10; // 左侧边距 (mm)
+    const rightMargin = 10; // 右侧边距 (mm)
+    const contentWidth = pageWidth - leftMargin - rightMargin; // 实际内容宽度 (mm)
+    const contentHeight = pageHeight - topMargin - bottomMargin; // 实际内容高度 (mm)
+    
+    // 重新计算图片尺寸，考虑边距
+    const adjustedImgWidth = contentWidth;
+    const adjustedImgHeight = (canvas.height * contentWidth) / canvas.width;
+    
+    if (adjustedImgHeight <= contentHeight) {
+      // 单页内容，添加边距
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', leftMargin, topMargin, adjustedImgWidth, adjustedImgHeight);
     } else {
-      // 多页内容
-      const totalPages = Math.ceil(imgHeight / pageHeight);
+      // 多页内容 - 改进的分页算法，考虑页面边距
+      const canvasPageHeight = (contentHeight / adjustedImgWidth) * canvas.width; // 对应的canvas内容高度 (px)
+      const totalPages = Math.ceil(canvas.height / canvasPageHeight);
+      
+      // 减少页面间距缓冲区，避免空白页
+      const pageBuffer = 2; // 减少页面缓冲区 (px)
+      
       for (let i = 0; i < totalPages; i++) {
+        // 计算当前页在原canvas中的位置和尺寸
+        let sourceY = i * canvasPageHeight;
+        let sourceHeight = Math.min(canvasPageHeight, canvas.height - sourceY);
+        
+        // 检查是否为空白页（内容高度小于阈值）
+        const minContentHeight = 20; // 最小内容高度阈值 (px)
+        if (sourceHeight < minContentHeight) {
+          console.log(`跳过空白页 ${i + 1}`);
+          continue; // 跳过空白页
+        }
+        
         if (i > 0) {
           pdf.addPage();
         }
         
-        const sourceY = i * pageHeight * (canvas.height / imgHeight);
-        const sourceHeight = Math.min(pageHeight * (canvas.height / imgHeight), canvas.height - sourceY);
+        // 为非首页添加小的重叠缓冲区，确保文字不被截断
+        if (i > 0) {
+          sourceY = Math.max(0, sourceY - pageBuffer);
+          sourceHeight = Math.min(canvasPageHeight + pageBuffer, canvas.height - sourceY);
+        }
+        
+        // 为非最后一页减少一点高度，避免内容过于紧密
+        if (i < totalPages - 1) {
+          sourceHeight = Math.max(sourceHeight - pageBuffer, canvasPageHeight * 0.95);
+        }
         
         // 创建临时canvas来裁剪当前页
         const pageCanvas = document.createElement('canvas');
         const pageCtx = pageCanvas.getContext('2d');
+        if (!pageCtx) {
+          console.error('无法创建canvas 2d context');
+          continue;
+        }
         pageCanvas.width = canvas.width;
         pageCanvas.height = sourceHeight;
         
+        // 设置高质量渲染
+        pageCtx.imageSmoothingEnabled = true;
+        pageCtx.imageSmoothingQuality = 'high';
+        
+        // 填充白色背景
+        pageCtx.fillStyle = '#ffffff';
+        pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        
+        // 裁剪并绘制当前页内容
         pageCtx.drawImage(
           canvas,
-          0, sourceY, canvas.width, sourceHeight,
-          0, 0, canvas.width, sourceHeight
+          0, sourceY, canvas.width, sourceHeight, // 源区域
+          0, 0, canvas.width, sourceHeight        // 目标区域
         );
         
-        pdf.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, pageHeight);
+        // 检查页面是否为空（通过分析像素数据）
+        const imageData = pageCtx.getImageData(0, 0, pageCanvas.width, pageCanvas.height);
+        const pixels = imageData.data;
+        let nonWhitePixels = 0;
+        
+        // 采样检查（每10个像素检查一次，提高性能）
+        for (let i = 0; i < pixels.length; i += 40) { // 每10个像素检查一次
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          // 如果不是白色或接近白色，则认为有内容
+          if (r < 250 || g < 250 || b < 250) {
+            nonWhitePixels++;
+          }
+        }
+        
+        // 如果非白色像素太少，认为是空白页
+        const minPixelsThreshold = 100; // 最小非白色像素阈值
+        if (nonWhitePixels < minPixelsThreshold) {
+          console.log(`跳过空白页 ${i + 1}，非白色像素数: ${nonWhitePixels}`);
+          continue;
+        }
+        
+        // 计算在PDF中的实际高度
+        const pdfImgHeight = (sourceHeight / canvas.width) * adjustedImgWidth;
+        
+        // 添加到PDF，保持页面边距
+        pdf.addImage(
+          pageCanvas.toDataURL('image/png', 0.95), 
+          'PNG', 
+          leftMargin, topMargin, // 添加左侧和顶部边距
+          adjustedImgWidth, pdfImgHeight
+        );
       }
     }
     
@@ -304,6 +656,64 @@ export function printEditorContent(htmlContent) {
         img {
           max-width: 100%;
           height: auto;
+        }
+        /* 任务列表样式 - 复选框和文字在同一行 */
+        ul[data-type="taskList"] {
+          list-style: none;
+          padding-left: 0;
+        }
+        ul[data-type="taskList"] li {
+          display: inline-block;
+          width: 100%;
+          margin-bottom: 8px;
+          line-height: 1.6;
+          white-space: nowrap;
+        }
+        ul[data-type="taskList"] li input[type="checkbox"] {
+          display: inline;
+          margin-right: 4px;
+          margin-top: 0;
+          margin-bottom: 0;
+          vertical-align: middle;
+          width: 16px;
+          height: 16px;
+          float: none;
+          clear: none;
+        }
+        ul[data-type="taskList"] li > div {
+          display: inline;
+          text-align: left;
+          white-space: normal;
+          word-wrap: break-word;
+        }
+        ul[data-type="taskList"] li p {
+          display: inline;
+          margin: 0;
+          white-space: normal;
+          word-wrap: break-word;
+        }
+        /* 普通列表项中的复选框 */
+        li input[type="checkbox"] {
+          display: inline;
+          margin-right: 4px;
+          margin-top: 0;
+          margin-bottom: 0;
+          vertical-align: middle;
+          width: 16px;
+          height: 16px;
+          float: none;
+          clear: none;
+        }
+        /* 确保复选框和文字在同一行 */
+        li {
+          display: inline-block;
+          width: 100%;
+          white-space: nowrap;
+        }
+        li > *:not(input[type="checkbox"]) {
+          display: inline;
+          white-space: normal;
+          word-wrap: break-word;
         }
       }
     </style>

@@ -62,6 +62,136 @@ body,
   z-index: 1;
 }
 
+/* A4 Paper styles for PDF generation - only apply when generating PDF */
+.a4-paper {
+  /* 正常显示时不需要特殊样式，保持原有布局 */
+}
+
+/* PDF-specific styles - only applied during PDF generation */
+.a4-paper.pdf-mode {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  color: #000;
+  font-family: 'PublicSans', Arial, sans-serif;
+  font-size: 12pt;
+  line-height: 1.6;
+  padding: 20mm;
+}
+
+/* Ensure proper styling for PDF generation - only in PDF mode */
+.a4-paper.pdf-mode * {
+  color: #000 !important;
+  background: transparent !important;
+}
+
+.a4-paper.pdf-mode h1,
+.a4-paper.pdf-mode h2,
+.a4-paper.pdf-mode h3,
+.a4-paper.pdf-mode h4,
+.a4-paper.pdf-mode h5,
+.a4-paper.pdf-mode h6 {
+  color: #000 !important;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.a4-paper.pdf-mode h1 {
+  font-size: 24pt;
+  margin-top: 0;
+}
+
+.a4-paper.pdf-mode h2 {
+  font-size: 18pt;
+}
+
+.a4-paper.pdf-mode h3 {
+  font-size: 16pt;
+}
+
+.a4-paper.pdf-mode p {
+  margin-bottom: 10px;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode ul,
+.a4-paper.pdf-mode ol {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.a4-paper.pdf-mode li {
+  margin-bottom: 5px;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode strong,
+.a4-paper.pdf-mode b {
+  font-weight: bold;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode em,
+.a4-paper.pdf-mode i {
+  font-style: italic;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode blockquote {
+  border-left: 3px solid #ccc;
+  padding-left: 15px;
+  margin: 15px 0;
+  font-style: italic;
+  color: #000 !important;
+}
+
+.a4-paper.pdf-mode img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+}
+
+/* Task list styles for PDF */
+.a4-paper.pdf-mode ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.a4-paper.pdf-mode ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.a4-paper.pdf-mode ul[data-type="taskList"] li input[type="checkbox"] {
+  margin-right: 8px;
+  margin-top: 2px;
+}
+
+/* Hide toolbar in PDF */
+.a4-paper.pdf-mode .tiptap-toolbar {
+  display: none !important;
+}
+
 .simple-editor-content {
   width: 210mm;
   margin: 0 auto;

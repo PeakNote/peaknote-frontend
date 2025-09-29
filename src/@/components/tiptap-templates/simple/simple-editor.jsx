@@ -12,6 +12,7 @@ import { Typography } from "@tiptap/extension-typography"
 import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
+import { Underline } from "@tiptap/extension-underline"
 import { Selection } from "@tiptap/extensions"
 import { FontFamily } from "@tiptap/extension-font-family"
 import { TextStyle } from "@tiptap/extension-text-style"
@@ -167,79 +168,54 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor({ meetingData, onShareClick }) {
+export function SimpleEditor({ content, onChange }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
+  const [isToolbarFloating, setIsToolbarFloating] = React.useState(false)
   const toolbarRef = React.useRef(null)
+  const editorWrapperRef = React.useRef(null)
 
   // 设置默认夜间模式
   React.useEffect(() => {
     document.documentElement.classList.add("dark")
   }, [])
 
-  // 根据meetingData生成编辑器内容
-  const getEditorContent = () => {
-    if (meetingData && meetingData.notes) {
-      const notes = meetingData.notes;
+  // 监听滚动，实现工具栏悬浮效果
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (!editorWrapperRef.current || !toolbarRef.current) return
+
+      const wrapperRect = editorWrapperRef.current.getBoundingClientRect()
+      const toolbarRect = toolbarRef.current.getBoundingClientRect()
       
-      // 如果notes是对象且包含transcript字段
-      if (typeof notes === 'object' && notes.transcript) {
-        return notes.transcript;
-      }
+      // 当编辑器容器顶部超出视窗时，激活悬浮状态
+      const shouldFloat = wrapperRect.top < -50 // 给一些缓冲距离
       
-      // 如果notes是字符串
-      if (typeof notes === 'string') {
-        return notes;
-      }
-      
-      // 如果是结构化数据，转换为HTML
-      if (typeof notes === 'object' && (notes.agenda || notes.participants || notes.actionItems || notes.decisions)) {
-        let htmlContent = '';
-        
-        if (notes.agenda && notes.agenda.length > 0) {
-          htmlContent += '<h2>Agenda</h2><ul>';
-          notes.agenda.forEach(item => {
-            htmlContent += `<li>${item}</li>`;
-          });
-          htmlContent += '</ul>';
-        }
-        
-        if (notes.participants && notes.participants.length > 0) {
-          htmlContent += '<h2>Participants</h2><ul>';
-          notes.participants.forEach(participant => {
-            htmlContent += `<li>${participant}</li>`;
-          });
-          htmlContent += '</ul>';
-        }
-        
-        if (notes.actionItems && notes.actionItems.length > 0) {
-          htmlContent += '<h2>Action Items</h2><ul>';
-          notes.actionItems.forEach(item => {
-            htmlContent += `<li>${item}</li>`;
-          });
-          htmlContent += '</ul>';
-        }
-        
-        if (notes.decisions && notes.decisions.length > 0) {
-          htmlContent += '<h2>Decisions</h2><ul>';
-          notes.decisions.forEach(decision => {
-            htmlContent += `<li>${decision}</li>`;
-          });
-          htmlContent += '</ul>';
-        }
-        
-        return htmlContent;
+      if (shouldFloat !== isToolbarFloating) {
+        setIsToolbarFloating(shouldFloat)
       }
     }
-    
-    // 如果没有meetingData，返回空内容
-    return '';
-  };
+
+    // 使用节流优化性能
+    let ticking = false
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', throttledHandleScroll)
+  }, [isToolbarFloating])
 
   const editor = useEditor({
-    immediatelyRender: false,
-    shouldRerenderOnTransaction: false,
+    immediatelyRender: true,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -270,6 +246,7 @@ export function SimpleEditor({ meetingData, onShareClick }) {
       Typography,
       Superscript,
       Subscript,
+      Underline,
       Selection,
       TextStyle,
       FontFamily.configure({
@@ -283,7 +260,7 @@ export function SimpleEditor({ meetingData, onShareClick }) {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content: getEditorContent(),
+    content: content || content,
   })
 
   const rect = useCursorVisibility({
@@ -297,24 +274,91 @@ export function SimpleEditor({ meetingData, onShareClick }) {
     }
   }, [isMobile, mobileView])
 
-  // 当meetingData变化时，更新编辑器内容
+  // 使用ref来跟踪是否是用户输入导致的内容变化
+  const isUserInputRef = React.useRef(false);
+  const lastContentRef = React.useRef(null);
+
+  // Update editor content when content prop changes
   React.useEffect(() => {
-    if (editor && meetingData && meetingData.notes) {
-      const newContent = getEditorContent();
-      editor.commands.setContent(newContent);
-      console.log('Editor content updated with meeting data:', newContent);
-    } else if (editor && !meetingData) {
-      // 如果没有meetingData，清空编辑器内容
-      editor.commands.setContent('');
-      console.log('Editor content cleared - no meeting data');
+    if (editor && content) {
+      // 如果是用户输入导致的变化，跳过重新设置
+      if (isUserInputRef.current) {
+        isUserInputRef.current = false;
+        return;
+      }
+
+      // 检查内容是否真的发生了变化
+      const currentContent = editor.getJSON();
+      const isContentDifferent = JSON.stringify(currentContent) !== JSON.stringify(content);
+      
+      if (isContentDifferent) {
+        console.log('SimpleEditor: Updating editor content with:', content);
+        try {
+          // 保存当前光标位置
+          const { from, to } = editor.state.selection;
+          
+          // 设置新内容
+          editor.commands.setContent(content);
+          
+          // 尝试恢复光标位置
+          try {
+            editor.commands.setTextSelection({ from, to });
+          } catch (e) {
+            // 如果恢复光标位置失败，将光标移到末尾
+            editor.commands.setTextSelection(editor.state.doc.content.size);
+          }
+          
+          console.log('SimpleEditor: Content set successfully');
+        } catch (error) {
+          console.error('SimpleEditor: Error setting content:', error);
+          // Fallback: try to set as plain text
+          if (typeof content === 'string') {
+            editor.commands.setContent(content);
+          } else if (content && content.content) {
+            editor.commands.setContent(content.content);
+          }
+        }
+      }
     }
-  }, [meetingData, editor])
+  }, [editor, content])
+
+  // 防抖处理，减少频繁更新
+  const debouncedOnChange = React.useCallback(
+    React.useMemo(() => {
+      let timeoutId;
+      return (json) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          onChange(json);
+        }, 100); // 100ms防抖
+      };
+    }, [onChange]),
+    [onChange]
+  );
+
+  // Handle content changes
+  React.useEffect(() => {
+    if (editor && onChange) {
+      const handleUpdate = () => {
+        // 标记这是用户输入导致的变化
+        isUserInputRef.current = true;
+        const json = editor.getJSON()
+        debouncedOnChange(json)
+      }
+      
+      editor.on('update', handleUpdate)
+      return () => {
+        editor.off('update', handleUpdate)
+      }
+    }
+  }, [editor, onChange, debouncedOnChange])
 
   return (
-    <div className="simple-editor-wrapper">
+    <div className="simple-editor-wrapper" ref={editorWrapperRef}>
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
+          className={isToolbarFloating ? 'toolbar-floating' : ''}
           style={{
             ...(isMobile
               ? {

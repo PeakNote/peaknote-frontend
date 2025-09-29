@@ -24,6 +24,11 @@ function App() {
 
   const handleMeetingSubmit = (data) => {
     setMeetingData(data);
+    // Set the editor content with the meeting notes
+    if (data.notes) {
+      console.log('App.jsx: Setting editor content:', data.notes);
+      setEditorContent(data.notes);
+    }
     
     // Extract meeting list from the API response if available
     if (data.meetingList) {
@@ -38,6 +43,11 @@ function App() {
       setCurrentEventId(data.meetingList[0].eventId);
     }
   };
+
+  // 优化onChange处理，避免不必要的重新渲染
+  const handleEditorChange = React.useCallback((content) => {
+    setEditorContent(content);
+  }, []);
 
   const handleShare = () => {
     console.log('App.jsx: handleShare called'); // 添加调试信息
@@ -114,8 +124,7 @@ function App() {
           <div style={{ margin: '2rem 0' }}>
           <SimpleEditor 
             content={editorContent} 
-            onChange={(content) => setEditorContent(content)}
-            meetingData={meetingData}
+            onChange={handleEditorChange} 
           />
           </div>
         )}
