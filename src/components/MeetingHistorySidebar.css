@@ -31,7 +31,8 @@
 
 .history-toggle-btn.open {
   background: rgba(99, 102, 241, 0.9);
-  left: 360px; /* Move button to sidebar's right edge */
+  left: 215px; /* Move button to sidebar's right edge (300px - 40px button width) */
+  z-index: 1003; /* Ensure button stays above sidebar content */
 }
 
 .history-toggle-btn.open svg {
@@ -41,12 +42,13 @@
 .meeting-history-sidebar {
   position: fixed;
   top: 0;
-  left: -400px;
-  width: 300px;
+  left: -300px;
+  width: 280px;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 998;
   transition: left 0.3s ease;
   display: flex;
@@ -60,21 +62,23 @@
 
 .sidebar-header {
   padding: 24px 20px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .sidebar-header h3 {
   margin: 0 0 8px 0;
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937;
+  color: #f8fafd;
 }
 
 .meeting-count {
   margin: 0;
   font-size: 14px;
-  color: #6b7280;
+  color: #9b9fa9;
 }
 
 .meeting-list {

@@ -15,9 +15,9 @@
 }
 
 .App.sidebar-open .container {
-  margin-left: 400px !important;
+  margin-left: 300px !important;
   margin-right: 0 !important;
-  max-width: calc(100vw - 400px - 40px) !important; /* 减去侧边栏宽度和左右边距 */
+  max-width: calc(100vw - 300px - 40px) !important; /* 减去侧边栏宽度和左右边距 */
 }
 
 /* Responsive adjustments for sidebar */
@@ -96,10 +96,10 @@ h1 {
 }
 
 .App.sidebar-open .copyright-footer {
-  margin-left: 400px !important;
+  margin-left: 300px !important;
   margin-right: 0 !important;
-  max-width: calc(100vw - 400px - 40px) !important;
-  width: calc(100vw - 400px - 40px) !important;
+  max-width: calc(100vw - 300px - 40px) !important;
+  width: calc(100vw - 300px - 40px) !important;
 }
 
 /* Responsive adjustments for sidebar */
