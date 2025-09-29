@@ -254,8 +254,6 @@ Meeting Details:
 - Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
 - Generated: ${new Date().toLocaleString()}
 
-Note: The PDF file has been downloaded to your device. Please attach it to this email.
-
 Best regards,
 PeakNote Team
 `.trim());
@@ -268,7 +266,7 @@ PeakNote Team
 
     // 显示成功消息
     alert('Email client opened! Please attach the PDF file manually.');
-    console.log('邮件客户端已打开，用户需要手动附加PDF文件');
+    console.log('The email client has been opened, and the user needs to manually attach the PDF file.');
 
     // 关闭模态框
     onClose();

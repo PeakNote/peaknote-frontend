@@ -68,6 +68,28 @@
   transition: none !important; /* 移除所有过渡动画 */
 }
 
+/* 当侧边栏打开时，调整工具栏位置 */
+body:has(.meeting-history-sidebar.open) .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+  left: calc(50% + 134.25px) !important; /* 向右移动侧边栏宽度的一半 */
+  width: 210mm !important;
+  max-width: calc(100% - 320px) !important; /* 减去侧边栏宽度 */
+}
+
+/* 当侧边栏打开且屏幕较小时，进一步调整 */
+@media screen and (max-width: 1200px) {
+  body:has(.meeting-history-sidebar.open) .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+    left: calc(50% + 140px) !important;
+    max-width: calc(100% - 300px) !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  body:has(.meeting-history-sidebar.open) .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+    left: calc(50% + 10px) !important; /* 移动端保持居中 */
+    max-width: calc(100% - 32px) !important;
+  }
+}
+
 /* 工具栏组左对齐 */
 .simple-editor-container .tiptap-toolbar-group {
   display: flex;
@@ -216,6 +238,14 @@
   /* 移动端悬浮工具栏调整 */
   .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
     left: calc(50% + 10px) !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 32px) !important;
+    max-width: 210mm !important;
+  }
+  
+  /* 移动端侧边栏打开时的工具栏调整 */
+  body:has(.meeting-history-sidebar.open) .simple-editor-container .tiptap-toolbar[data-variant="fixed"].toolbar-floating {
+    left: calc(50% + 10px) !important; /* 移动端保持居中，因为侧边栏会覆盖 */
     transform: translateX(-50%) !important;
     width: calc(100% - 32px) !important;
     max-width: 210mm !important;

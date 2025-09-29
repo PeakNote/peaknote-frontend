@@ -6,8 +6,15 @@ const MeetingHistorySidebar = ({
   onToggle, 
   meetingList = [], 
   onSelectMeeting,
+  onBackToCurrent,
   currentEventId 
 }) => {
+  console.log('MeetingHistorySidebar: Received props:', {
+    isOpen,
+    meetingList,
+    currentEventId,
+    meetingListLength: meetingList?.length
+  });
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('zh-CN', {
@@ -58,6 +65,15 @@ const MeetingHistorySidebar = ({
         <div className="sidebar-header">
           <h3>Meeting History</h3>
           <p className="meeting-count">{meetingList.length} meetings </p>
+          {meetingList.length > 0 && (
+            <button 
+              className="current-meeting-btn"
+              onClick={onBackToCurrent}
+              title="Go back to current meeting"
+            >
+              Current Meeting
+            </button>
+          )}
         </div>
         
         <div className="meeting-list">

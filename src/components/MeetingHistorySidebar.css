@@ -81,6 +81,30 @@
   color: #9b9fa9;
 }
 
+.current-meeting-btn {
+  background: rgba(45, 48, 199, 0.1);
+  border: 1px solid rgba(207, 207, 234, 0.3);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.current-meeting-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
 .meeting-list {
   flex: 1;
   overflow-y: auto;
@@ -116,7 +140,7 @@
   margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: #ffffff;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,13 +155,13 @@
 
 .meeting-time .date {
   font-size: 14px;
-  color: #374151;
+  color: #a1abba;
   font-weight: 500;
 }
 
 .meeting-time .duration {
   font-size: 12px;
-  color: #6b7280;
+  color: #787d87;
 }
 
 .active-indicator {

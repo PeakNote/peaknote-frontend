@@ -364,9 +364,13 @@ const MeetingForm = ({ onSubmit }) => {
         meetingUrl,
         template: 'smart',
         notes: notes,
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
+        // 添加API返回的meetingList和eventId
+        meetingList: transcriptData.meetingList || [],
+        currentEventId: transcriptData.meetingDetails?.eventId || null
       };
 
+      console.log('MeetingForm: Sending formatted data:', formattedData);
       onSubmit(formattedData);
     } catch (error) {
       console.error('Error generating meeting transcript:', error);
