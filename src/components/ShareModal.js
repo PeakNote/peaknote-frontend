@@ -12,13 +12,12 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
 
   // 获取会议参与者
   const fetchAttendees = async () => { 
-      // 检查是否有eventId
-      const eventId = meetingData?.notes?.eventId;
+      // 检查是否有eventId - 修复：从正确的路径获取eventId
+      const eventId = meetingData?.currentEventId;
         // 添加详细的调试信息
       console.log('=== 调试 meetingData ===');
       console.log('meetingData:', meetingData);
-      console.log('meetingData.notes:', meetingData?.notes);
-      console.log('meetingData.notes.eventId:', meetingData?.notes?.eventId);
+      console.log('meetingData.currentEventId:', meetingData?.currentEventId);
       console.log('eventId 类型:', typeof eventId);
       console.log('eventId 长度:', eventId ? eventId.length : 'undefined');
       console.log('=== 调试结束 ===');
@@ -30,18 +29,6 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
         return;
       }
 
-      // 如果是测试数据（没有eventId），直接使用默认列表
-      // if (!eventId || eventId === 'test-event-id-123') {
-      //   console.log('使用测试数据，直接加载默认参与者列表');
-      //   setAttendees([
-      //     { email: 'gaorz866999@gmail.com', displayName: 'RZ Gao (Test)' },
-      //     { email: 'test1@example.com', displayName: 'Test User 1' },
-      //     { email: 'test2@example.com', displayName: 'Test User 2' },
-      //     { email: 'test3@example.com', displayName: 'Test User 3' }
-      //   ]);
-      //   setIsLoadingAttendees(false);
-      //   return;
-      // }
 
     try {
       setIsLoadingAttendees(true);
@@ -87,22 +74,20 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
     } catch (error) {
       console.error('Error fetching attendees:', error);
       let errorMessage = 'Failed to load attendees';
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        errorMessage = 'Cannot connect to server. Please check if the backend is running.';
-      } else if (error.message.includes('CORS')) {
-        errorMessage = 'CORS error. Please check server configuration.';
-      } else {
-        errorMessage = `Failed to load attendees: ${error.message}`;
+      if (error instanceof Error) {
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+        } else if (error.message.includes('CORS')) {
+          errorMessage = 'CORS error. Please check server configuration.';
+        } else {
+          errorMessage = `Failed to load attendees: ${error.message}`;
+        }
       }
       
       setAttendeesError(errorMessage);
       
-      // 如果API失败，使用默认的团队成员列表作为后备
-      setAttendees([
-        { email: 'gaorz866999@gmail.com', displayName: 'RZ Gao' },
-        { email: 'john.smith@company.com', displayName: 'John Smith' },
-        { email: 'sarah.j@company.com', displayName: 'Sarah Johnson' }
-      ]);
+      // 如果API失败，不显示任何参与者
+      setAttendees([]);
     } finally {
       setIsLoadingAttendees(false);
     }
@@ -254,6 +239,9 @@ Meeting Details:
 - Meeting URL: ${meetingData?.meetingUrl || 'N/A'}
 - Generated: ${new Date().toLocaleString()}
 
+
+
+
 Best regards,
 PeakNote Team
 `.trim());
@@ -323,7 +311,7 @@ PeakNote Team
               <div className="alert alert-warning mb-3">
                 <strong>Warning:</strong> {attendeesError}
                 <br />
-                <small>Using default attendee list.</small>
+                <small>No attendees available for this meeting.</small>
               </div>
             )}
 
