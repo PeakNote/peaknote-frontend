@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './ShareModal.css';
 
-const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
+const ShareModal = ({ isOpen, onClose, meetingData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [isLoadingAttendees, setIsLoadingAttendees] = useState(false);
   const [attendeesError, setAttendeesError] = useState(null);
@@ -208,12 +207,7 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
     }
   }; */
 
-  // 下载PDF函数 - 已禁用
-  const downloadPDF = async () => {
-    // 下载功能已禁用
-    alert('下载功能暂时不可用');
-    return null;
-  };
+
 
   const handleSend = async () => {
     if (selectedUsers.length === 0) {
