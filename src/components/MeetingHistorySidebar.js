@@ -7,14 +7,9 @@ const MeetingHistorySidebar = ({
   meetingList = [], 
   onSelectMeeting,
   onBackToCurrent,
-  currentEventId 
+  currentEventId,
+  selectedMeetingId 
 }) => {
-  console.log('MeetingHistorySidebar: Received props:', {
-    isOpen,
-    meetingList,
-    currentEventId,
-    meetingListLength: meetingList?.length
-  });
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('zh-CN', {
@@ -64,7 +59,7 @@ const MeetingHistorySidebar = ({
       <div className={`meeting-history-sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h3>Meeting History</h3>
-          <p className="meeting-count">{meetingList.length} meetings </p>
+          <p className="meeting-count">{Math.max(0, meetingList.length - 1)} meetings </p>
           {meetingList.length > 0 && (
             <button 
               className="current-meeting-btn"
@@ -82,10 +77,10 @@ const MeetingHistorySidebar = ({
               <p>No meeting history</p>
             </div>
           ) : (
-            meetingList.map((meeting, index) => (
+            meetingList.slice(1).map((meeting, index) => (
               <div 
                 key={meeting.eventId}
-                className={`meeting-item ${currentEventId === meeting.eventId ? 'active' : ''}`}
+                className={`meeting-item ${selectedMeetingId === meeting.eventId ? 'active' : ''}`}
                 onClick={() => onSelectMeeting(meeting)}
               >
                 <div className="meeting-content">
@@ -99,7 +94,7 @@ const MeetingHistorySidebar = ({
                     </span>
                   </div>
                 </div>
-                {currentEventId === meeting.eventId && (
+                {selectedMeetingId === meeting.eventId && (
                   <div className="active-indicator">
                     <div className="active-dot"></div>
                   </div>

@@ -57,6 +57,7 @@ import {
 import { MarkButton } from "@/components/tiptap-ui/mark-button"
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
+import { SaveButton } from "@/components/tiptap-ui/save-button"
 import { ShareButton } from "@/components/tiptap-ui/share-button"
 import { DownloadButton } from "@/components/tiptap-ui/download-button"
 import { PrintButton } from "@/components/tiptap-ui/print-button"
@@ -93,6 +94,7 @@ const MainToolbarContent = ({
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
+        <SaveButton />
       </ToolbarGroup>
       <ToolbarSeparator />
       <ToolbarGroup>

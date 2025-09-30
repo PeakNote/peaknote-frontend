@@ -6,7 +6,9 @@ import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import Pattern from './components/Pattern.jsx';
 import SimpleEditor from './components/SimpleEditor.jsx';
-import MeetingHistorySidebar from './components/MeetingHistorySidebar'; 
+import MeetingHistorySidebar from './components/MeetingHistorySidebar';
+import VersionHistory from './components/VersionHistory';
+import { useAutoSave } from './hooks/useAutoSave'; 
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
@@ -18,6 +20,19 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [meetingList, setMeetingList] = useState([]);
   const [currentEventId, setCurrentEventId] = useState(null);
+  const [selectedMeetingId, setSelectedMeetingId] = useState(null); // 跟踪用户主动选择的会议
+  
+  // Version History states
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+
+  // Auto-save functionality
+  const autoSave = useAutoSave(editorContent, currentEventId, {
+    saveInterval: 3000, // 3秒
+    debounceDelay: 2000, // 输入停止后2秒
+    maxVersions: 10
+  });
+
+
 
   // Typing animation messages
   const staticMessage = 'AI-Driven Meeting Assistant';
@@ -53,6 +68,10 @@ function App() {
       // 总是将第一个会议设置为当前会议
       setCurrentEventId(data.meetingList[0].eventId);
       console.log('App.jsx: Set first meeting as current:', data.meetingList[0].eventId);
+    } else {
+      // 如果没有eventId，生成一个临时的
+      const tempEventId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      setCurrentEventId(tempEventId);
     }
   };
 
@@ -60,6 +79,106 @@ function App() {
   const handleEditorChange = React.useCallback((content) => {
     setEditorContent(content);
   }, []);
+
+  // 处理撤销/重做
+  const handleUndo = React.useCallback(() => {
+    const previousContent = autoSave.undo();
+    if (previousContent) {
+      setEditorContent(previousContent);
+    }
+  }, [autoSave]);
+
+  const handleRedo = React.useCallback(() => {
+    const nextContent = autoSave.redo();
+    if (nextContent) {
+      setEditorContent(nextContent);
+    }
+  }, [autoSave]);
+
+  // 处理版本恢复
+  const handleVersionRestore = React.useCallback((content) => {
+    setEditorContent(content);
+  }, []);
+
+  // 键盘快捷键支持
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'z':
+            if (!e.shiftKey) {
+              e.preventDefault();
+              handleUndo();
+            }
+            break;
+          case 'y':
+          case 'Z':
+            e.preventDefault();
+            handleRedo();
+            break;
+          case 's':
+            e.preventDefault();
+            autoSave.manualSave();
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo, autoSave]);
+
+  // 监听手动保存事件
+  React.useEffect(() => {
+    const handleManualSave = () => {
+      autoSave.manualSave();
+    };
+
+    window.addEventListener('tiptap-manual-save', handleManualSave);
+    return () => window.removeEventListener('tiptap-manual-save', handleManualSave);
+  }, [autoSave]);
+
+  // 发送自动保存状态给保存按钮
+  React.useEffect(() => {
+    const statusEvent = new CustomEvent('auto-save-status', {
+      detail: { isSaving: autoSave.isSaving }
+    });
+    window.dispatchEvent(statusEvent);
+  }, [autoSave.isSaving]);
+
+  // 页面离开时的未保存提示 - 已禁用
+  // React.useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     // 检查是否有未保存的更改
+  //     if (autoSave.hasUnsavedChanges && autoSave.hasUnsavedChanges()) {
+  //       const message = '您有未保存的更改，确定要离开吗？';
+  //       event.preventDefault();
+  //       event.returnValue = message;
+  //       console.log('⚠️ 检测到未保存的更改，显示离开确认');
+  //       return message;
+  //     }
+  //   };
+
+  //   // 添加事件监听器
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
+
+  //   // 清理函数
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   };
+  // }, [autoSave.hasUnsavedChanges]);
+
+  // 调试未保存状态
+  React.useEffect(() => {
+    if (autoSave.hasUnsavedChanges) {
+      const hasChanges = autoSave.hasUnsavedChanges();
+      console.log('🔍 未保存状态检查:', {
+        hasUnsavedChanges: hasChanges,
+        isSaving: autoSave.isSaving,
+        saveStatus: autoSave.saveStatus
+      });
+    }
+  }, [editorContent, autoSave.hasUnsavedChanges, autoSave.isSaving, autoSave.saveStatus]);
 
   const handleShare = () => {
     console.log('App.jsx: handleShare called'); // 添加调试信息
@@ -82,39 +201,71 @@ function App() {
   };
 
   // Sidebar handlers
-  const handleSidebarToggle = () => {
+  const handleSidebarToggle = React.useCallback(() => {
     setIsSidebarOpen(!isSidebarOpen);
-  };
+  }, [isSidebarOpen]);
 
   // 回到当前会议的功能
-  const handleBackToCurrentMeeting = () => {
+  const handleBackToCurrentMeeting = React.useCallback(async () => {
+    console.log('🔄 尝试回到当前会议');
+
     if (meetingList.length > 0) {
       const currentMeeting = meetingList[0];
       setCurrentEventId(currentMeeting.eventId);
+      setSelectedMeetingId(null); // 清除选择状态，回到当前会议
       console.log('Back to current meeting:', currentMeeting);
       
-      // 如果当前会议有内容，直接显示
+      // 首先尝试从本地存储获取最新内容
+      const cachedContent = localStorage.getItem(`meeting_${currentMeeting.eventId}_latest`);
+      if (cachedContent) {
+        try {
+          const parsedContent = JSON.parse(cachedContent);
+          setEditorContent(parsedContent);
+          console.log('✅ Restored current meeting with cached latest content');
+          return;
+        } catch (error) {
+          console.error('Error parsing cached content:', error);
+        }
+      }
+      
+      // 如果本地缓存不存在，使用原始内容
       if (meetingData && meetingData.notes) {
         setEditorContent(meetingData.notes);
-        console.log('Restored current meeting content');
+        console.log('Using original meeting content as fallback');
       }
     }
-  };
+  }, [meetingList, meetingData, autoSave]);
 
-  const handleSelectMeeting = async (meeting) => {
+  const handleSelectMeeting = React.useCallback(async (meeting) => {
+    console.log('🔄 尝试切换到会议:', meeting.eventId);
+    console.log('📊 当前状态对比:', {
+      currentEventId,
+      targetEventId: meeting.eventId,
+      isSameEvent: currentEventId === meeting.eventId,
+      currentEventIdType: typeof currentEventId,
+      targetEventIdType: typeof meeting.eventId
+    });
+    
+    // 如果切换到同一个会议，不需要检查
+    if (currentEventId === meeting.eventId) {
+      console.log('✅ 切换到同一个会议，跳过');
+      return;
+    }
+
     setCurrentEventId(meeting.eventId);
+    setSelectedMeetingId(meeting.eventId); // 标记用户主动选择了这个会议
     console.log('Selected meeting:', meeting);
     
     try {
       // 首先尝试使用eventId获取会议详情
       const apiUrl = `https://api.peak-note.com/transcript/by-event-id?eventId=${encodeURIComponent(meeting.eventId)}`;
+      // const apiUrl = `https://e33c2f60f987.ngrok-free.app/transcript/by-event-id?eventId=${encodeURIComponent(meeting.eventId)}`;
       console.log('Fetching meeting details for eventId:', meeting.eventId);
       console.log('API URL:', apiUrl);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json'
         }
       });
@@ -190,7 +341,20 @@ function App() {
     } catch (error) {
       console.error('Error fetching meeting details:', error);
       
-      // 如果API调用失败，显示基本的会议信息
+      // 首先尝试从本地缓存获取内容
+      const cachedContent = localStorage.getItem(`meeting_${meeting.eventId}_latest`);
+      if (cachedContent) {
+        try {
+          const parsedContent = JSON.parse(cachedContent);
+          setEditorContent(parsedContent);
+          console.log('✅ 使用本地缓存的内容');
+          return;
+        } catch (parseError) {
+          console.error('Error parsing cached content:', parseError);
+        }
+      }
+      
+      // 如果本地缓存不存在，显示基本的会议信息
       const fallbackContent = {
         type: 'doc',
         content: [
@@ -225,7 +389,7 @@ function App() {
       setEditorContent(fallbackContent);
       console.log('Using fallback content for meeting:', meeting);
     }
-  };
+  }, [autoSave, currentEventId]);
 
   return (
     <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
@@ -237,6 +401,7 @@ function App() {
         onSelectMeeting={handleSelectMeeting}
         onBackToCurrent={handleBackToCurrentMeeting}
         currentEventId={currentEventId}
+        selectedMeetingId={selectedMeetingId}
       />
       
       {/* Particles background */}
@@ -297,6 +462,21 @@ function App() {
       <SuccessAnimation 
         isVisible={showSuccessAnimation}
         onComplete={handleSuccessComplete}
+      />
+
+
+
+      {/* Version History Modal */}
+      <VersionHistory
+        versions={autoSave.versions}
+        currentVersionIndex={autoSave.currentVersionIndex}
+        onRestore={handleVersionRestore}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        canUndo={autoSave.canUndo}
+        canRedo={autoSave.canRedo}
+        isOpen={showVersionHistory}
+        onClose={() => setShowVersionHistory(false)}
       />
     </div>
   );

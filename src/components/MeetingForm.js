@@ -6,21 +6,36 @@ const MeetingForm = ({ onSubmit }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
 
+  // 解析内容，如果是JSON字符串则解析为对象
+  const parseContent = (content) => {
+    if (typeof content === 'string') {
+      try {
+        // 尝试解析JSON字符串
+        const parsed = JSON.parse(content);
+        return parsed;
+      } catch (e) {
+        // 如果不是JSON，返回原始字符串
+        return content;
+      }
+    }
+    return content;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
 
     try {
       // Use the meeting URL directly as it should already be properly encoded
-       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
-      //const apiUrl = `https://9d0a5cd27d6f.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
+      const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
+      // const apiUrl = `https://e33c2f60f987.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
 
       console.log('Calling API:', apiUrl); // 调试信息
       // Call transcript API
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+          'Content-Type': 'application/json'
         }
       });
 
@@ -42,13 +57,13 @@ const MeetingForm = ({ onSubmit }) => {
       if (transcriptData.meetingDetails) {
         // Try different possible fields for the content
         if (transcriptData.meetingDetails.transcript) {
-          notes = transcriptData.meetingDetails.transcript;
+          notes = parseContent(transcriptData.meetingDetails.transcript);
         } else if (transcriptData.meetingDetails.content) {
-          notes = transcriptData.meetingDetails.content;
+          notes = parseContent(transcriptData.meetingDetails.content);
         } else if (transcriptData.meetingDetails.summary) {
-          notes = transcriptData.meetingDetails.summary;
+          notes = parseContent(transcriptData.meetingDetails.summary);
         } else if (transcriptData.meetingDetails.notes) {
-          notes = transcriptData.meetingDetails.notes;
+          notes = parseContent(transcriptData.meetingDetails.notes);
         } else {
           // If none of the above, use the entire meetingDetails object
           notes = JSON.stringify(transcriptData.meetingDetails, null, 2);
