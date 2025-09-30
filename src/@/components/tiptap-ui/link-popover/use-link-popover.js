@@ -109,14 +109,27 @@ export function useLinkHandler(props) {
     setUrl("")
   }, [editor])
 
-  const openLink = React.useCallback((target = "_blank", features = "noopener,noreferrer") => {
-    if (!url) return
+  const openLink = React.useCallback(() => {
+    if (!url || !editor) return
 
     const safeUrl = sanitizeUrl(url, window.location.href)
     if (safeUrl !== "#") {
-      window.open(safeUrl, target, features)
+      // 在编辑器中插入链接内容，而不是打开新窗口
+      const linkText = url.includes('://') ? url : `https://${url}`
+      
+      // 获取当前光标位置
+      const { from, to } = editor.state.selection
+      const isEmpty = from === to
+      
+      if (isEmpty) {
+        // 如果没有选中文本，插入链接文本
+        editor.chain().focus().insertContent(`<a href="${safeUrl}" target="_blank">${linkText}</a>`).run()
+      } else {
+        // 如果有选中文本，将选中的文本转换为链接
+        editor.chain().focus().setLink({ href: safeUrl }).run()
+      }
     }
-  }, [url])
+  }, [url, editor])
 
   return {
     url: url || "",

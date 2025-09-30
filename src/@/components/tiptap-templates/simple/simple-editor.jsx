@@ -85,7 +85,8 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
-  isMobile
+  isMobile,
+  onShareClick
 }) => {
   return (
     <>
@@ -133,7 +134,7 @@ const MainToolbarContent = ({
       </ToolbarGroup>
       <Spacer />
       <ToolbarGroup>
-        <ShareButton onClick={() => console.log('Share clicked')} />
+        <ShareButton onClick={onShareClick} />
         <DownloadButton />
         <PrintButton />
       </ToolbarGroup>
@@ -167,18 +168,42 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor({ content, onChange }) {
+export function SimpleEditor({ content, onChange, onShareClick }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
   const [isToolbarFloating, setIsToolbarFloating] = React.useState(false)
+  const [, setEditorKey] = React.useState(0) // 用于强制重新创建编辑器
   const toolbarRef = React.useRef(null)
   const editorWrapperRef = React.useRef(null)
+  const errorCountRef = React.useRef(0) // 错误计数器
 
   // 设置默认夜间模式
   React.useEffect(() => {
     document.documentElement.classList.add("dark")
   }, [])
+
+  // 强制重新创建编辑器的函数
+  const forceRecreateEditor = React.useCallback(() => {
+    console.log('SimpleEditor: Force recreating editor due to errors');
+    setEditorKey(prev => prev + 1);
+    errorCountRef.current = 0;
+  }, []);
+
+  // 全局错误处理器
+  React.useEffect(() => {
+    const handleGlobalError = (event) => {
+      if (event.error && event.error.message && 
+          event.error.message.includes('contentMatchAt')) {
+        console.error('SimpleEditor: Caught contentMatchAt error, recreating editor');
+        event.preventDefault();
+        forceRecreateEditor();
+      }
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    return () => window.removeEventListener('error', handleGlobalError);
+  }, [forceRecreateEditor]);
 
   // 监听滚动，实现工具栏悬浮效果
   React.useEffect(() => {
@@ -212,8 +237,8 @@ export function SimpleEditor({ content, onChange }) {
   }, [isToolbarFloating])
 
   const editor = useEditor({
-    immediatelyRender: true,
-    shouldRerenderOnTransaction: true,
+    immediatelyRender: false, // 禁用立即渲染，避免初始化问题
+    shouldRerenderOnTransaction: false, // 禁用事务重渲染
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -222,13 +247,69 @@ export function SimpleEditor({ content, onChange }) {
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor",
       },
+      handleKeyDown: (view, event) => {
+        // 拦截可能导致问题的键盘操作
+        if (event.key === 'Backspace' || event.key === 'Delete') {
+          try {
+            const { state } = view;
+            const { selection } = state;
+            
+            // 检查是否在列表中
+            const { $from } = selection;
+            const listNode = $from.node(-1);
+            const isInList = listNode && (listNode.type.name === 'bulletList' || listNode.type.name === 'orderedList' || listNode.type.name === 'taskList');
+            
+            if (isInList) {
+              // 在列表中时，特别小心处理删除操作
+              if (selection.empty && $from.parentOffset === 0 && $from.parent.textContent === '') {
+                // 如果列表项为空，阻止删除操作
+                console.warn('SimpleEditor: Prevented deletion of empty list item');
+                event.preventDefault();
+                return true;
+              }
+            }
+            
+            if (selection.empty) {
+              // 如果选择为空，允许默认行为
+              return false;
+            }
+          } catch (error) {
+            console.warn('SimpleEditor: Prevented potentially problematic key operation');
+            event.preventDefault();
+            return true;
+          }
+        }
+        return false;
+      },
     },
     extensions: [
       StarterKit.configure({
         horizontalRule: false,
         link: {
           openOnClick: false,
-          enableClickSelection: true,
+          enableClickSelection: false, // 禁用可能导致问题的功能
+        },
+        history: {
+          depth: 10, // 限制历史记录深度
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: 'bullet-list',
+          },
+          keepMarks: false,
+          keepAttributes: false,
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: 'ordered-list',
+          },
+          keepMarks: false,
+          keepAttributes: false,
+        },
+        listItem: {
+          HTMLAttributes: {
+            class: 'list-item',
+          },
         },
       }),
       HorizontalRule,
@@ -237,8 +318,20 @@ export function SimpleEditor({ content, onChange }) {
         alignments: ['left', 'center', 'right', 'justify'],
         defaultAlignment: 'left'
       }),
-      TaskList,
-      TaskItem.configure({ nested: true }),
+      TaskList.configure({
+        HTMLAttributes: {
+          class: 'task-list',
+        },
+        itemTypeName: 'taskItem',
+        keepMarks: false,
+        keepAttributes: false,
+      }),
+      TaskItem.configure({ 
+        nested: true,
+        HTMLAttributes: {
+          class: 'task-list-item',
+        },
+      }),
       Highlight.configure({ multicolor: true }),
       Image,
       Typography,
@@ -258,7 +351,15 @@ export function SimpleEditor({ content, onChange }) {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content: content || content,
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Start typing...' }]
+        }
+      ]
+    },
   })
 
   const rect = useCursorVisibility({
@@ -272,34 +373,359 @@ export function SimpleEditor({ content, onChange }) {
     }
   }, [isMobile, mobileView])
 
+  // 使用ref来跟踪是否是用户输入导致的内容变化
+  const isUserInputRef = React.useRef(false);
+
+  // 内容清理和验证函数
+  const sanitizeContent = (content) => {
+    if (!content) {
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Start typing...' }]
+          }
+        ]
+      };
+    }
+
+    // 如果是字符串，转换为基本结构
+    if (typeof content === 'string') {
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: content }]
+          }
+        ]
+      };
+    }
+
+    // 验证JSON结构
+    if (!content.type || content.type !== 'doc') {
+      console.warn('Invalid content type, wrapping in doc');
+      return {
+        type: 'doc',
+        content: [content]
+      };
+    }
+
+    // 验证content数组
+    if (!Array.isArray(content.content)) {
+      console.warn('Invalid content array, creating paragraph');
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Content loading...' }]
+          }
+        ]
+      };
+    }
+
+    // 清理每个节点
+    const sanitizedContent = content.content.map(node => {
+      if (!node || typeof node !== 'object') {
+        return {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Invalid node' }]
+        };
+      }
+
+      // 确保每个节点都有必要的属性
+      if (!node.type) {
+        return {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Unknown content' }]
+        };
+      }
+
+      // 验证文本节点
+      if (node.type === 'text' && !node.text) {
+        return { ...node, text: ' ' };
+      }
+
+      // 验证段落节点
+      if (node.type === 'paragraph' && (!node.content || !Array.isArray(node.content))) {
+        return {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Empty paragraph' }]
+        };
+      }
+
+      // 特殊处理列表节点
+      if (node.type === 'bulletList' || node.type === 'orderedList' || node.type === 'taskList') {
+        if (!node.content || !Array.isArray(node.content)) {
+          return {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Invalid list' }]
+          };
+        }
+        
+        // 清理列表项
+        const sanitizedListItems = node.content.map(item => {
+          if (!item || item.type !== 'listItem') {
+            return {
+              type: 'listItem',
+              content: [
+                {
+                  type: 'paragraph',
+                  content: [{ type: 'text', text: 'Invalid list item' }]
+                }
+              ]
+            };
+          }
+          
+          if (!item.content || !Array.isArray(item.content)) {
+            return {
+              type: 'listItem',
+              content: [
+                {
+                  type: 'paragraph',
+                  content: [{ type: 'text', text: 'Empty list item' }]
+                }
+              ]
+            };
+          }
+          
+          // 修复列表项结构：确保每个列表项都有paragraph包装
+          const sanitizedItemContent = item.content.map(itemContent => {
+            if (!itemContent || typeof itemContent !== 'object') {
+              return {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Invalid content' }]
+              };
+            }
+            
+            // 如果直接是text节点，包装在paragraph中
+            if (itemContent.type === 'text') {
+              return {
+                type: 'paragraph',
+                content: [itemContent]
+              };
+            }
+            
+            // 如果已经是paragraph，确保内容有效
+            if (itemContent.type === 'paragraph') {
+              if (!itemContent.content || !Array.isArray(itemContent.content)) {
+                return {
+                  type: 'paragraph',
+                  content: [{ type: 'text', text: 'Empty paragraph' }]
+                };
+              }
+              return itemContent;
+            }
+            
+            // 其他类型保持原样
+            return itemContent;
+          }).filter(Boolean);
+          
+          return {
+            ...item,
+            content: sanitizedItemContent
+          };
+        }).filter(Boolean);
+        
+        return {
+          ...node,
+          content: sanitizedListItems
+        };
+      }
+
+      // 验证列表项节点
+      if (node.type === 'listItem') {
+        if (!node.content || !Array.isArray(node.content)) {
+          return {
+            type: 'listItem',
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Empty list item' }]
+              }
+            ]
+          };
+        }
+        
+        // 确保列表项内容有效
+        const sanitizedItemContent = node.content.map(itemContent => {
+          if (!itemContent || typeof itemContent !== 'object') {
+            return {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'Invalid content' }]
+            };
+          }
+          
+          // 如果直接是text节点，包装在paragraph中
+          if (itemContent.type === 'text') {
+            return {
+              type: 'paragraph',
+              content: [itemContent]
+            };
+          }
+          
+          if (itemContent.type === 'paragraph' && (!itemContent.content || !Array.isArray(itemContent.content))) {
+            return {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'Empty paragraph' }]
+            };
+          }
+          
+          return itemContent;
+        }).filter(Boolean);
+        
+        return {
+          ...node,
+          content: sanitizedItemContent
+        };
+      }
+
+      // 验证任务项节点
+      if (node.type === 'taskItem') {
+        if (!node.content || !Array.isArray(node.content)) {
+          return {
+            type: 'taskItem',
+            attrs: { checked: false },
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Empty task item' }]
+              }
+            ]
+          };
+        }
+        
+        // 确保任务项内容有效
+        const sanitizedTaskContent = node.content.map(taskContent => {
+          if (!taskContent || typeof taskContent !== 'object') {
+            return {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'Invalid content' }]
+            };
+          }
+          
+          // 如果直接是text节点，包装在paragraph中
+          if (taskContent.type === 'text') {
+            return {
+              type: 'paragraph',
+              content: [taskContent]
+            };
+          }
+          
+          if (taskContent.type === 'paragraph' && (!taskContent.content || !Array.isArray(taskContent.content))) {
+            return {
+              type: 'paragraph',
+              content: [{ type: 'text', text: 'Empty paragraph' }]
+            };
+          }
+          
+          return taskContent;
+        }).filter(Boolean);
+        
+        return {
+          ...node,
+          attrs: node.attrs || { checked: false },
+          content: sanitizedTaskContent
+        };
+      }
+
+      return node;
+    }).filter(Boolean);
+
+    return {
+      type: 'doc',
+      content: sanitizedContent
+    };
+  };
+
   // Update editor content when content prop changes
   React.useEffect(() => {
-    if (editor && content) {
-      console.log('SimpleEditor: Updating editor content with:', content);
-      try {
-        // Clear editor first
-        editor.commands.clearContent();
-        // Set new content
-        editor.commands.setContent(content);
-        console.log('SimpleEditor: Content set successfully');
-      } catch (error) {
-        console.error('SimpleEditor: Error setting content:', error);
-        // Fallback: try to set as plain text
-        if (typeof content === 'string') {
-          editor.commands.setContent(content);
-        } else if (content && content.content) {
-          editor.commands.setContent(content.content);
+    if (!editor || !content) return;
+    
+    // 如果是用户输入导致的变化，跳过重新设置
+    if (isUserInputRef.current) {
+      isUserInputRef.current = false;
+      return;
+    }
+
+    // 检查内容是否真的发生了变化
+    const currentContent = editor.getJSON();
+    const isContentDifferent = JSON.stringify(currentContent) !== JSON.stringify(content);
+    
+    if (!isContentDifferent) return;
+    
+    console.log('SimpleEditor: Updating editor content with:', content);
+    
+    // 使用最安全的方式设置内容
+    try {
+      // 先清空编辑器
+      editor.commands.clearContent();
+      
+      // 等待一个tick再设置新内容
+      setTimeout(() => {
+        try {
+          const sanitizedContent = sanitizeContent(content);
+          editor.commands.setContent(sanitizedContent);
+          console.log('SimpleEditor: Content set successfully');
+        } catch (setError) {
+          console.error('SimpleEditor: Error setting sanitized content:', setError);
+          // 使用最基本的文档结构
+          const minimalContent = {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Content loaded' }]
+              }
+            ]
+          };
+          editor.commands.setContent(minimalContent);
         }
+      }, 0);
+      
+    } catch (error) {
+      console.error('SimpleEditor: Error in content update:', error);
+      errorCountRef.current += 1;
+      
+      // 如果错误次数过多，重新创建编辑器
+      if (errorCountRef.current > 3) {
+        console.warn('SimpleEditor: Too many errors, recreating editor');
+        forceRecreateEditor();
       }
     }
-  }, [editor, content])
+  }, [editor, content, forceRecreateEditor])
+
+  // 防抖处理，减少频繁更新
+  const debouncedOnChange = React.useCallback(() => {
+    let timeoutId;
+    return (json) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        onChange(json);
+      }, 100); // 100ms防抖
+    };
+  }, [onChange]);
 
   // Handle content changes
   React.useEffect(() => {
     if (editor && onChange) {
       const handleUpdate = () => {
-        const json = editor.getJSON()
-        onChange(json)
+        try {
+          // 标记这是用户输入导致的变化
+          isUserInputRef.current = true;
+          const json = editor.getJSON()
+          
+          // 验证JSON结构是否有效
+          if (json && json.type === 'doc') {
+            debouncedOnChange(json)
+          } else {
+            console.warn('SimpleEditor: Invalid JSON structure, skipping update');
+          }
+        } catch (error) {
+          console.error('SimpleEditor: Error in handleUpdate:', error);
+        }
       }
       
       editor.on('update', handleUpdate)
@@ -307,7 +733,19 @@ export function SimpleEditor({ content, onChange }) {
         editor.off('update', handleUpdate)
       }
     }
-  }, [editor, onChange])
+  }, [editor, onChange, debouncedOnChange])
+
+  // 如果错误次数过多，显示重置消息
+  if (errorCountRef.current > 5) {
+    console.log('SimpleEditor: Too many errors, showing reset message');
+    return (
+      <div className="simple-editor-wrapper" ref={editorWrapperRef}>
+        <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+          Editor is being reset due to errors...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="simple-editor-wrapper" ref={editorWrapperRef}>
@@ -326,7 +764,8 @@ export function SimpleEditor({ content, onChange }) {
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}
               onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile} />
+              isMobile={isMobile}
+              onShareClick={onShareClick} />
           ) : (
             <MobileToolbarContent
               type={mobileView === "highlighter" ? "highlighter" : "link"}
