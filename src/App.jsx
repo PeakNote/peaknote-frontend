@@ -5,13 +5,16 @@ import MeetingForm from './components/MeetingForm';
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import Pattern from './components/Pattern.jsx';
-import SimpleEditor from './components/SimpleEditor.jsx'; 
+import SimpleEditor from './components/SimpleEditor.jsx';
+import InfoIcon from './components/InfoIcon';
+import TutorialModal from './components/TutorialModal'; 
 
 function App() {
   const [meetingData, setMeetingData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [editorContent, setEditorContent] = useState(null);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // Typing animation messages
   const staticMessage = 'AI-Driven Meeting Assistant';
@@ -42,8 +45,19 @@ function App() {
     setShowSuccessAnimation(false);
   };
 
+  const handleTutorialOpen = () => {
+    setShowTutorial(true);
+  };
+
+  const handleTutorialClose = () => {
+    setShowTutorial(false);
+  };
+
   return (
     <div className="App">
+      {/* Information Icon */}
+      <InfoIcon onClick={handleTutorialOpen} />
+      
       {/* Particles background */}
       <div className="background-video-wrapper">
         <video
@@ -102,6 +116,12 @@ function App() {
       <SuccessAnimation 
         isVisible={showSuccessAnimation}
         onComplete={handleSuccessComplete}
+      />
+
+      {/* Tutorial Modal */}
+      <TutorialModal 
+        isOpen={showTutorial}
+        onClose={handleTutorialClose}
       />
     </div>
   );
