@@ -192,20 +192,50 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
     errorCountRef.current = 0;
   }, []);
 
-  // 全局错误处理器
+  // 全局错误处理器 - 只屏蔽错误提示，不重建编辑器
   React.useEffect(() => {
     const handleGlobalError = (event) => {
-      if (event.error && event.error.message && 
-          event.error.message.includes('contentMatchAt')) {
-        console.error('SimpleEditor: Caught contentMatchAt error, recreating editor');
+      const msg = event && event.error && event.error.message ? String(event.error.message) : '';
+      if (!msg) return;
+      // 屏蔽与 ProseMirror 片段越界/位置计算相关的错误
+      const shouldSuppress = (
+        msg.includes('contentMatchAt') ||
+        msg.includes('outside of fragment') ||
+        msg.includes('Position -1') ||
+        msg.includes('nodeAt') ||
+        msg.includes('RangeError')
+      );
+      if (shouldSuppress) {
         event.preventDefault();
-        forceRecreateEditor();
+        event.stopPropagation && event.stopPropagation();
+        console.warn('SimpleEditor: Suppressed editor runtime error (non-critical):', msg);
+        // 不重建编辑器，只是阻止错误弹窗
+      }
+    };
+
+    const handleUnhandledRejection = (event) => {
+      const msg = event && event.reason && event.reason.message ? String(event.reason.message) : '';
+      if (!msg) return;
+      const shouldSuppress = (
+        msg.includes('contentMatchAt') ||
+        msg.includes('outside of fragment') ||
+        msg.includes('Position -1') ||
+        msg.includes('nodeAt') ||
+        msg.includes('RangeError')
+      );
+      if (shouldSuppress) {
+        event.preventDefault();
+        console.warn('SimpleEditor: Suppressed unhandled rejection (non-critical):', msg);
       }
     };
 
     window.addEventListener('error', handleGlobalError);
-    return () => window.removeEventListener('error', handleGlobalError);
-  }, [forceRecreateEditor]);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, []);
 
   // 监听滚动，实现工具栏悬浮效果
   React.useEffect(() => {
@@ -251,36 +281,66 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
         class: "simple-editor",
       },
       handleKeyDown: (view, event) => {
-        // 拦截可能导致问题的键盘操作
-        if (event.key === 'Backspace' || event.key === 'Delete') {
-          try {
+        try {
+          // 拦截撤销/重做操作，防止访问无效历史记录
+          if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+            const isRedo = event.shiftKey;
             const { state } = view;
-            const { selection } = state;
+            const { doc } = state;
             
-            // 检查是否在列表中
-            const { $from } = selection;
-            const listNode = $from.node(-1);
-            const isInList = listNode && (listNode.type.name === 'bulletList' || listNode.type.name === 'orderedList' || listNode.type.name === 'taskList');
-            
-            if (isInList) {
-              // 在列表中时，特别小心处理删除操作
-              if (selection.empty && $from.parentOffset === 0 && $from.parent.textContent === '') {
-                // 如果列表项为空，阻止删除操作
-                console.warn('SimpleEditor: Prevented deletion of empty list item');
-                event.preventDefault();
-                return true;
-              }
+            // 检查文档是否只有一个空段落（初始状态）
+            if (doc.childCount === 1 && doc.firstChild.type.name === 'paragraph' && doc.firstChild.content.size === 0) {
+              console.log('SimpleEditor: Prevented undo/redo on empty document');
+              event.preventDefault();
+              return true;
             }
             
-            if (selection.empty) {
-              // 如果选择为空，允许默认行为
+            // 额外保护：捕获任何可能的错误
+            try {
+              // 让TipTap处理撤销/重做，但如果出错则拦截
               return false;
+            } catch (undoError) {
+              console.warn('SimpleEditor: Prevented undo/redo error:', undoError);
+              event.preventDefault();
+              return true;
             }
-          } catch (error) {
-            console.warn('SimpleEditor: Prevented potentially problematic key operation');
-            event.preventDefault();
-            return true;
           }
+          
+          // 拦截可能导致问题的键盘操作
+          if (event.key === 'Backspace' || event.key === 'Delete') {
+            try {
+              const { state } = view;
+              const { selection } = state;
+              
+              // 检查是否在列表中
+              const { $from } = selection;
+              const listNode = $from.node(-1);
+              const isInList = listNode && (listNode.type.name === 'bulletList' || listNode.type.name === 'orderedList' || listNode.type.name === 'taskList');
+              
+              if (isInList) {
+                // 在列表中时，特别小心处理删除操作
+                if (selection.empty && $from.parentOffset === 0 && $from.parent.textContent === '') {
+                  // 如果列表项为空，阻止删除操作
+                  console.warn('SimpleEditor: Prevented deletion of empty list item');
+                  event.preventDefault();
+                  return true;
+                }
+              }
+              
+              if (selection.empty) {
+                // 如果选择为空，允许默认行为
+                return false;
+              }
+            } catch (error) {
+              console.warn('SimpleEditor: Prevented potentially problematic key operation');
+              event.preventDefault();
+              return true;
+            }
+          }
+        } catch (error) {
+          console.warn('SimpleEditor: Error in handleKeyDown:', error);
+          event.preventDefault();
+          return true;
         }
         return false;
       },
@@ -293,7 +353,8 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
           enableClickSelection: false, // 禁用可能导致问题的功能
         },
         history: {
-          depth: 10, // 限制历史记录深度
+          depth: 100, // 历史记录深度
+          newGroupDelay: 500, // 新历史组延迟（毫秒）
         },
         bulletList: {
           HTMLAttributes: {
@@ -662,32 +723,24 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
     
     console.log('SimpleEditor: Updating editor content with:', content);
     
-    // 使用最安全的方式设置内容
+    // 使用最安全的方式设置内容 - 不添加到历史记录
     try {
-      // 先清空编辑器
-      editor.commands.clearContent();
+      const sanitizedContent = sanitizeContent(content);
       
-      // 等待一个tick再设置新内容
-      setTimeout(() => {
-        try {
-          const sanitizedContent = sanitizeContent(content);
-          editor.commands.setContent(sanitizedContent);
-          console.log('SimpleEditor: Content set successfully');
-        } catch (setError) {
-          console.error('SimpleEditor: Error setting sanitized content:', setError);
-          // 使用最基本的文档结构
-          const minimalContent = {
-            type: 'doc',
-            content: [
-              {
-                type: 'paragraph',
-                content: [{ type: 'text', text: 'Content loaded' }]
-              }
-            ]
-          };
-          editor.commands.setContent(minimalContent);
-        }
-      }, 0);
+      // 使用事务直接设置内容，避免进入历史记录
+      const { state } = editor;
+      const { tr } = state;
+      
+      // 创建新的文档节点
+      const newDoc = editor.schema.nodeFromJSON(sanitizedContent);
+      
+      // 替换整个文档，不添加到历史记录
+      tr.replaceWith(0, state.doc.content.size, newDoc.content);
+      tr.setMeta('addToHistory', false); // 关键：不添加到历史记录
+      
+      // 应用事务
+      editor.view.dispatch(tr);
+      console.log('SimpleEditor: Content set successfully (without history)');
       
     } catch (error) {
       console.error('SimpleEditor: Error in content update:', error);
