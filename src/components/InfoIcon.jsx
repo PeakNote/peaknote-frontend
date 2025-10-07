@@ -38,3 +38,5 @@ const InfoIcon = ({ onClick }) => {
 };
 
 export default InfoIcon;
+
+

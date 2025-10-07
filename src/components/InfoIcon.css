@@ -61,3 +61,5 @@
 .info-icon-container:not(:hover) .info-icon {
   animation: infoIconBreathe 3s ease-in-out infinite;
 }
+
+

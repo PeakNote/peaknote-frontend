@@ -44,7 +44,7 @@ const TutorialModal = ({ isOpen, onClose }) => {
     <div className="tutorial-modal-overlay" onClick={onClose}>
       <div className="tutorial-modal" onClick={(e) => e.stopPropagation()}>
         <div className="tutorial-modal-header">
-          <h2>PeakNote Tutorial</h2>
+          <h2>PeakNote User Guide</h2>
           <button className="tutorial-close-btn" onClick={onClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path 
@@ -97,7 +97,6 @@ const TutorialModal = ({ isOpen, onClose }) => {
               ))}
             </div>
           </div>
-
         </div>
 
         <div className="tutorial-modal-footer">
