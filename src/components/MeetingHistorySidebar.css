@@ -4,7 +4,7 @@
   top: 20px;
   left: 20px;
   z-index: 1001;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   border-radius: 12px;
   width: 48px;
@@ -25,7 +25,7 @@
 }
 
 .history-toggle-btn svg {
-  color: #333;
+  color: #e1e0e0;
   transition: transform 0.3s ease;
 }
 
