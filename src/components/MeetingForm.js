@@ -28,14 +28,17 @@ const MeetingForm = ({ onSubmit }) => {
     try {
       // Use the meeting URL directly as it should already be properly encoded
       const apiUrl = `https://api.peak-note.com/transcript/by-url?url=${meetingUrl}`;
-      // const apiUrl = `https://e33c2f60f987.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
+      // const apiUrl = `https://4dd3f18734a3.ngrok-free.app/transcript/by-url?url=${meetingUrl}`;
 
       console.log('Calling API:', apiUrl); // 调试信息
+      console.log('Meeting URL being sent:', meetingUrl);
+      
       // Call transcript API
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true' // Add ngrok header to skip browser warning
         }
       });
 
@@ -43,7 +46,13 @@ const MeetingForm = ({ onSubmit }) => {
       console.log('MeetingForm response headers:', response.headers);
 
       if (!response.ok) {
-        throw new Error('Failed to generate meeting transcript');
+        const errorText = await response.text();
+        console.error('API Error Details:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorText: errorText
+        });
+        throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorText}`);
       }
 
       const transcriptData = await response.json();
@@ -389,7 +398,19 @@ const MeetingForm = ({ onSubmit }) => {
       onSubmit(formattedData);
     } catch (error) {
       console.error('Error generating meeting transcript:', error);
-      alert('Failed to generate meeting transcript. Please try again.');
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        meetingUrl: meetingUrl,
+        apiUrl: `https://4dd3f18734a3.ngrok-free.app/transcript/by-url?url=${meetingUrl}`
+      });
+      
+      // Show more specific error message
+      const errorMessage = error.message.includes('API Error') 
+        ? `API Error: ${error.message}` 
+        : `Error: ${error.message}. Please check the console for details.`;
+      
+      alert(errorMessage);
     } finally {
       setIsProcessing(false);
       setIsFinished(true);

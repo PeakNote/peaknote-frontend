@@ -259,7 +259,7 @@ function App() {
     try {
       // 首先尝试使用eventId获取会议详情
       const apiUrl = `https://api.peak-note.com/transcript/by-event-id?eventId=${encodeURIComponent(meeting.eventId)}`;
-      // const apiUrl = `https://e33c2f60f987.ngrok-free.app/transcript/by-event-id?eventId=${encodeURIComponent(meeting.eventId)}`;
+      // const apiUrl = `https://4dd3f18734a3.ngrok-free.app/transcript/by-event-id?eventId=${encodeURIComponent(meeting.eventId)}`;
       console.log('Fetching meeting details for eventId:', meeting.eventId);
       console.log('API URL:', apiUrl);
       

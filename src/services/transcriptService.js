@@ -1,7 +1,7 @@
 // API服务 - 用于调用后端更新API
 export const updateTranscript = async (eventId, content) => {
   const apiUrl = 'https://api.peak-note.com/transcript/update';
-  // const apiUrl = 'https://e33c2f60f987.ngrok-free.app/transcript/update';
+  // const apiUrl = 'https://4dd3f18734a3.ngrok-free.app/transcript/update';
   const requestBody = {
     eventId: eventId,
     content: JSON.stringify(content) // 后端期望字符串类型

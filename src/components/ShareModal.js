@@ -36,12 +36,12 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
 
       console.log('Using eventId from meeting data:', eventId);
       console.log('Full API URL:', `https://api.peak-note.com/attendees?eventId=${eventId}`);
-      // console.log('Full API URL:', `https://e33c2f60f987.ngrok-free.app/attendees?eventId=${eventId}`);
+      // console.log('Full API URL:', `https://4dd3f18734a3.ngrok-free.app/attendees?eventId=${eventId}`);
 
       
       // 调用参与者API
       const response = await fetch(`https://api.peak-note.com/attendees?eventId=${eventId}`, {
-      // const response = await fetch(`https://e33c2f60f987.ngrok-free.app/attendees?eventId=${eventId}`, {
+      // const response = await fetch(`https://4dd3f18734a3.ngrok-free.app/attendees?eventId=${eventId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
