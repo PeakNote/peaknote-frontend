@@ -177,8 +177,9 @@
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  align-items: stretch;
 }
 
 .feature-item {
@@ -190,6 +191,28 @@
   font-size: 0.9rem;
   text-align: center;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  min-height: 60px;
+  height: 100%;
+}
+
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.feature-item span {
+  flex: 1;
+  text-align: left;
 }
 
 .feature-item:hover {
@@ -304,6 +327,11 @@
   
   .features-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .feature-item {
+    min-height: 50px;
   }
   
   .tutorial-step {
