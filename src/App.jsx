@@ -149,28 +149,6 @@ function App() {
     window.dispatchEvent(statusEvent);
   }, [autoSave.isSaving]);
 
-  // 页面离开时的未保存提示 - 已禁用
-  // React.useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     // 检查是否有未保存的更改
-  //     if (autoSave.hasUnsavedChanges && autoSave.hasUnsavedChanges()) {
-  //       const message = '您有未保存的更改，确定要离开吗？';
-  //       event.preventDefault();
-  //       event.returnValue = message;
-  //       console.log('⚠️ 检测到未保存的更改，显示离开确认');
-  //       return message;
-  //     }
-  //   };
-
-  //   // 添加事件监听器
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-
-  //   // 清理函数
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, [autoSave.hasUnsavedChanges]);
-
   // 调试未保存状态
   React.useEffect(() => {
     if (autoSave.hasUnsavedChanges) {
