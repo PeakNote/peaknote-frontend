@@ -753,15 +753,18 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
   }, [editor, content, forceRecreateEditor])
 
   // 防抖处理，减少频繁更新
-  const debouncedOnChange = React.useCallback(() => {
-    let timeoutId;
-    return (json) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        onChange(json);
-      }, 100); // 100ms防抖
-    };
-  }, [onChange]);
+  const debouncedOnChange = React.useCallback(
+    React.useMemo(() => {
+      let timeoutId;
+      return (json) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          onChange(json);
+        }, 100); // 100ms防抖
+      };
+    }, [onChange]),
+    [onChange]
+  );
 
   // Handle content changes
   React.useEffect(() => {
