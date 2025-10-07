@@ -131,7 +131,7 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, autoSave.manualSave]);
+  }, [handleUndo, handleRedo]);
 
   // 监听手动保存事件
   React.useEffect(() => {
@@ -141,7 +141,7 @@ function App() {
 
     window.addEventListener('tiptap-manual-save', handleManualSave);
     return () => window.removeEventListener('tiptap-manual-save', handleManualSave);
-  }, [autoSave.manualSave]);
+  }, [autoSave]);
 
   // 发送自动保存状态给保存按钮
   React.useEffect(() => {
@@ -149,7 +149,7 @@ function App() {
       detail: { isSaving: autoSave.isSaving }
     });
     window.dispatchEvent(statusEvent);
-  }, [autoSave.isSaving]);
+  }, [autoSave]);
 
   // 调试未保存状态
   React.useEffect(() => {
@@ -223,7 +223,7 @@ function App() {
         console.log('Using original meeting content as fallback');
       }
     }
-  }, [meetingList, meetingData, autoSave]);
+  }, [meetingList, meetingData]);
 
   const handleSelectMeeting = React.useCallback(async (meeting) => {
     console.log('🔄 尝试切换到会议:', meeting.eventId);
@@ -378,7 +378,7 @@ function App() {
       setEditorContent(fallbackContent);
       console.log('Using fallback content for meeting:', meeting);
     }
-  }, [autoSave, currentEventId]);
+  }, [currentEventId]);
 
   return (
     <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
