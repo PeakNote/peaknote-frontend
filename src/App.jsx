@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
 import MeetingForm from './components/MeetingForm';
-import MeetingMinutes from './components/MeetingMinutes';
+
 import ShareModal from './components/ShareModal';
 import SuccessAnimation from './components/SuccessAnimation';
 import Pattern from './components/Pattern.jsx';
 import SimpleEditor from './components/SimpleEditor.jsx';
+import InfoIcon from './components/InfoIcon';
+import TutorialModal from './components/TutorialModal';
 import MeetingHistorySidebar from './components/MeetingHistorySidebar';
 import VersionHistory from './components/VersionHistory';
 import { useAutoSave } from './hooks/useAutoSave'; 
@@ -15,6 +17,7 @@ function App() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [editorContent, setEditorContent] = useState(null);
+  const [showTutorial, setShowTutorial] = useState(false);
   
   // Meeting History Sidebar states
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -198,6 +201,14 @@ function App() {
 
   const handleSuccessComplete = () => {
     setShowSuccessAnimation(false);
+  };
+
+  const handleTutorialOpen = () => {
+    setShowTutorial(true);
+  };
+
+  const handleTutorialClose = () => {
+    setShowTutorial(false);
   };
 
   // Sidebar handlers
@@ -393,6 +404,9 @@ function App() {
 
   return (
     <div className={`App ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Information Icon */}
+      <InfoIcon onClick={handleTutorialOpen} />
+      
       {/* Meeting History Sidebar */}
       <MeetingHistorySidebar
         isOpen={isSidebarOpen}
@@ -477,6 +491,12 @@ function App() {
         canRedo={autoSave.canRedo}
         isOpen={showVersionHistory}
         onClose={() => setShowVersionHistory(false)}
+      />
+
+      {/* Tutorial Modal */}
+      <TutorialModal 
+        isOpen={showTutorial}
+        onClose={handleTutorialClose}
       />
     </div>
   );

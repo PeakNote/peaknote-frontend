@@ -1,33 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { useState, useEffect, useCallback } from 'react';
 import './ShareModal.css';
 
-const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
+const ShareModal = ({ isOpen, onClose, meetingData }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false); 
   const [attendees, setAttendees] = useState([]);
   const [isLoadingAttendees, setIsLoadingAttendees] = useState(false);
   const [attendeesError, setAttendeesError] = useState(null);
 
   // 获取会议参与者
-  const fetchAttendees = async () => { 
-      // 检查是否有eventId - 修复：从正确的路径获取eventId
-      const eventId = meetingData?.currentEventId;
-        // 添加详细的调试信息
-      console.log('=== 调试 meetingData ===');
-      console.log('meetingData:', meetingData);
-      console.log('meetingData.currentEventId:', meetingData?.currentEventId);
-      console.log('eventId 类型:', typeof eventId);
-      console.log('eventId 长度:', eventId ? eventId.length : 'undefined');
-      console.log('=== 调试结束 ===');
-    
-    
-      if (!eventId) {
-        setAttendeesError('No event ID available. Please generate meeting summary first.');
-        setIsLoadingAttendees(false);
-        return;
-      }
+  const fetchAttendees = useCallback(async () => {
+    // 检查是否有eventId - 修复：从正确的路径获取eventId
+    const eventId = meetingData?.currentEventId;
+    // 添加详细的调试信息
+    console.log('=== 调试 meetingData ===');
+    console.log('meetingData:', meetingData);
+    console.log('meetingData.currentEventId:', meetingData?.currentEventId);
+    console.log('eventId 类型:', typeof eventId);
+    console.log('eventId 长度:', eventId ? eventId.length : 'undefined');
+    console.log('=== 调试结束 ===');
+
+
+    if (!eventId) {
+      setAttendeesError('No event ID available. Please generate meeting summary first.');
+      setIsLoadingAttendees(false);
+      return;
+    }
 
 
     try {
@@ -38,7 +35,7 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
       console.log('Full API URL:', `https://api.peak-note.com/attendees?eventId=${eventId}`);
       // console.log('Full API URL:', `https://4dd3f18734a3.ngrok-free.app/attendees?eventId=${eventId}`);
 
-      
+
       // 调用参与者API
       const response = await fetch(`https://api.peak-note.com/attendees?eventId=${eventId}`, {
       // const response = await fetch(`https://4dd3f18734a3.ngrok-free.app/attendees?eventId=${eventId}`, {
@@ -60,13 +57,13 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
       console.log('Response bodyUsed:', response.bodyUsed);
 
       console.log('Response status:', response.status);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
       }
 
       const data = await response.json();
-      
+
       if (data.attendees && Array.isArray(data.attendees)) {
         setAttendees(data.attendees);
       } else {
@@ -85,15 +82,15 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
           errorMessage = `Failed to load attendees: ${error.message}`;
         }
       }
-      
+
       setAttendeesError(errorMessage);
-      
+
       // 如果API失败，不显示任何参与者
       setAttendees([]);
     } finally {
       setIsLoadingAttendees(false);
     }
-  };
+  }, [meetingData]);
 
   // 控制背景滚动
   useEffect(() => {
@@ -115,34 +112,34 @@ const ShareModal = ({ isOpen, onClose, onSend, meetingData }) => {
       document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
     };
-  }, [isOpen, meetingData?.meetingUrl]);
+  }, [isOpen, fetchAttendees]);
 
 
   const toggleUserSelection = (index) => {
-    setSelectedUsers(prev => 
-      prev.includes(index) 
+    setSelectedUsers(prev =>
+      prev.includes(index)
         ? prev.filter(i => i !== index)
         : [...prev, index]
     );
   };
 
- // 添加全选/取消全选功能
- const toggleSelectAll = () => {
-  if (selectedUsers.length === attendees.length) {
-    // 如果全部已选中，则取消全选
-    setSelectedUsers([]);
-  } else {
-    // 否则全选
-    setSelectedUsers(attendees.map((_, index) => index));
-  }
-};
+  // 添加全选/取消全选功能
+  const toggleSelectAll = () => {
+    if (selectedUsers.length === attendees.length) {
+      // 如果全部已选中，则取消全选
+      setSelectedUsers([]);
+    } else {
+      // 否则全选
+      setSelectedUsers(attendees.map((_, index) => index));
+    }
+  };
 
-// 检查是否全选
-const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees.length;
+  // 检查是否全选
+  const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees.length;
 
 
-  // 生成PDF函数
-  const generatePDF = async () => {
+  // 生成PDF函数 - 暂时未使用
+  /* const generatePDF = async () => {
     try {
       // 获取 .a4-paper 元素
       const element = document.querySelector('.a4-paper');
@@ -210,14 +207,9 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
       console.error('Error generating PDF:', error);
       throw error;
     }
-  };
+  }; */
 
-  // 下载PDF函数 - 已禁用
-  const downloadPDF = async () => {
-    // 下载功能已禁用
-    alert('下载功能暂时不可用');
-    return null;
-  };  
+
 
   const handleSend = async () => {
     if (selectedUsers.length === 0) {
@@ -227,7 +219,7 @@ const isAllSelected = attendees.length > 0 && selectedUsers.length === attendees
 
     // 获取选中的收件人邮箱
     const selectedEmails = selectedUsers.map(index => attendees[index].email);
-    
+
     console.log('选中的邮箱列表：', selectedEmails);
 
     // 构建邮件内容
@@ -251,7 +243,7 @@ PeakNote Team
     // 构建 mailto 链接并打开邮件客户端
     const mailtoLink = `mailto:${selectedEmails.join(',')}?subject=${subject}&body=${body}`;
     console.log('生成的 mailto 链接：', mailtoLink);
-    
+
     window.open(mailtoLink, '_blank');
 
     // 显示成功消息
@@ -283,9 +275,9 @@ PeakNote Team
           </div>
           <div className="modal-body">
             <p className="text-white mb-3">Select recipients to share the meeting minutes via email:</p>
-            
-             {/* 全选按钮 */}
-             {attendees.length > 0 && (
+
+            {/* 全选按钮 */}
+            {attendees.length > 0 && (
               <div className="mb-3">
                 <button
                   type="button"
@@ -296,10 +288,10 @@ PeakNote Team
                   {isAllSelected ? 'Deselect All' : 'Select All'}
                 </button>
               </div>
-             )}
-            
-             {/* 加载状态 */}
-             {isLoadingAttendees && (
+            )}
+
+            {/* 加载状态 */}
+            {isLoadingAttendees && (
               <div className="text-center text-white mb-3">
                 <div className="spinner-border spinner-border-sm me-2" role="status">
                   <span className="visually-hidden">Loading...</span>
@@ -342,7 +334,7 @@ PeakNote Team
                       e.stopPropagation(); // 阻止事件冒泡
                       toggleUserSelection(index);
                     }}
-                    style={{ 
+                    style={{
                       cursor: 'pointer',
                       pointerEvents: 'auto',
                       zIndex: 1000
@@ -364,7 +356,7 @@ PeakNote Team
               Send to Selected
             </button> */}
             <button type="button" className="btn btn-primary" id="send-btn" onClick={handleSend} disabled={isLoadingAttendees || attendees.length === 0}>
-            Open Email Client
+              Open Email Client
             </button>
           </div>
         </div>
