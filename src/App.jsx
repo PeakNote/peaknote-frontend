@@ -131,7 +131,7 @@ function App() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo]);
+  }, [handleUndo, handleRedo, autoSave]);
 
   // 监听手动保存事件
   React.useEffect(() => {
