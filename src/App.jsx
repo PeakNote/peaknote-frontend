@@ -123,13 +123,15 @@ function App() {
             e.preventDefault();
             autoSave.manualSave();
             break;
+          default:
+            break;
         }
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, autoSave]);
+  }, [handleUndo, handleRedo, autoSave.manualSave]);
 
   // 监听手动保存事件
   React.useEffect(() => {
@@ -139,7 +141,7 @@ function App() {
 
     window.addEventListener('tiptap-manual-save', handleManualSave);
     return () => window.removeEventListener('tiptap-manual-save', handleManualSave);
-  }, [autoSave]);
+  }, [autoSave.manualSave]);
 
   // 发送自动保存状态给保存按钮
   React.useEffect(() => {
@@ -151,15 +153,13 @@ function App() {
 
   // 调试未保存状态
   React.useEffect(() => {
-    if (autoSave.hasUnsavedChanges) {
-      const hasChanges = autoSave.hasUnsavedChanges();
-      console.log('🔍 未保存状态检查:', {
-        hasUnsavedChanges: hasChanges,
-        isSaving: autoSave.isSaving,
-        saveStatus: autoSave.saveStatus
-      });
-    }
-  }, [editorContent, autoSave.hasUnsavedChanges, autoSave.isSaving, autoSave.saveStatus]);
+    const hasChanges = autoSave.hasUnsavedChanges();
+    console.log('🔍 未保存状态检查:', {
+      hasUnsavedChanges: hasChanges,
+      isSaving: autoSave.isSaving,
+      saveStatus: autoSave.saveStatus
+    });
+  }, [editorContent, autoSave]);
 
   const handleShare = () => {
     console.log('App.jsx: handleShare called'); // 添加调试信息

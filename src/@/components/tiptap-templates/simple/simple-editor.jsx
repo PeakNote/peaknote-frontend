@@ -283,7 +283,6 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
         try {
           // 拦截撤销/重做操作，防止访问无效历史记录
           if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
-            const isRedo = event.shiftKey;
             const { state } = view;
             const { doc } = state;
             
@@ -294,15 +293,8 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
               return true;
             }
             
-            // 额外保护：捕获任何可能的错误
-            try {
-              // 让TipTap处理撤销/重做，但如果出错则拦截
-              return false;
-            } catch (undoError) {
-              console.warn('SimpleEditor: Prevented undo/redo error:', undoError);
-              event.preventDefault();
-              return true;
-            }
+            // 让TipTap处理撤销/重做
+            return false;
           }
           
           // 拦截可能导致问题的键盘操作
@@ -753,18 +745,15 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
   }, [editor, content, forceRecreateEditor])
 
   // 防抖处理，减少频繁更新
-  const debouncedOnChange = React.useCallback(
-    React.useMemo(() => {
-      let timeoutId;
-      return (json) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          onChange(json);
-        }, 100); // 100ms防抖
-      };
-    }, [onChange]),
-    [onChange]
-  );
+  const debouncedOnChange = React.useMemo(() => {
+    let timeoutId;
+    return (json) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        onChange(json);
+      }, 100); // 100ms防抖
+    };
+  }, [onChange]);
 
   // Handle content changes
   React.useEffect(() => {
