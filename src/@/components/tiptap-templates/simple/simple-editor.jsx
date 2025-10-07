@@ -81,7 +81,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -175,7 +175,7 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState("main")
   const [isToolbarFloating, setIsToolbarFloating] = React.useState(false)
-  const [editorKey, setEditorKey] = React.useState(0) // 用于强制重新创建编辑器
+  const [, setEditorKey] = React.useState(0) // 用于强制重新创建编辑器
   const toolbarRef = React.useRef(null)
   const editorWrapperRef = React.useRef(null)
   const errorCountRef = React.useRef(0) // 错误计数器
@@ -243,7 +243,6 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
       if (!editorWrapperRef.current || !toolbarRef.current) return
 
       const wrapperRect = editorWrapperRef.current.getBoundingClientRect()
-      const toolbarRect = toolbarRef.current.getBoundingClientRect()
       
       // 当编辑器容器顶部超出视窗时，激活悬浮状态
       const shouldFloat = wrapperRect.top < -50 // 给一些缓冲距离
@@ -439,7 +438,6 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
 
   // 使用ref来跟踪是否是用户输入导致的内容变化
   const isUserInputRef = React.useRef(false);
-  const lastContentRef = React.useRef(null);
 
   // 内容清理和验证函数
   const sanitizeContent = (content) => {
@@ -755,18 +753,15 @@ export function SimpleEditor({ content, onChange, onShareClick }) {
   }, [editor, content, forceRecreateEditor])
 
   // 防抖处理，减少频繁更新
-  const debouncedOnChange = React.useCallback(
-    React.useMemo(() => {
-      let timeoutId;
-      return (json) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          onChange(json);
-        }, 100); // 100ms防抖
-      };
-    }, [onChange]),
-    [onChange]
-  );
+  const debouncedOnChange = React.useCallback(() => {
+    let timeoutId;
+    return (json) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        onChange(json);
+      }, 100); // 100ms防抖
+    };
+  }, [onChange]);
 
   // Handle content changes
   React.useEffect(() => {

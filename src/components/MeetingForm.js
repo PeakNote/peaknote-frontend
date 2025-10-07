@@ -156,7 +156,7 @@ const MeetingForm = ({ onSubmit }) => {
               );
               
               let node;
-              while (node = walker.nextNode()) {
+              while ((node = walker.nextNode())) {
                 if (node.nodeType === Node.TEXT_NODE) {
                   const text = node.textContent?.trim();
                   if (text) {
