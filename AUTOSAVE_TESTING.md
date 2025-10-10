@@ -1,129 +1,129 @@
-# 自动保存功能测试指南
+# Auto-Save Feature Testing Guide
 
-## 如何查看自动保存日志
+## How to View Auto-Save Logs
 
-现在控制台会显示详细的自动保存日志，包括：
+The console now displays detailed auto-save logs, including:
 
-### 🔍 控制台日志说明
+### 🔍 Console Log Descriptions
 
-#### 1. 系统初始化日志
+#### 1. System Initialization Logs
 ```
 🚀 Auto-save system activated! { eventId: "xxx", hasContent: true }
 🎯 Initializing auto-save with first version...
 ```
 
-#### 2. 内容变化检测日志
+#### 2. Content Change Detection Logs
 ```
 📝 Content changed detected, adding new version and scheduling save...
 ⏱️ Setting debounced save timer (2 seconds)...
 🔄 Content changed, triggering debounced save
 ```
 
-#### 3. 定期保存日志
+#### 3. Periodic Save Logs
 ```
 🔄 Starting periodic save (every 10 seconds)...
 ⏰ Periodic save check...
 🔄 Content changed, triggering periodic save
 ```
 
-#### 4. API请求日志
+#### 4. API Request Logs
 ```
 🌐 Sending API request: { url: "...", eventId: "...", contentLength: 1234 }
 📡 API response received: { status: 200, statusText: "OK", ok: true }
 ✅ API response content: ✅ success
 ```
 
-#### 5. 保存状态日志
+#### 5. Save Status Logs
 ```
 💾 Starting auto-save...
 ✅ Auto-save successful: 2024-01-01 12:00:00
 ```
 
-### 🧪 测试步骤
+### 🧪 Testing Steps
 
-1. **打开浏览器开发者工具**
-   - 按 F12 或右键选择"检查"
-   - 切换到 Console 标签
+1. **Open Browser Developer Tools**
+   - Press F12 or right-click and select "Inspect"
+   - Switch to the Console tab
 
-2. **生成会议记录**
-   - 输入会议URL并点击"Generate Notes"
-   - 观察控制台是否显示初始化日志
+2. **Generate Meeting Notes**
+   - Enter meeting URL and click "Generate Notes"
+   - Observe if initialization logs appear in console
 
-3. **测试自动保存**
-   - 在编辑器中输入一些文字
-   - 观察控制台是否显示内容变化检测
-   - 等待2秒，观察是否触发防抖保存
-   - 等待10秒，观察是否触发定期保存
+3. **Test Auto-Save**
+   - Type some text in the editor
+   - Observe if content change detection appears in console
+   - Wait 2 seconds, observe if debounced save is triggered
+   - Wait 10 seconds, observe if periodic save is triggered
 
-4. **测试手动保存**
-   - 按 Ctrl+S 或点击保存按钮
-   - 观察控制台是否显示手动保存日志
+4. **Test Manual Save**
+   - Press Ctrl+S or click the save button
+   - Observe if manual save logs appear in console
 
-5. **测试版本历史**
-   - 点击📚按钮查看版本历史
-   - 测试撤销/重做功能
+5. **Test Version History**
+   - Click the 📚 button to view version history
+   - Test undo/redo functionality
 
-### 🔧 调试面板
+### 🔧 Debug Panel
 
-在开发模式下，左上角会显示调试面板，包含：
-- 保存状态信息
-- 版本历史统计
-- 操作按钮
-- 错误信息（如果有）
+In development mode, a debug panel appears in the top-left corner, containing:
+- Save status information
+- Version history statistics
+- Action buttons
+- Error messages (if any)
 
-### 🚨 常见问题排查
+### 🚨 Common Issue Troubleshooting
 
-#### 问题1: 没有看到自动保存日志
-**可能原因:**
-- 没有会议数据或eventId
-- 编辑器内容为空
-- 网络连接问题
+#### Issue 1: No Auto-Save Logs Visible
+**Possible Causes:**
+- No meeting data or eventId
+- Editor content is empty
+- Network connection issues
 
-**解决方案:**
-- 确保已生成会议记录
-- 检查控制台是否有错误信息
-- 查看调试面板的状态信息
+**Solutions:**
+- Ensure meeting notes have been generated
+- Check console for error messages
+- Review debug panel status information
 
-#### 问题2: 保存失败
-**可能原因:**
-- API服务器未启动
-- 网络连接问题
-- 后端接口错误
+#### Issue 2: Save Failure
+**Possible Causes:**
+- API server not started
+- Network connection issues
+- Backend interface errors
 
-**解决方案:**
-- 检查API URL是否正确
-- 查看网络请求是否成功
-- 检查后端服务状态
+**Solutions:**
+- Check if API URL is correct
+- Verify network requests are successful
+- Check backend service status
 
-#### 问题3: 版本历史不工作
-**可能原因:**
-- 内容没有变化
-- 版本数量达到上限
+#### Issue 3: Version History Not Working
+**Possible Causes:**
+- Content hasn't changed
+- Version count reached limit
 
-**解决方案:**
-- 确保编辑了内容
-- 查看版本历史面板
+**Solutions:**
+- Ensure content has been edited
+- Check version history panel
 
-### 📊 日志级别说明
+### 📊 Log Level Descriptions
 
-- 🚀 系统启动
-- 📝 内容变化
-- ⏱️ 定时器设置
-- 🔄 保存触发
-- 💾 保存开始
-- ✅ 保存成功
-- ❌ 保存失败
-- 🌐 API请求
-- 📡 API响应
+- 🚀 System startup
+- 📝 Content change
+- ⏱️ Timer setup
+- 🔄 Save triggered
+- 💾 Save started
+- ✅ Save successful
+- ❌ Save failed
+- 🌐 API request
+- 📡 API response
 
-### 🎯 预期行为
+### 🎯 Expected Behavior
 
-正常情况下，你应该看到：
-1. 系统启动时的激活日志
-2. 编辑内容时的变化检测日志
-3. 2秒后的防抖保存日志
-4. 10秒后的定期保存日志
-5. API请求和响应的详细日志
-6. 保存成功的确认日志
+Under normal circumstances, you should see:
+1. Activation logs when system starts
+2. Change detection logs when editing content
+3. Debounced save logs after 2 seconds
+4. Periodic save logs after 10 seconds
+5. Detailed API request and response logs
+6. Save success confirmation logs
 
-如果任何步骤没有出现预期日志，请检查控制台是否有错误信息。
+If any step doesn't show expected logs, please check the console for error messages.

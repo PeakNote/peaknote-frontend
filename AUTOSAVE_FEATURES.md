@@ -1,78 +1,78 @@
-# 自动保存功能说明
+# Auto-Save Feature Description
 
-## 功能概述
+## Feature Overview
 
-已成功实现自动保存功能，包括版本历史管理，防止用户意外删除内容后无法恢复的问题。
+Successfully implemented auto-save functionality with version history management to prevent users from losing content due to accidental deletion.
 
-## 主要功能
+## Main Features
 
-### 1. 自动保存机制
-- **定期保存**: 每10秒自动检查内容变化并保存
-- **防抖保存**: 用户停止输入2秒后自动保存
-- **手动保存**: 支持Ctrl+S快捷键手动保存
+### 1. Auto-Save Mechanism
+- **Periodic Save**: Automatically checks for content changes and saves every 10 seconds
+- **Debounced Save**: Automatically saves 2 seconds after user stops typing
+- **Manual Save**: Supports Ctrl+S keyboard shortcut for manual saving
 
-### 2. 版本历史管理
-- **版本数量**: 保留最近10个版本
-- **时间戳**: 每个版本都有详细的保存时间
-- **内容预览**: 显示每个版本的内容摘要
-- **版本恢复**: 可以恢复到任意历史版本
+### 2. Version History Management
+- **Version Count**: Keeps the most recent 10 versions
+- **Timestamps**: Each version has detailed save time
+- **Content Preview**: Shows content summary for each version
+- **Version Recovery**: Can restore to any historical version
 
-### 3. 撤销/重做功能
-- **撤销**: Ctrl+Z 或点击撤销按钮
-- **重做**: Ctrl+Y 或点击重做按钮
-- **状态指示**: 显示当前是否可以撤销/重做
+### 3. Undo/Redo Functionality
+- **Undo**: Ctrl+Z or click undo button
+- **Redo**: Ctrl+Y or click redo button
+- **Status Indicator**: Shows whether undo/redo is available
 
-### 4. 用户界面
-- **状态指示器**: 右下角显示保存状态（保存中/已保存/保存失败）
-- **版本历史**: 点击📚按钮查看所有版本历史
-- **键盘快捷键**: 支持Ctrl+Z, Ctrl+Y, Ctrl+S
+### 4. User Interface
+- **Status Indicator**: Bottom-right corner shows save status (Saving/Saved/Save Failed)
+- **Version History**: Click 📚 button to view all version history
+- **Keyboard Shortcuts**: Supports Ctrl+Z, Ctrl+Y, Ctrl+S
 
-## 技术实现
+## Technical Implementation
 
-### 文件结构
+### File Structure
 ```
 src/
 ├── hooks/
-│   └── useAutoSave.js          # 自动保存核心逻辑
+│   └── useAutoSave.js          # Auto-save core logic
 ├── services/
-│   └── transcriptService.js    # API服务
+│   └── transcriptService.js    # API service
 ├── components/
-│   ├── AutoSaveIndicator.jsx   # 状态指示器
+│   ├── AutoSaveIndicator.jsx   # Status indicator
 │   ├── AutoSaveIndicator.css
-│   ├── VersionHistory.jsx      # 版本历史管理
+│   ├── VersionHistory.jsx      # Version history management
 │   └── VersionHistory.css
-└── App.jsx                     # 主应用集成
+└── App.jsx                     # Main application integration
 ```
 
-### API端点
-- **更新接口**: `POST /update`
-- **请求参数**: `{ eventId: string, content: string }`
-- **响应**: 成功返回 "✅ success"，失败返回错误信息
+### API Endpoints
+- **Update Interface**: `POST /update`
+- **Request Parameters**: `{ eventId: string, content: string }`
+- **Response**: Returns "✅ success" on success, error message on failure
 
-### 核心特性
-1. **内容变化检测**: 使用JSON.stringify比较内容是否变化
-2. **防抖机制**: 避免频繁保存，提升性能
-3. **错误处理**: 保存失败时显示错误信息
-4. **内存管理**: 自动清理过期版本，避免内存泄漏
+### Core Features
+1. **Content Change Detection**: Uses JSON.stringify to compare content changes
+2. **Debounce Mechanism**: Prevents frequent saves, improves performance
+3. **Error Handling**: Shows error messages when save fails
+4. **Memory Management**: Automatically cleans up expired versions to prevent memory leaks
 
-## 使用方法
+## Usage Instructions
 
-1. **自动保存**: 功能自动运行，无需用户操作
-2. **查看状态**: 右下角状态指示器显示保存状态
-3. **版本管理**: 点击📚按钮查看版本历史
-4. **撤销重做**: 使用Ctrl+Z/Ctrl+Y或点击按钮
-5. **手动保存**: 使用Ctrl+S或点击保存按钮
+1. **Auto-Save**: Feature runs automatically, no user action required
+2. **View Status**: Bottom-right status indicator shows save status
+3. **Version Management**: Click 📚 button to view version history
+4. **Undo/Redo**: Use Ctrl+Z/Ctrl+Y or click buttons
+5. **Manual Save**: Use Ctrl+S or click save button
 
-## 安全特性
+## Security Features
 
-- **版本保护**: 保留最近10个版本，防止数据丢失
-- **内容验证**: 保存前验证内容有效性
-- **错误恢复**: 保存失败时保留本地版本
-- **用户提示**: 清晰的状态反馈和错误提示
+- **Version Protection**: Keeps recent 10 versions to prevent data loss
+- **Content Validation**: Validates content before saving
+- **Error Recovery**: Retains local version when save fails
+- **User Feedback**: Clear status feedback and error messages
 
-## 注意事项
+## Important Notes
 
-- 自动保存只在有会议数据且eventId存在时生效
-- 版本历史在浏览器会话期间有效
-- 建议定期手动保存重要内容
-- 网络异常时保存可能失败，请检查网络连接
+- Auto-save only works when meeting data exists and eventId is present
+- Version history is valid during browser session
+- Recommend manually saving important content regularly
+- Save may fail during network issues, please check network connection
